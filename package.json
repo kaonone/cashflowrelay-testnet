@@ -1,0 +1,315 @@
+{
+  "name": "akropolis",
+  "version": "1.0.0",
+  "description": "Akropolis",
+  "scripts": {
+    "check-types": "node_modules/.bin/tsc -p . --noEmit -w",
+    "dev": "npm run watch:dev",
+    "fast": "better-npm-run watch:dev:fast",
+    "prod": "npm run watch:prod",
+    "watch:dev": "better-npm-run watch:dev",
+    "watch:prod": "better-npm-run watch:prod",
+    "server:dev": "better-npm-run server:dev",
+    "server:dev:debug": "better-npm-run server:dev:debug",
+    "server:prod": "better-npm-run server:prod",
+    "server:prod:debug": "better-npm-run server:prod:debug",
+    "test": "./node_modules/.bin/jest",
+    "test:watch": "./node_modules/.bin/jest --watch",
+    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",
+    "test:coverage": "node_modules/.bin/jest --coverage --watch",
+    "build:dev": "better-npm-run build:dev",
+    "build:prod": "better-npm-run build:prod",
+    "analyze:dev": "better-npm-run analyze:dev",
+    "analyze:prod": "better-npm-run analyze:prod",
+    "yeoman": "better-npm-run initial:yeoman",
+    "stylelint-autofix": "./node_modules/.bin/stylelint \"./src/**/*.scss\" --fix",
+    "heroku-postbuild": "npm run build:prod"
+  },
+  "betterScripts": {
+    "custom-node": {
+      "command": "node --max_old_space_size=4096 -r ts-node/register -r tsconfig-paths/register"
+    },
+    "custom-node:debug": {
+      "command": "node --inspect --inspect-brk --max_old_space_size=4096 -r ts-node/register -r tsconfig-paths/register"
+    },
+    "initial:yeoman": {
+      "command": "sh ./generators/initializationGenerator.sh",
+      "env": {
+        "NODE_ENV": "development"
+      }
+    },
+    "server:dev": {
+      "command": "bnr custom-node ./server/index.ts",
+      "env": {
+        "PORT": 8080,
+        "TS_NODE_FILES": true,
+        "WATCH_MODE": true,
+        "NODE_ENV": "development",
+        "TS_NODE_COMPILER_OPTIONS": "{\"target\": \"es6\", \"module\": \"commonjs\"}"
+      }
+    },
+    "server:dev:debug": {
+      "command": "bnr custom-node:debug ./server/index.ts",
+      "env": {
+        "PORT": 8080,
+        "TS_NODE_FILES": true,
+        "WATCH_MODE": true,
+        "NODE_ENV": "development",
+        "TS_NODE_COMPILER_OPTIONS": "{\"target\": \"es6\", \"module\": \"commonjs\"}"
+      }
+    },
+    "server:prod": {
+      "command": "bnr custom-node ./server/index.ts",
+      "env": {
+        "PORT": 8080,
+        "TS_NODE_FILES": true,
+        "NODE_ENV": "production",
+        "TS_NODE_COMPILER_OPTIONS": "{\"target\": \"es5\", \"module\": \"commonjs\"}"
+      }
+    },
+    "server:prod:debug": {
+      "command": "bnr custom-node:debug ./server/index.ts",
+      "env": {
+        "PORT": 8080,
+        "TS_NODE_FILES": true,
+        "NODE_ENV": "production",
+        "TS_NODE_COMPILER_OPTIONS": "{\"target\": \"es5\", \"module\": \"commonjs\"}"
+      }
+    },
+    "watch:dev": {
+      "command": "bnr custom-node node_modules/.bin/webpack-dev-server --watch --progress --colors --config webpack/dev.config.ts",
+      "env": {
+        "NODE_ENV": "development",
+        "TS_NODE_FILES": true,
+        "WATCH_MODE": true,
+        "TS_NODE_COMPILER_OPTIONS": "{\"target\": \"es5\", \"module\": \"commonjs\"}"
+      }
+    },
+    "watch:prod": {
+      "command": "bnr custom-node node_modules/.bin/webpack-dev-server --client-log-level info --watch --progress --colors --config webpack/prod.config.ts",
+      "env": {
+        "NODE_ENV": "production",
+        "TS_NODE_FILES": true,
+        "WATCH_MODE": true,
+        "TS_NODE_COMPILER_OPTIONS": "{\"target\": \"es5\", \"module\": \"commonjs\"}"
+      }
+    },
+    "watch:dev:fast": {
+      "command": "bnr custom-node node_modules/.bin/webpack-dev-server --watch --progress --colors --config webpack/dev.config.ts",
+      "env": {
+        "NODE_ENV": "development",
+        "TS_NODE_FILES": true,
+        "WATCH_MODE": true,
+        "WITHOUT_TYPES_CHECKING": true,
+        "TS_NODE_COMPILER_OPTIONS": "{\"target\": \"es5\", \"module\": \"commonjs\"}"
+      }
+    },
+    "analyze:dev": {
+      "command": "bnr custom-node node_modules/.bin/webpack --progress --config webpack/dev.config.ts",
+      "env": {
+        "BUNDLE_ANALYZE_MODE": true,
+        "TS_NODE_FILES": true,
+        "NODE_ENV": "development",
+        "TS_NODE_COMPILER_OPTIONS": "{\"target\": \"es5\", \"module\": \"commonjs\"}"
+      }
+    },
+    "analyze:prod": {
+      "command": "bnr custom-node node_modules/.bin/webpack --progress --config webpack/prod.config.ts",
+      "env": {
+        "BUNDLE_ANALYZE_MODE": true,
+        "TS_NODE_FILES": true,
+        "NODE_ENV": "production",
+        "TS_NODE_COMPILER_OPTIONS": "{\"target\": \"es5\", \"module\": \"commonjs\"}"
+      }
+    },
+    "build:dev": {
+      "command": "bnr custom-node node_modules/.bin/webpack --progress --colors --config webpack/dev.config.ts",
+      "env": {
+        "NODE_ENV": "development",
+        "TS_NODE_FILES": true,
+        "TS_NODE_COMPILER_OPTIONS": "{\"target\": \"es5\", \"module\": \"commonjs\"}"
+      }
+    },
+    "build:prod": {
+      "command": "bnr custom-node node_modules/.bin/webpack --progress --colors --config webpack/prod.config.ts",
+      "env": {
+        "NODE_ENV": "production",
+        "TS_NODE_FILES": true,
+        "TS_NODE_COMPILER_OPTIONS": "{\"target\": \"es5\", \"module\": \"commonjs\"}"
+      }
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fullstack-development/react-redux-starter-kit.git"
+  },
+  "keywords": [
+    "starter-kit",
+    "react",
+    "redux"
+  ],
+  "author": "Fullstack-development",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fullstack-development/react-redux-starter-kit/issues"
+  },
+  "homepage": "https://github.com/fullstack-development/react-redux-starter-kit#readme",
+  "devDependencies": {
+    "@types/clean-webpack-plugin": "^0.1.2",
+    "@types/enzyme": "^3.1.10",
+    "@types/express": "^4.16.0",
+    "@types/html-webpack-plugin": "^3.2.0",
+    "@types/jest": "^23.3.9",
+    "@types/mini-css-extract-plugin": "^0.2.0",
+    "@types/node": "^10.12.9",
+    "@types/sinon": "^5.0.5",
+    "@types/webpack": "^4.4.19",
+    "@types/webpack-bundle-analyzer": "^2.13.0",
+    "@types/webpack-dev-server": "^3.1.1",
+    "babel-loader": "^8.0.4",
+    "babel-plugin-syntax-dynamic-import": "^6.18.0",
+    "clean-webpack-plugin": "^1.0.0",
+    "enzyme": "^3.7.0",
+    "enzyme-adapter-react-16": "^1.7.0",
+    "enzyme-to-json": "^3.3.4",
+    "favicons-webpack-plugin": "0.0.9",
+    "fork-ts-checker-webpack-plugin": "^0.5.0",
+    "html-webpack-plugin": "^3.2.0",
+    "jest": "^23.6.0",
+    "mini-css-extract-plugin": "^0.4.5",
+    "react-hot-loader": "^4.3.12",
+    "react-jss-hmr": "^1.0.0",
+    "redux-devtools-extension": "^2.13.7",
+    "sinon": "^7.1.1",
+    "style-loader": "^0.21.0",
+    "stylelint": "^9.6.0",
+    "stylelint-config-standard": "^18.2.0",
+    "stylelint-order": "^1.0.0",
+    "stylelint-scss": "^3.3.2",
+    "ts-jest": "^23.10.5",
+    "tsconfig-paths": "^3.7.0",
+    "tslint": "^5.11.0",
+    "tslint-eslint-rules": "^5.4.0",
+    "tslint-loader": "^3.5.4",
+    "tslint-react": "^3.6.0",
+    "webpack": "^4.26.1",
+    "webpack-bundle-analyzer": "^3.0.3",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.14",
+    "webpack-hot-middleware": "^2.24.3",
+    "webpack-isomorphic-dev-middleware": "^4.1.0",
+    "webpack-node-externals": "^1.7.2",
+    "yo": "^2.0.5"
+  },
+  "dependencies": {
+    "@date-io/moment": "^1.0.1",
+    "@material-ui/core": "^3.6.2",
+    "@material-ui/icons": "^3.0.1",
+    "@material-ui/lab": "^3.0.0-alpha.25",
+    "@types/accounting": "^0.4.1",
+    "@types/autoprefixer": "^9.1.1",
+    "@types/bem-cn": "^2.1.1",
+    "@types/classnames": "^2.2.6",
+    "@types/compression": "0.0.36",
+    "@types/cookie-parser": "^1.4.1",
+    "@types/crypto-js": "^3.1.43",
+    "@types/google-maps": "^3.2.0",
+    "@types/node-polyglot": "^0.4.31",
+    "@types/prop-types": "^15.5.6",
+    "@types/qrcode.react": "^0.8.1",
+    "@types/ramda": "^0.25.46",
+    "@types/react": "^16.7.18",
+    "@types/react-dom": "^16.0.11",
+    "@types/react-helmet": "^5.0.7",
+    "@types/react-modal": "^3.6.0",
+    "@types/react-redux": "6.0.8",
+    "@types/react-responsive": "^3.0.2",
+    "@types/react-router": "^4.4.1",
+    "@types/react-router-dom": "^4.3.1",
+    "@types/react-select": "^1.2.6",
+    "@types/react-text-mask": "^5.4.2",
+    "@types/redux-auth-wrapper": "^2.0.9",
+    "@types/serialize-javascript": "^1.5.0",
+    "@types/stylelint": "^9.4.1",
+    "@types/uuid": "^3.4.4",
+    "@types/web3": "^1.0.15",
+    "@types/webpack-hot-middleware": "^2.16.2",
+    "@types/webpack-node-externals": "^1.6.2",
+    "accounting": "^0.4.1",
+    "autoprefixer": "^9.3.1",
+    "awesome-typescript-loader": "^5.2.1",
+    "axios": "^0.18.0",
+    "babel-polyfill": "^6.26.0",
+    "bem-cn": "^3.0.1",
+    "better-npm-run": "^0.1.1",
+    "bootstrap": "^3.3.7",
+    "build-route-tree": "^1.0.2",
+    "cheerio": "^1.0.0-rc.2",
+    "circular-dependency-plugin": "^5.0.2",
+    "classnames": "^2.2.6",
+    "compression": "^1.7.2",
+    "concurrently": "^4.0.1",
+    "cookie-parser": "^1.4.3",
+    "crypto-js": "^3.1.9-1",
+    "css-loader": "^1.0.1",
+    "decko": "^1.2.0",
+    "doiuse": "^4.2.0",
+    "drizzle": "^1.2.4",
+    "drizzle-react": "^1.2.0",
+    "eth-sig-util": "^2.1.1",
+    "events": "^3.0.0",
+    "express": "^4.16.3",
+    "file-loader": "^2.0.0",
+    "final-form": "^4.11.0",
+    "inversify": "^5.0.1",
+    "inversify-inject-decorators": "^3.1.0",
+    "jss": "^9.8.3",
+    "jss-compose": "^5.0.0",
+    "material-ui-pickers": "^2.1.1",
+    "moment": "^2.23.0",
+    "node-polyglot": "^2.3.0",
+    "node-sass": "^4.11.0",
+    "normalize.css": "^8.0.0",
+    "normalizr": "^2.3.1",
+    "postcss-loader": "^3.0.0",
+    "postcss-reporter": "^6.0.0",
+    "postcss-scss": "^2.0.0",
+    "prop-types": "^15.6.2",
+    "qrcode.react": "^0.9.0",
+    "ramda": "^0.26.1",
+    "react": "^16.7.0",
+    "react-async-bootstrapper": "^2.1.0",
+    "react-device-detect": "^1.6.1",
+    "react-dom": "^16.7.0",
+    "react-final-form": "^4.0.2",
+    "react-geosuggest": "^2.5.0",
+    "react-helmet": "^5.2.0",
+    "react-jss": "^8.6.1",
+    "react-modal": "^3.8.1",
+    "react-number-format": "^4.0.6",
+    "react-redux": "^5.1.1",
+    "react-responsive": "^6.0.1",
+    "react-router": "^4.3.1",
+    "react-router-dom": "^4.3.1",
+    "react-select": "^1.2.1",
+    "react-text-mask": "^5.4.3",
+    "redux": "^4.0.1",
+    "redux-auth-wrapper": "^2.0.3",
+    "redux-make-communication": "^1.0.1",
+    "redux-saga": "^0.16.2",
+    "reflect-metadata": "^0.1.10",
+    "reselect": "^4.0.0",
+    "sass-loader": "^7.1.0",
+    "serialize-javascript": "^1.5.0",
+    "thread-loader": "^1.2.0",
+    "ts-loader": "^5.3.0",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.2.4",
+    "url-loader": "^1.1.2",
+    "uuid": "^3.3.2"
+  },
+  "engines": {
+    "node": "10.15.0",
+    "npm": "6.6.0"
+  }
+}

@@ -1,0 +1,54 @@
+@function str-replace($string, $search, $replace: "") {
+  $index: str-index($string, $search);
+
+  @if $index {
+    @return str-slice($string, 1, $index - 1) + $replace + str-replace(str-slice($string, $index + str-length($search)), $search, $replace);
+  }
+
+  @return $string;
+}
+
+@mixin font-face($name, $path, $weight: null, $style: null, $exts: eot woff2 woff ttf svg) {
+  $src: null;
+  $extmods: (
+    eot: "?",
+    svg: "#" + str-replace($name, " ", "_")
+  );
+  $formats: (
+    otf: "opentype",
+    ttf: "truetype"
+  );
+
+  @each $ext in $exts {
+    $extmod: if(map-has-key($extmods, $ext), $ext + map-get($extmods, $ext), $ext);
+    $format: if(map-has-key($formats, $ext), map-get($formats, $ext), $ext);
+    $src: append($src, url(quote($path + "." + $extmod)) format(quote($format)), comma);
+  }
+
+  @font-face {
+    font-weight: $weight;
+    font-style: $style;
+    font-family: quote($name);
+    src: $src;
+  }
+}
+
+@include font-face(OpenSans, openSans-regular/openSans-regular, 400, null, woff ttf svg);
+
+@include font-face(OpenSans, openSans-bold/openSans-bold, 700, null, woff ttf svg);
+
+@include font-face(OpenSans, openSans-boldItalic/openSans-boldItalic, 700, italic, woff ttf svg);
+
+@include font-face(OpenSans, openSans-extraBold/openSans-extraBold, 800, null, woff ttf svg);
+
+@include font-face(OpenSans, openSans-extraBoldItalic/openSans-extraBoldItalic, 800, italic, woff ttf svg);
+
+@include font-face(OpenSans, openSans-italic/openSans-italic, 400, italic, woff ttf svg);
+
+@include font-face(OpenSans, openSans-semiBold/openSans-semiBold, 600, null, woff ttf svg);
+
+@include font-face(OpenSans, openSans-semiBoldItalic/openSans-semiBoldItalic, 600, italic, woff ttf svg);
+
+@include font-face(OpenSans, openSans-light/openSans-light, 300, null, woff ttf svg);
+
+@include font-face(OpenSans, openSans-lightItalic/openSans-lightItalic, 300, italic, woff ttf svg);

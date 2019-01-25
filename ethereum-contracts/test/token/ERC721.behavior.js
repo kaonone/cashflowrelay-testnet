@@ -1,6 +1,6 @@
 const { BN, constants, expectEvent, shouldFail } = require('openzeppelin-test-helpers');
 const { ZERO_ADDRESS } = constants;
-const { shouldSupportInterfaces } = require('../introspection/SupportsInterface.behavior');
+const { shouldSupportInterfaces } = require('../introspection/SupportsInterface.behavior.js');
 
 const ERC721ReceiverMock = artifacts.require('ERC721ReceiverMock.sol');
 

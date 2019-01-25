@@ -1,7 +1,7 @@
 {
-  "name": "akropolis",
+  "name": "C2FCExchanger",
   "version": "1.0.0",
-  "description": "Akropolis",
+  "description": "C2FC Exchanger",
   "scripts": {
     "check-types": "node_modules/.bin/tsc -p . --noEmit -w",
     "dev": "npm run watch:dev",
@@ -199,7 +199,14 @@
     "webpack-hot-middleware": "^2.24.3",
     "webpack-isomorphic-dev-middleware": "^4.1.0",
     "webpack-node-externals": "^1.7.2",
-    "yo": "^2.0.5"
+    "yo": "^2.0.5",
+    "lodash": "^4.17.5",
+    "snazzy": "^7.0.0",
+    "solidity-coverage": "sc-forks/solidity-coverage#6a13575e3597e491299a9dd1474c64c9066faa69",
+    "standard": "^10.0.3",
+    "truffle": "^4.1.5",
+    "truffle-contract": "3.0.1",
+    "truffle-ext": "0.1.8"
   },
   "dependencies": {
     "@date-io/moment": "^1.0.1",
@@ -266,7 +273,7 @@
     "jss": "^9.8.3",
     "jss-compose": "^5.0.0",
     "material-ui-pickers": "^2.1.1",
-    "moment": "^2.23.0",
+    "moment": "^2.18.1",
     "node-polyglot": "^2.3.0",
     "node-sass": "^4.11.0",
     "normalize.css": "^8.0.0",
@@ -306,7 +313,10 @@
     "ts-node": "^7.0.1",
     "typescript": "^3.2.4",
     "url-loader": "^1.1.2",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "truffle-blockchain-utils": "^0.0.3",
+    "truffle-hdwallet-provider": "^0.0.3",
+    "zeppelin-solidity": "1.6.0"
   },
   "engines": {
     "node": "10.15.0",

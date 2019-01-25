@@ -3,6 +3,8 @@ logs
 *.log
 npm-debug.log*
 
+ethereum/.env
+
 # Runtime data
 pids
 *.pid
@@ -46,3 +48,6 @@ static
 
 # MacOS deps
 .DS_Store
+ethereum/build
+ethereum/node_modules
+

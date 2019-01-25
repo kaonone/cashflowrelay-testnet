@@ -8,7 +8,7 @@ import "./IERC721Enumerable.sol";
  */
 contract NFTokenEnumerable is
   NFToken,
-  ERC721Enumerable
+  IERC721Enumerable
 {
 
   /**

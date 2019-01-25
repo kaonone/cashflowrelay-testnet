@@ -12,12 +12,6 @@
  *   },
  */
 
-
-console.log(process.env.METAMASK_MNEMONIC);
-
-
-console.log(process.env.INFURA_API_KEY);
-
 const HDWalletProvider = require("truffle-hdwallet-provider");
 require('dotenv').config()  // Stores environment-specific variable from '.env' to process.env
 
@@ -26,7 +20,7 @@ module.exports = {
   // to customize your Truffle configuration!
   	compilers: {
 		solc: {
-	  	version: "0.4.24"  // Change this to whatever you need
+	  	version: "0.5.2"  // Change this to whatever you need
 		}
   	},
 	networks: {

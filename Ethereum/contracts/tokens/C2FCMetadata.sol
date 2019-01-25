@@ -8,7 +8,7 @@ import "./IERC721Metadata.sol";
  */
 contract NFTokenMetadata is
   NFToken,
-  ERC721Metadata
+  IERC721Metadata
 {
 
   /**

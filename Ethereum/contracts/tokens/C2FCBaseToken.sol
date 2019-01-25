@@ -452,7 +452,7 @@ contract NFToken is
 
     if (_to.isContract()) 
     {
-      bytes4 retval = ERC721TokenReceiver(_to).onERC721Received(msg.sender, _from, _tokenId, _data);
+      bytes4 retval = IERC721TokenReceiver(_to).onERC721Received(msg.sender, _from, _tokenId, _data);
       require(retval == MAGIC_ON_ERC721_RECEIVED);
     }
   }

@@ -1,6 +1,6 @@
 pragma solidity ^0.5.2;
 
-import "../token/ERC721/IERC721Receiver.sol";
+import "../token/IERC721Receiver.sol";
 
 contract ERC721ReceiverMock is IERC721Receiver {
     bytes4 private _retval;

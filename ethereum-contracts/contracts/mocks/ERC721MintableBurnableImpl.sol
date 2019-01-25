@@ -1,9 +1,9 @@
 pragma solidity ^0.5.2;
 
-import "../token/ERC721/ERC721Full.sol";
-import "../token/ERC721/ERC721Mintable.sol";
-import "../token/ERC721/ERC721MetadataMintable.sol";
-import "../token/ERC721/ERC721Burnable.sol";
+import "../token/ERC721Full.sol";
+import "../token/ERC721Mintable.sol";
+import "../token/ERC721MetadataMintable.sol";
+import "../token/ERC721Burnable.sol";
 
 /**
  * @title ERC721MintableBurnableImpl

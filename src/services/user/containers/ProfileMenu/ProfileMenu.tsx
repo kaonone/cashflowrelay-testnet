@@ -3,13 +3,13 @@ import { connect } from 'react-redux';
 
 import { IAppReduxState } from 'shared/types/app';
 import { Popover, IconButton, Button } from 'shared/view/elements';
+import { withComponent } from 'shared/helpers/react';
 import { Cross } from 'shared/view/elements/Icons';
 import { i18nConnect, ITranslateProps, tKeys } from 'services/i18n';
 
 import { StylesProps, provideStyles } from './ProfileMenu.style';
 import { selectors } from './../../redux';
 import Logout from '../Logout/Logout';
-import { withComponent } from 'shared/helpers/react';
 
 const LogoutButton = withComponent(Logout)(Button);
 

@@ -1,6 +1,8 @@
 pragma solidity ^0.5.2;
 
-contract IC2FCPayments {
+import "../token/IC2FC.sol";
+
+contract IC2FCPayments is IC2FC {
     event ExecuteSubscription(
         address indexed from, //the subscriber
         address indexed to, //the publisher

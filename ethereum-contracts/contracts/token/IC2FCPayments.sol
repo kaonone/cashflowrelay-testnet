@@ -3,7 +3,7 @@ pragma solidity ^0.5.2;
 import "../token/IC2FC.sol";
 
 contract IC2FCPayments is IC2FC {
-    event ExecuteSubscription(
+    event ExecutePayment(
         address indexed from, //the subscriber
         address indexed to, //the publisher
         address tokenAddress, //the token address paid to the publisher
@@ -11,7 +11,7 @@ contract IC2FCPayments is IC2FC {
         uint256 datePayment //the period in seconds between payments
     );
 
-    event CancelSubscription(
+    event CancelPayment(
         address indexed from, //the subscriber
         address indexed to, //the publisher
         address tokenAddress, //the token address paid to the publisher
@@ -19,9 +19,9 @@ contract IC2FCPayments is IC2FC {
         uint256 datePayment
     );
     
-    function isSubscriptionActive (uint tokenId) public view returns (bool);
+    function isPaymentsActive (uint tokenId) public view returns (bool);
 
-    function cancelSubscription(
+    function cancelPayment(
         address to, //the publisher
         address tokenAddress, //the token address paid to the publisher
         uint256 tokenAmount
@@ -29,7 +29,7 @@ contract IC2FCPayments is IC2FC {
         returns (bool success);
 
 
-    function executeSubscription(
+    function executePayment(
         address to, //the publisher
         address tokenAddress, //the token address paid to the publisher
         uint256 tokenAmount //the token amount paid to the publisher
@@ -37,5 +37,5 @@ contract IC2FCPayments is IC2FC {
         returns (bool success);
          
         
-    function withdrawCashflow(uint256 amount) public returns (bool);
+    function withdrawPayments(uint256 amount) public returns (bool);
 }

@@ -23,8 +23,8 @@ contract MinterRole {
         return _minters.has(account);
     }
 
-    function addMinter(address account) public onlyMinter {
-        _addMinter(account);
+    function addMinter() public {
+        _addMinter(msg.sender);
     }
 
     function renounceMinter() public {

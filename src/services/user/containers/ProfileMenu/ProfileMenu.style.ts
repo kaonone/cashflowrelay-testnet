@@ -1,6 +1,8 @@
 import { withStyles, WithStyles, Theme } from 'shared/styles';
 import { rule } from 'shared/helpers/style';
 
+import metamask from './images/metamask.svg';
+
 const styles = ({ extra: theme }: Theme) => ({
 
   paper: rule({
@@ -38,6 +40,10 @@ const styles = ({ extra: theme }: Theme) => ({
     height: '2.5rem',
     marginRight: '1.25rem',
     borderRadius: '100%',
+    backgroundImage: `url(${metamask})`,
+    backgroundSize: '80%',
+    backgroundPosition: '50% 50%',
+    backgroundRepeat: 'no-repeat',
     backgroundColor: '#d8d8d8',
   }),
 

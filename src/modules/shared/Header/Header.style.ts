@@ -32,7 +32,6 @@ const styles = ({ extra: theme }: Theme) => ({
   }),
 
   accountStatus: rule({
-    display: 'flex',
     marginLeft: 'auto',
   }),
 });

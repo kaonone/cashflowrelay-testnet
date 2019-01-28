@@ -2,12 +2,16 @@ import * as React from 'react';
 import { Button } from 'shared/view/elements';
 import { withDrizzle, InjectDrizzleProps } from 'shared/helpers/react';
 
+import { provideStyles, StylesProps } from './ShowBalance.style';
+
 interface IState {
   balanceKey: string;
   decimalsKey: string;
 }
 
-class ShowBalance extends React.Component<InjectDrizzleProps, IState> {
+type IProps = InjectDrizzleProps & StylesProps;
+
+class ShowBalance extends React.Component<IProps, IState> {
   public state: IState = { balanceKey: '', decimalsKey: '' };
 
   public componentDidMount() {
@@ -23,8 +27,9 @@ class ShowBalance extends React.Component<InjectDrizzleProps, IState> {
   }
 
   public render() {
+    const { classes } = this.props;
     const balance = this.getBalance();
-    return balance !== null && <Button disabled variant="outlined">DAI: {balance}</Button>;
+    return balance !== null && <Button className={classes.root} disabled variant="outlined">DAI: {balance}</Button>;
   }
 
   private getBalance(): number | null {
@@ -40,4 +45,4 @@ class ShowBalance extends React.Component<InjectDrizzleProps, IState> {
   }
 }
 
-export default withDrizzle(ShowBalance);
+export default withDrizzle(provideStyles(ShowBalance));

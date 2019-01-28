@@ -22,6 +22,7 @@ const colors = {
   heavyMetal: '#1d1d1b',
   alabaster: '#f8f8f8',
   silverChalice: '#aeaeae',
+  tundora: '#4A4A4A',
 };
 
 export const theme = {

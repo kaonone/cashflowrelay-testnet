@@ -3,9 +3,13 @@ import { rule } from 'shared/helpers/style';
 
 const styles = ({ extra: theme }: Theme) => ({
   root: rule({
-    display: 'flex',
-    borderRadius: '0.25rem',
-    border: `solid 1px ${theme.colors.tundora}`,
+    border: 'none',
+    fontSize: '0.75rem',
+    fontWeight: 'bold',
+
+    '&:disabled': {
+      color: theme.colors.tundora,
+    },
   }),
 
 });

@@ -6,6 +6,8 @@ const styles = ({ extra: theme }: Theme) => ({
   root: rule({
     fontFamily: theme.typography.primaryFont,
     fontSize: '0.75rem',
+    boxShadow: 'none',
+    borderRadius: 0,
   }),
 
   arrowIcon: rule({

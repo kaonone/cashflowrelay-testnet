@@ -32,7 +32,7 @@ class ProfileMenu extends React.PureComponent<IProps> {
         open={open}
         anchorEl={anchor}
         onClose={onClose}
-        classes={classes}
+        classes={{ paper: classes.paper }}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'right',
@@ -54,7 +54,9 @@ class ProfileMenu extends React.PureComponent<IProps> {
               <div className={classes.address}>{confirmedAddress}</div>
             </div>
           </div>
-          <LogoutButton variant="text" className={classes.logoutButton} />
+          <LogoutButton variant="text" className={classes.logoutButton}>
+            {t(tKeys.features.signIn.logout.getKey())}
+          </LogoutButton>
         </div>
       </Popover>
     );

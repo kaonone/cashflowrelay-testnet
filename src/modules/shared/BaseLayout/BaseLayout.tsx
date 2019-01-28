@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+import { Transactions } from 'services/transactions';
 import RowsLayout, { IProps as IRowsLayoutProps } from 'shared/view/elements/RowsLayout/RowsLayout';
 
 import Header from '../Header/Header';
@@ -21,6 +22,7 @@ class BaseLayout extends React.PureComponent<IProps> {
         headerContent={<Header />}
         {...rest}
       >
+        <Transactions />
         <div className={classes.content}>
           {children}
         </div>

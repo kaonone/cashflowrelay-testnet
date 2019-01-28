@@ -7,7 +7,7 @@ interface IOwnProps {
   errorComp?: React.ReactNode;
   loadingComp?: React.ReactNode;
   children: React.ReactNode;
-  onInitialize(drizzle: Drizzle): void;
+  onInitialize?(drizzle: Drizzle): void;
 }
 
 type IProps = IOwnProps & InjectDrizzleProps;
@@ -16,7 +16,7 @@ class LoadingContainer extends React.Component<IProps> {
   public componentDidUpdate(prevProps: IProps) {
     const { initialized, drizzle, onInitialize } = this.props;
     if (!prevProps.initialized && initialized) {
-      onInitialize(drizzle);
+      onInitialize && onInitialize(drizzle);
     }
   }
 

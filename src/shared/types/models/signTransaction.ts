@@ -1,28 +1,24 @@
 import { SubsetMapStrict } from '_helpers';
-import { TimePeriod, ID } from './common';
 
 export interface ITransaction {
   txid: string;
 }
 
-export type TransactionType = 'getInFund' | 'depositToFund';
-export type ABIRequestDataByType = SubsetMapStrict<Record<TransactionType, any>, {
-  getInFund: {
-    fundId: ID;
-    regularPayment: number;
-    periodicity: TimePeriod;
-    retirementDate: number;
-    wallet: string;
-  };
-  depositToFund: {
-    fundId: ID;
+export type TransactionType = 'addMinter' | 'createToken';
+export type TransactionDataByType = SubsetMapStrict<Record<TransactionType, any>, {
+  addMinter: null;
+  createToken: {
+    tokenId: number;
+    // loanAmount: number;
+    // interest: number;
+    // instalmentSize: number;
+    // periodicity: number;
   };
 }>;
 
-export type ABIRequest = {
+export type TransactionRequest = {
   [key in TransactionType]: {
-    uuid: string;
     type: key;
-    data: ABIRequestDataByType[key];
+    data: TransactionDataByType[key];
   };
 }[TransactionType];

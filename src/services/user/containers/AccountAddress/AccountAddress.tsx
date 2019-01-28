@@ -7,11 +7,14 @@ import * as selectors from './../../redux/selectors';
 import { Button } from 'shared/view/elements';
 import { shortenString } from 'shared/helpers/format';
 
+interface IOwnProps {
+  onClick(): void;
+}
 interface IStateProps {
   confirmedAddress: string | null;
 }
 
-type IProps = IStateProps;
+type IProps = IOwnProps & IStateProps;
 
 function mapState(state: IAppReduxState): IStateProps {
   return {
@@ -21,9 +24,9 @@ function mapState(state: IAppReduxState): IStateProps {
 
 class AccountAddress extends React.PureComponent<IProps> {
   public render() {
-    const { confirmedAddress } = this.props;
+    const { confirmedAddress, onClick } = this.props;
     return confirmedAddress && (
-      <Button variant="contained" color="primary">{shortenString(confirmedAddress, 12)}</Button>
+      <Button onClick={onClick} variant="contained" color="primary">{shortenString(confirmedAddress, 12)}</Button>
     );
   }
 }

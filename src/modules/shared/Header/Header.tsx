@@ -4,7 +4,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 
 import routes from 'modules/routes';
 
-import { selectors, AccountAddress } from 'services/user';
+import { selectors } from 'services/user';
 import { SignInButton } from 'features/signIn';
 
 import { IAppReduxState } from 'shared/types/app';
@@ -12,7 +12,7 @@ import { IAppReduxState } from 'shared/types/app';
 import Logo from '../Logo/Logo';
 import Menu from './Menu/Menu';
 import { provideStyles, StylesProps } from './Header.style';
-import ShowBalance from './ShowBalance/ShowBalance';
+import Profile from './Profile/Profile';
 
 const brandRedirectPath = routes.marketplace.getRoutePath();
 
@@ -41,7 +41,7 @@ class Header extends React.PureComponent<IProps> {
             <Menu isLogged={isLogged} />
           </div>
           <div className={classes.accountStatus}>
-            {isLogged ? <><ShowBalance /><AccountAddress /></> : <SignInButton />}
+            {isLogged ? <Profile /> : <SignInButton />}
           </div>
         </div>
       </div >

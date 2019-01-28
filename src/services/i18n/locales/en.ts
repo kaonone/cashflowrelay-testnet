@@ -23,6 +23,7 @@ export default {
   features: {
     signIn: {
       button: 'Connect to %{address}',
+      logout: 'Log out',
       confirmModal: {
         title: 'Confirm your address',
         beforeAddressDescription: 'You’re signing in with the following address:',
@@ -50,6 +51,10 @@ export default {
   services: {
     dataProvider: {
       showMoreButton: 'Show more',
+    },
+    user: {
+      connectedToMetamask: 'Connected to Metamask',
+      walletAddress: 'Wallet address',
     },
   },
 };

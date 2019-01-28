@@ -12,12 +12,22 @@ contract IC2FC is IERC165 {
     (
      uint256 balance, 
      string memory name, 
-     uint256 interestRate,
+     uint256 value,
      uint256 commit, 
+     uint256 interestRate,
      uint256 duration, 
      uint256 lastPayment
-    );
+     );
 
+    function createCashFlow(
+        string memory name, 
+        uint256 value, 
+        uint256 commit, 
+        uint256 interestRate, 
+        uint256 duration
+        ) 
+        public returns (bool);
+        
 }
 
 

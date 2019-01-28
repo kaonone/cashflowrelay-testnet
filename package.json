@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "C2FC Exchanger",
   "scripts": {
-    "i": "npm i && npm --prefix ./ethereum-contracts i",
+    "postinstall": "npm --prefix ./ethereum-contracts i",
     "start": "npm --prefix ./ethereum-contracts start",
     "check-types": "node_modules/.bin/tsc -p . --noEmit -w",
     "dev": "npm run watch:dev",

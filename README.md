@@ -1,10 +1,9 @@
 # C2FC 0xchanger
 
-## For all (in root folder)
-### Install dependencies
-- ```npm run i``` install frontend and contracts dependencies
-
 ## For frontend (in root folder)
+### Install all dependencies
+- ```npm i``` install frontend and contracts dependencies
+
 ### To start ethereum network locally
 - ```npm run start``` for start network, build and deploy contracts
 
@@ -21,6 +20,9 @@
 - ```npm run analyze:prod``` for production environment
 
 ## For contracts (in ethereum-contracts folder)
+### Install all dependencies
+- ```npm i``` install contracts dependencies
+
 ### To start ethereum network locally
 - ```npm run ganache-cli``` for start network
 - ```npm run ganache-cli -- -b 3``` for start network with arguments
@@ -31,4 +33,4 @@
 - ```npm run compile-deploy-contracts``` for build and deploy contracts
 
 ### To start test
-- ```npm test``` or ```npm t``` for start test, before that you need
+- ```npm test``` or ```npm t``` for start test, before that you need start network (```npm run ganache-cli```)

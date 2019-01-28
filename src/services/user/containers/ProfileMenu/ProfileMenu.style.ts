@@ -3,8 +3,10 @@ import { rule } from 'shared/helpers/style';
 
 const styles = ({ extra: theme }: Theme) => ({
 
-  popover: rule({
+  paper: rule({
     marginTop: '0.625rem',
+    border: `solid 0.0625rem ${theme.colors.mercury}`,
+    boxShadow: '0 0.125rem 0.1875rem 0 rgba(184, 184, 184, 0.5)',
   }),
 
   root: rule({
@@ -22,13 +24,13 @@ const styles = ({ extra: theme }: Theme) => ({
   }),
 
   crossIcon: rule({
-    fontSize: '14px',
+    fontSize: '0.875rem',
   }),
 
   content: rule({
     display: 'flex',
     paddingBottom: '1.125rem',
-    borderBottom: `solid 1px ${theme.colors.mercury}`,
+    borderBottom: `solid 0.0625rem ${theme.colors.mercury}`,
   }),
 
   avatar: rule({

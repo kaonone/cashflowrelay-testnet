@@ -2,13 +2,16 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 
 import { IAppReduxState } from 'shared/types/app';
-import { Popover, IconButton } from 'shared/view/elements';
+import { Popover, IconButton, Button } from 'shared/view/elements';
 import { Cross } from 'shared/view/elements/Icons';
 import { i18nConnect, ITranslateProps, tKeys } from 'services/i18n';
 
 import { StylesProps, provideStyles } from './ProfileMenu.style';
 import { selectors } from './../../redux';
-import LogoutButton from '../LogoutButton/LogoutButton';
+import Logout from '../Logout/Logout';
+import { withComponent } from 'shared/helpers/react';
+
+const LogoutButton = withComponent(Logout)(Button);
 
 interface IOwnProps {
   open: boolean;
@@ -29,7 +32,7 @@ class ProfileMenu extends React.PureComponent<IProps> {
         open={open}
         anchorEl={anchor}
         onClose={onClose}
-        className={classes.popover}
+        classes={classes}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'right',
@@ -51,9 +54,7 @@ class ProfileMenu extends React.PureComponent<IProps> {
               <div className={classes.address}>{confirmedAddress}</div>
             </div>
           </div>
-          <div className={classes.logoutButton}>
-            <LogoutButton />
-          </div>
+          <LogoutButton variant="text" className={classes.logoutButton} />
         </div>
       </Popover>
     );

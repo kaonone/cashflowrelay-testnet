@@ -4,6 +4,7 @@ import "../token/IC2FC.sol";
 
 contract IC2FCPayments is IC2FC {
     event ExecutePayment(
+        uint256 tokenId,
         address indexed from, //the subscriber
         address indexed to, //the publisher
         address tokenAddress, //the token address paid to the publisher
@@ -12,6 +13,7 @@ contract IC2FCPayments is IC2FC {
     );
 
     event CancelPayment(
+        uint256 tokenId,
         address indexed from, //the subscriber
         address indexed to, //the publisher
         address tokenAddress, //the token address paid to the publisher
@@ -22,6 +24,7 @@ contract IC2FCPayments is IC2FC {
     function isPaymentsActive (uint tokenId) public view returns (bool);
 
     function cancelPayment(
+        uint256 tokenId,
         address to, //the publisher
         address tokenAddress, //the token address paid to the publisher
         uint256 tokenAmount
@@ -30,6 +33,7 @@ contract IC2FCPayments is IC2FC {
 
 
     function executePayment(
+        uint256 tokenId,
         address to, //the publisher
         address tokenAddress, //the token address paid to the publisher
         uint256 tokenAmount //the token amount paid to the publisher
@@ -37,5 +41,5 @@ contract IC2FCPayments is IC2FC {
         returns (bool success);
          
         
-    function withdrawPayments(uint256 amount) public returns (bool);
+    function withdrawPayments(uint256 tokenId, uint256 amount) public returns (bool);
 }

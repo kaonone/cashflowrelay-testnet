@@ -54,23 +54,37 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FC {
 
     function cashflowFor(uint256 tokenId) public view returns
     (
-     address subscriber,
-     uint256 balance, 
-     string memory name, 
-     uint256 value,
-     uint256 commit, 
-     uint256 interestRate,
-     uint256 duration, 
-     uint256 firstPayment,
-     uint256 lastPayment
+        address subscriber,
+        string name,
+        uint256 value, 
+        uint256 commit,
+        uint256 interestRate, 
+        uint256 duration,
+        uint256 balance,
+        uint256 created,
+        uint256 lastPayment
      ) 
     {
+        require(tokenId<=totalSupply(), "TokenId doesn't exit");
         
+        return (
+            _cashflowsIds[tokenId].subscriber, 
+            _cashflowsIds[tokenId].name, 
+            _cashflowsIds[tokenId].value,
+            _cashflowsIds[tokenId].commit,
+            _cashflowsIds[tokenId].interestRate,
+            _cashflowsIds[tokenId].duration,
+            _cashflowsIds[tokenId].balance,
+            _cashflowsIds[tokenId].created,
+            _cashflowsIds[tokenId].lastPayment
+        );
     }
 
 
     function balanceOfCashflowFor(uint256 tokenId) public view returns
     (
+        require(tokenId<=totalSupply(), "TokenId doesn't exit");
+
         uint256 balance
     ) 
     {

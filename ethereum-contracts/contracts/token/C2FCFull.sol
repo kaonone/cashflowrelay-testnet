@@ -37,7 +37,9 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable {
         ) 
         public returns (bool) 
     {
-        
+        _cashflowsIndex[totalSupply().add(1)] = Cashflow(name, value, commit, interestRate, duration, 0);
+
+        return true;
     }
 
     function cashflowFor(uint256 tokenId) public view returns

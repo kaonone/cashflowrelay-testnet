@@ -20,6 +20,8 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FC {
         uint256 interestRate; 
         uint256 duration;
         uint256 balance;
+        uint256 created;
+        uint256 lastPayment;
     }
 
     //index => Cashflows store
@@ -34,7 +36,8 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FC {
         uint256 value, 
         uint256 commit, 
         uint256 interestRate, 
-        uint256 duration
+        uint256 duration,
+        uint created
         ) 
         public returns (bool) 
     {
@@ -42,7 +45,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FC {
 
         require(mint(msg.sender, _tokenId), "Doesnt' mint");
 
-        _cashflowsIds[_tokenId] = Cashflow(msg.sender, name, value, commit, interestRate, duration, 0);
+        _cashflowsIds[_tokenId] = Cashflow(msg.sender, name, value, commit, interestRate, duration, 0, created);
 
         emit CashflowCreated(msg.sender, name, value, commit, interestRate, duration, _tokenId);
 
@@ -62,7 +65,16 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FC {
      uint256 lastPayment
      ) 
     {
+        
+    }
 
+
+    function balanceOfCashflowFor(uint256 tokenId) public view returns
+    (
+        uint256 balance
+    ) 
+    {
+        return _cashflowsIds[tokenId].balance;
     }
 
     function  idsOfCashflowsFor(address _owner) public view returns 

@@ -10,16 +10,16 @@ import "../introspection/ERC165.sol";
  */
 contract ERC721Enumerable is ERC165, ERC721, IERC721Enumerable {
     // Mapping from owner to list of owned token IDs
-    mapping(address => uint256[]) private _ownedTokens;
+    mapping(address => uint256[]) public _ownedTokens;
 
     // Mapping from token ID to index of the owner tokens list
-    mapping(uint256 => uint256) private_ownedTokensIndex;
+    mapping(uint256 => uint256) public _ownedTokensIndex;
 
     // Array with all token ids, used for enumeration
-    uint256[] private _allTokens;
+    uint256[] public _allTokens;
 
     // Mapping from token id to position in the allTokens array
-    mapping(uint256 => uint256) private _allTokensIndex;
+    mapping(uint256 => uint256) public _allTokensIndex;
 
     bytes4 private constant _INTERFACE_ID_ERC721_ENUMERABLE = 0x780e9d63;
     /**

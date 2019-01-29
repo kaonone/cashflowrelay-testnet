@@ -45,9 +45,9 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FC {
 
         require(mint(msg.sender, _tokenId), "Doesnt' mint");
 
-        _cashflowsIds[_tokenId] = Cashflow(msg.sender, name, value, commit, interestRate, duration, 0, created);
+        _cashflowsIds[_tokenId] = Cashflow(msg.sender, name, value, commit, interestRate, duration, 0, created, 0);
 
-        emit CashflowCreated(msg.sender, name, value, commit, interestRate, duration, _tokenId);
+        emit CashflowCreated(msg.sender, name, value, commit, interestRate, duration, _tokenId, created);
 
         return true;
     }
@@ -55,7 +55,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FC {
     function cashflowFor(uint256 tokenId) public view returns
     (
         address subscriber,
-        string name,
+        string memory name,
         uint256 value, 
         uint256 commit,
         uint256 interestRate, 
@@ -66,7 +66,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FC {
      ) 
     {
         require(tokenId<=totalSupply(), "TokenId doesn't exit");
-        
+
         return (
             _cashflowsIds[tokenId].subscriber, 
             _cashflowsIds[tokenId].name, 
@@ -83,11 +83,11 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FC {
 
     function balanceOfCashflowFor(uint256 tokenId) public view returns
     (
-        require(tokenId<=totalSupply(), "TokenId doesn't exit");
-
         uint256 balance
     ) 
     {
+        require(tokenId<=totalSupply(), "TokenId doesn't exit");
+
         return _cashflowsIds[tokenId].balance;
     }
 

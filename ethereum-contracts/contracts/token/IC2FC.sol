@@ -22,7 +22,7 @@ contract IC2FC is IERC165 {
     function cashflowFor(uint256 tokenId) public view returns
     (
         address subscriber,
-        string name,
+        string memory name,
         uint256 value, 
         uint256 commit,
         uint256 interestRate, 

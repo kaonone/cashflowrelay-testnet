@@ -16,6 +16,7 @@ export function getSaga(deps: IDependencies) {
   };
 }
 
+// don't work because drizzle is not listen account changing
 export function* listenAccountChange({ drizzle }: IDependencies) {
   const drizzleStateChannel: Channel<DrizzleState> = eventChannel((emitter) => {
     return drizzle.store.subscribe(() => {

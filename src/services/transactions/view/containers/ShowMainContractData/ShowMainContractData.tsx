@@ -1,41 +1,28 @@
 import * as React from 'react';
-import { SubSet } from '_helpers';
 
+import { GetTransactionType, TransactionDataByType } from 'shared/types/models';
 import { withDrizzle, InjectDrizzleProps } from 'shared/helpers/react';
 import { mainContractName } from 'shared/constants';
 
-type Type = 'ownerOf' | 'totalSupply' | 'tokenByIndex';
-
-type DataByType = SubSet<Record<Type, any>, {
-  ownerOf: { tokenId: number };
-  totalSupply: null;
-  tokenByIndex: { index: number }
-}>;
-
-type Request = {
-  [key in Type]: {
-    type: key;
-    data: DataByType[key];
-  };
-}[Type];
-
-interface IProps<T extends Type> {
+interface IOwnProps<T extends GetTransactionType> {
   type: T;
-  data: DataByType[T];
+  data: TransactionDataByType[T];
 }
+
+type IProps = IOwnProps<GetTransactionType> & InjectDrizzleProps;
 
 interface IState {
   dataKey: string;
 }
 
-class ShowMainContractData<T extends Type> extends React.PureComponent<IProps<T> & InjectDrizzleProps, IState> {
+class ShowMainContractData extends React.PureComponent<IProps, IState> {
   public state: IState = { dataKey: '' };
 
   public componentDidMount() {
     const { drizzle, type, data } = this.props;
     const contract = drizzle.contracts[mainContractName];
 
-    const params = getParamsByRequest({ type, data } as Request);
+    const params = (getParamsByRequest[type] as ParamsConverter)(data);
 
     const dataKey = contract.methods[type].cacheCall(...params);
 
@@ -47,22 +34,23 @@ class ShowMainContractData<T extends Type> extends React.PureComponent<IProps<T>
     const contract = drizzleState.contracts[mainContractName];
 
     const data = contract[type][this.state.dataKey];
-    return data && data.value || null;
+    return data && data.value.toString() || null;
   }
 }
 
-function getParamsByRequest(request: Request): string[] {
-  switch (request.type) {
-    case 'ownerOf': return [request.data.tokenId.toString()];
-    case 'tokenByIndex': return [request.data.index.toString()];
-    case 'totalSupply': return [];
-    default: return [];
-  }
-}
+type ParamsConverter<T extends GetTransactionType = GetTransactionType> =
+  (data: TransactionDataByType[T]) => string[];
+
+const getParamsByRequest: { [key in GetTransactionType]: ParamsConverter<key> } = {
+  isMinter: (data) => [data.address.toString()],
+  ownerOf: (data) => [data.tokenId.toString()],
+  tokenByIndex: (data) => [data.index.toString()],
+  totalSupply: () => [],
+};
 
 const Container = withDrizzle(ShowMainContractData);
 
-function ShowMainContractDataGeneric<T extends Type>(props: IProps<T>) {
+function ShowMainContractDataGeneric<T extends GetTransactionType>(props: IOwnProps<T>) {
   return <Container {...props} />;
 }
 

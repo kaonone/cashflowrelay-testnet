@@ -7,7 +7,7 @@ import { IDependencies, IAppReduxState } from 'shared/types/app';
 import Api from 'services/api/Api';
 
 import daiABI from 'blockchain/abi/dai.json';
-import ERC721FullMock from 'contracts/ERC721FullMock.json';
+import C2FCFull from 'contracts/C2FCFull.json';
 
 const web3 = new Web3();
 
@@ -16,7 +16,7 @@ const contracts: IContract[] = [
     contractName: 'DAI',
     web3Contract: new web3.eth.Contract(daiABI, '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359'),
   },
-  ERC721FullMock,
+  C2FCFull,
 ];
 
 export default function configureDeps(_store: Store<IAppReduxState>): IDependencies {

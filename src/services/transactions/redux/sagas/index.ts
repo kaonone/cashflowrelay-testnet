@@ -2,7 +2,7 @@ import { put, takeEvery } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
 
 import { IDependencies } from 'shared/types/app';
-import { TransactionType, TransactionRequest } from 'shared/types/models';
+import { SetTransactionType, TransactionDataByType } from 'shared/types/models';
 import { mainContractName } from 'shared/constants';
 
 import * as NS from '../../namespace';
@@ -17,11 +17,11 @@ function getSaga(deps: IDependencies) {
 }
 
 function* sendSaga({ drizzle }: IDependencies, action: NS.ISendTransaction) {
-  const { type } = action.payload;
+  const { type, data } = action.payload;
   const account = drizzle.store.getState().accounts[0];
   const contract = drizzle.contracts[mainContractName];
   const method = methodByType[type];
-  const params = getParamsByRequest(action.payload, account);
+  const params = (getParamsByRequest[type] as ParamsConverter)(data, account);
 
   try {
     const stackId = contract.methods[method].cacheSend(...params, { from: account });
@@ -31,17 +31,19 @@ function* sendSaga({ drizzle }: IDependencies, action: NS.ISendTransaction) {
   }
 }
 
-const methodByType: Record<TransactionType, string> = {
+const methodByType: Record<SetTransactionType, string> = {
   addMinter: 'addMinter',
   createToken: 'mint',
+  transferFrom: 'transferFrom',
 };
 
-function getParamsByRequest(request: TransactionRequest, account: string): string[] {
-  switch (request.type) {
-    case 'addMinter': return [];
-    case 'createToken': return [account, request.data.tokenId.toString()];
-    default: return [];
-  }
-}
+type ParamsConverter<T extends SetTransactionType = SetTransactionType> =
+  (data: TransactionDataByType[T], account: string) => string[];
+
+const getParamsByRequest: { [key in SetTransactionType]: ParamsConverter<key> } = {
+  'addMinter': () => [],
+  'createToken': (data, account) => [account, data.tokenId.toString()],
+  'transferFrom': (data) => [data.from, data.to, data.tokenId.toString()],
+};
 
 export { getSaga };

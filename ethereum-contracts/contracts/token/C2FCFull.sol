@@ -18,6 +18,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable {
         uint256 commit;
         uint256 interestRate; 
         uint256 duration;
+        uint256 balance;
     }
 
     //index => Cashflows store

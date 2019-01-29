@@ -31,6 +31,12 @@ contract IC2FC is IERC165 {
      uint256 lastPayment
      );
 
+
+     function balanceOfCashflowFor(uint256 tokenId) public view returns
+     (
+         uint256 balance;
+     )
+
     function  idsOfCashflowsFor(address _owner) public view returns 
     (
         uint256[] memory tokenIds

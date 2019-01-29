@@ -2,17 +2,18 @@ pragma solidity ^0.5.2;
 
 import "../token/ERC721Full.sol";
 import "../token/ERC721Mintable.sol";
-import "../token/IC2FCPayments.sol";
+import "../token/IC2FC.sol";
 import "../ownership/Ownable.sol";
 
 /**
  * @title C2FCFull
  */
 
-contract C2FCFull is ERC721Full, ERC721Mintable, Ownable {
+contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FC {
 
     //Cashflow struct
     struct Cashflow {
+        address subscriber;
         string name;
         uint256 value; 
         uint256 commit;
@@ -22,7 +23,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable {
     }
 
     //index => Cashflows store
-    mapping (uint256 =>Cashflow) private _cashflowsIndex;
+    mapping (uint256 =>Cashflow) private _cashflowsIds;
 
     constructor (string memory name, string memory symbol) public ERC721Full(name, symbol) {
         // solhint-disable-previous-line no-empty-blocks
@@ -37,7 +38,13 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable {
         ) 
         public returns (bool) 
     {
-        _cashflowsIndex[totalSupply().add(1)] = Cashflow(name, value, commit, interestRate, duration, 0);
+        uint256 _tokenId = totalSupply().add(1);
+
+        require(mint(msg.sender, _tokenId), "Doesnt' mint");
+
+        _cashflowsIds[_tokenId] = Cashflow(msg.sender, name, value, commit, interestRate, duration, 0);
+
+        emit CashflowCreated(msg.sender, name, value, commit, interestRate, duration, _tokenId);
 
         return true;
     }
@@ -63,6 +70,6 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable {
         uint256[] memory tokenIds
     )
     {
-        
+        return _ownedTokens[_owner];
     }
 }

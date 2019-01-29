@@ -7,7 +7,7 @@ import "../introspection/IERC165.sol";
 
 contract IC2FC is IERC165 {
 
-    event Cashflow(
+    event CashflowCreated(
         address subscriber, 
         string name, 
         uint256 value, 

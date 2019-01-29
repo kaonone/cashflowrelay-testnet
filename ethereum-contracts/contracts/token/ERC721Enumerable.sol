@@ -13,7 +13,7 @@ contract ERC721Enumerable is ERC165, ERC721, IERC721Enumerable {
     mapping(address => uint256[]) private _ownedTokens;
 
     // Mapping from token ID to index of the owner tokens list
-    mapping(uint256 => uint256) private _ownedTokensIndex;
+    mapping(uint256 => uint256) private_ownedTokensIndex;
 
     // Array with all token ids, used for enumeration
     uint256[] private _allTokens;

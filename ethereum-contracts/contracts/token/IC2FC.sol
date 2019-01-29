@@ -15,7 +15,7 @@ contract IC2FC is IERC165 {
         uint256 interestRate, 
         uint256 duration, 
         uint256 indexed tokenId,
-        uint created
+        uint256 created
     );
    
     
@@ -48,8 +48,7 @@ contract IC2FC is IERC165 {
         uint256 value, 
         uint256 commit, 
         uint256 interestRate, 
-        uint256 duration,
-        uint created
+        uint256 duration
         ) 
         public returns (bool);
 }

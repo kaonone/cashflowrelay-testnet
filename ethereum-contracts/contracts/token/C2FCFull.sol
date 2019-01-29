@@ -36,8 +36,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FC {
         uint256 value, 
         uint256 commit, 
         uint256 interestRate, 
-        uint256 duration,
-        uint created
+        uint256 duration
         ) 
         public returns (bool) 
     {
@@ -45,9 +44,9 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FC {
 
         require(mint(msg.sender, _tokenId), "Doesnt' mint");
 
-        _cashflowsIds[_tokenId] = Cashflow(msg.sender, name, value, commit, interestRate, duration, 0, created, 0);
+        _cashflowsIds[_tokenId] = Cashflow(msg.sender, name, value, commit, interestRate, duration, 0, block.timestamp, 0);
 
-        emit CashflowCreated(msg.sender, name, value, commit, interestRate, duration, _tokenId, created);
+        emit CashflowCreated(msg.sender, name, value, commit, interestRate, duration, _tokenId, block.timestamp);
 
         return true;
     }
@@ -67,16 +66,18 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FC {
     {
         require(tokenId<=totalSupply(), "TokenId doesn't exit");
 
+        Cashflow memory _c = _cashflowsIds[tokenId];
+
         return (
-            _cashflowsIds[tokenId].subscriber, 
-            _cashflowsIds[tokenId].name, 
-            _cashflowsIds[tokenId].value,
-            _cashflowsIds[tokenId].commit,
-            _cashflowsIds[tokenId].interestRate,
-            _cashflowsIds[tokenId].duration,
-            _cashflowsIds[tokenId].balance,
-            _cashflowsIds[tokenId].created,
-            _cashflowsIds[tokenId].lastPayment
+            _c.subscriber, 
+            _c.name, 
+            _c.value,
+            _c.commit,
+            _c.interestRate,
+            _c.duration,
+            _c.balance,
+            _c.created,
+            _c.lastPayment
         );
     }
 

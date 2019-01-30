@@ -1,11 +1,12 @@
 import * as React from 'react';
+import { Omit } from '_helpers';
 
 import { ITranslateProps } from '../../namespace';
 import { TContext } from '../../constants';
 
-function i18nConnect<TProps>(
-  WrappedComponent: React.ComponentType<TProps & ITranslateProps>,
-): React.ComponentClass<TProps> {
+function i18nConnect<TProps extends ITranslateProps>(
+  WrappedComponent: React.ComponentType<TProps>,
+): React.ComponentClass<Omit<TProps, keyof ITranslateProps>> {
   const wrappedComponentName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
 
   class I18nConnector extends React.Component<TProps> {

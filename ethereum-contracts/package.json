@@ -10,7 +10,7 @@
     "test": "./node_modules/.bin/truffle test",
     "start": "npm-run-all -p \"ganache-cli -- -b 3\" compile-deploy-contracts",
     "compile-deploy-contracts": "npm-run-all -s compile-contracts deploy-contracts",
-    "compile-contracts": "./node_modules/.bin/truffle compile",
+    "compile-contracts": "rm -rf ./build && ./node_modules/.bin/truffle compile",
     "deploy-contracts": "./node_modules/.bin/truffle migrate",
     "ganache-cli": "./node_modules/.bin/ganache-cli"
   },

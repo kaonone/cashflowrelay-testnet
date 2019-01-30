@@ -6,8 +6,8 @@ import { TokensList } from 'features/manageCashFlow';
 
 type IProps = InjectedAuthRouterProps;
 
+// tslint:disable:jsx-no-lambda
 class Marketplace extends React.PureComponent<IProps> {
-
   public render() {
     return (
       <BaseLayout>

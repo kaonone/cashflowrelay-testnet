@@ -34,7 +34,7 @@ class ShowMainContractData extends React.PureComponent<IProps, IState> {
     const contract = drizzleState.contracts[mainContractName];
 
     const data = contract[type][this.state.dataKey];
-    return data && data.value.toString() || null;
+    return data && data.value !== undefined && data.value.toString() || null;
   }
 }
 

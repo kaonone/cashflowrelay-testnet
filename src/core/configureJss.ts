@@ -18,6 +18,12 @@ export function configureJss(virtual?: boolean): IJssDependencies {
           dark: extraTheme.colors.mediumPurple,
           contrastText: extraTheme.colors.white,
         },
+        secondary: {
+          main: extraTheme.colors.silver,
+          light: extraTheme.colors.silver,
+          dark: extraTheme.colors.silver,
+          contrastText: extraTheme.colors.silver,
+        },
         error: {
           main: extraTheme.colors.monza,
         },

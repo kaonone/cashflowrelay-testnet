@@ -194,7 +194,7 @@ export const commonConfig: webpack.Configuration = {
     chunkFilename: `js/[${chunkName}]-[${chunkHash}].bundle.js`,
   },
   resolve: {
-    modules: ['node_modules', 'src'],
+    modules: ['node_modules', 'src', path.resolve('ethereum-contracts', 'build')],
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
     plugins: withHot ? [
       new ReactJssHmrPlugin(),

@@ -2,12 +2,10 @@ import { bind } from 'decko';
 import HttpActions from './HttpActions';
 
 import Data from './Data';
-import Transactions from './Transactions';
 
 import BaseApi from './BaseApi';
 
 class Api {
-  public transactions: Transactions;
   public data: Data;
 
   private actions: HttpActions;
@@ -16,12 +14,11 @@ class Api {
     this.actions = new HttpActions(`${baseUrl}/${version}`);
 
     this.data = new Data(this.actions);
-    this.transactions = new Transactions(this.actions);
   }
 
   @bind
   public setToken(token: string | null) {
-    const apiSet: BaseApi[] = [this.transactions, this.data];
+    const apiSet: BaseApi[] = [this.data];
 
     apiSet.forEach(item => item.token = token);
   }

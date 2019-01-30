@@ -1,28 +1,45 @@
 import { SubsetMapStrict } from '_helpers';
-import { TimePeriod, ID } from './common';
 
 export interface ITransaction {
   txid: string;
 }
 
-export type TransactionType = 'getInFund' | 'depositToFund';
-export type ABIRequestDataByType = SubsetMapStrict<Record<TransactionType, any>, {
-  getInFund: {
-    fundId: ID;
-    regularPayment: number;
-    periodicity: TimePeriod;
-    retirementDate: number;
-    wallet: string;
+export type SetTransactionType = 'transferFrom' | 'addMinter' | 'createToken';
+export type GetTransactionType = 'isMinter' | 'ownerOf' | 'totalSupply' | 'tokenByIndex';
+export type TransactionType = SetTransactionType | GetTransactionType;
+
+export type TransactionDataByType = SubsetMapStrict<Record<TransactionType, any>, {
+  // set
+  addMinter: null;
+  createToken: {
+    tokenId: number;
+    // loanAmount: number;
+    // interest: number;
+    // instalmentSize: number;
+    // periodicity: number;
   };
-  depositToFund: {
-    fundId: ID;
+  transferFrom: {
+    from: string;
+    to: string;
+    tokenId: number;
   };
+  // get
+  ownerOf: { tokenId: number };
+  totalSupply: null;
+  tokenByIndex: { index: number };
+  isMinter: { address: string }
 }>;
 
-export type ABIRequest = {
-  [key in TransactionType]: {
-    uuid: string;
+export type SetTransactionRequest = {
+  [key in SetTransactionType]: {
     type: key;
-    data: ABIRequestDataByType[key];
+    data: TransactionDataByType[key];
   };
-}[TransactionType];
+}[SetTransactionType];
+
+export type GetTransactionRequest = {
+  [key in GetTransactionType]: {
+    type: key;
+    data: TransactionDataByType[key];
+  };
+}[GetTransactionType];

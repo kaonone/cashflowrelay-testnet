@@ -287,6 +287,7 @@
     "react-geosuggest": "^2.5.0",
     "react-helmet": "^5.2.0",
     "react-jss": "^8.6.1",
+    "react-minimal-pie-chart": "^3.3.0",
     "react-modal": "^3.8.1",
     "react-number-format": "^4.0.6",
     "react-redux": "^5.1.1",

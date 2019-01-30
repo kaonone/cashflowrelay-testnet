@@ -14,7 +14,13 @@ const styles = ({ extra: theme }: Theme) => ({
   }),
 
   summary: rule({
+    borderRadius: '0.25rem',
     boxShadow: '0 0.125rem 0.25rem 0 rgba(184, 184, 184, 0.5)',
+  }),
+
+  summaryContent: rule({
+    minHeight: '4.5rem',
+    margin: '0 !important',
   }),
 
   details: rule({

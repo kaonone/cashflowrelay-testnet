@@ -28,6 +28,8 @@ export default {
         awaiting: 'Awaiting buyer',
         sold: 'sold',
       },
+      obligations: 'Obligations',
+      income: 'Income',
       name: 'Name',
       payersRating: 'Payer’s rating',
       performance: 'Performance',

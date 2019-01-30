@@ -1,29 +1,32 @@
 import * as React from 'react';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 
 import { BaseLayout } from 'modules/shared';
-import { InjectedAuthRouterProps } from 'shared/helpers/authWrapper';
+import routes from 'modules/routes';
 import { TokensList } from 'features/manageCashFlow';
-
-import { provideStyles, StylesProps } from './CashFlow.style';
+import { i18nConnect, ITranslateProps, tKeys as tKeysAll } from 'services/i18n';
+import { InjectedAuthRouterProps } from 'shared/helpers/authWrapper';
 import { TokenType } from 'shared/types/models';
 import { ToggleButtonGroup, ToggleButton } from 'shared/view/elements';
 import { withComponent } from 'shared/helpers/react';
-import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
-import routes from 'modules/routes';
+
+import { provideStyles, StylesProps } from './CashFlow.style';
+
+const tKeys = tKeysAll.features.manageCashFlows;
 
 const links = [
-  { type: 'incoming', title: 'Incoming' },
-  { type: 'obligations', title: 'Obligations' },
+  { type: 'obligations', title: tKeys.obligations.getKey() },
+  { type: 'income', title: tKeys.income.getKey() },
 ];
 
 const NavToggleButton = withComponent(Link)(ToggleButton);
 
-type IProps = InjectedAuthRouterProps & StylesProps & RouteComponentProps<{ type: TokenType }>;
+type IProps = ITranslateProps & InjectedAuthRouterProps & StylesProps & RouteComponentProps<{ type: TokenType }>;
 
 class Marketplace extends React.PureComponent<IProps> {
   public render() {
 
-    const { classes, match: { params: { type: selectedType } } } = this.props;
+    const { classes, t, match: { params: { type: selectedType } } } = this.props;
     return (
       <BaseLayout>
         <div className={classes.root}>
@@ -36,7 +39,7 @@ class Marketplace extends React.PureComponent<IProps> {
                 variant="outlined"
                 value={type}
               >
-                <span>{title}</span>
+                <span>{t(title)}</span>
               </NavToggleButton>
             ))}
           </ToggleButtonGroup>
@@ -48,4 +51,4 @@ class Marketplace extends React.PureComponent<IProps> {
 
 }
 
-export default withRouter(provideStyles(Marketplace));
+export default withRouter(i18nConnect(provideStyles(Marketplace)));

@@ -39,7 +39,10 @@ class TokenCard extends React.PureComponent<IProps> {
     return (
       <div className={classes.root}>
         <ExpansionPanel expanded={expanded} onChange={this.onToggle}>
-          <ExpansionPanelSummary className={classes.summary} >
+          <ExpansionPanelSummary
+            className={classes.summary}
+            classes={{ content: classes.summaryContent }}
+          >
             <Header
               token={token}
               expanded={expanded}

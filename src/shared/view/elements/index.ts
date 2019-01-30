@@ -21,3 +21,7 @@ export { default as Typography } from './Typography/Typography';
 export { default as InputAdornment } from './InputAdornment/InputAdornment';
 export { default as Notification } from './Notification/Notification';
 export { default as Popover } from './Popover/Popover';
+export { default as ExpansionPanel } from './ExpansionPanel/ExpansionPanel';
+export { default as ExpansionPanelDetails } from './ExpansionPanelDetails/ExpansionPanelDetails';
+export { default as ExpansionPanelSummary } from '@material-ui/core/ExpansionPanelSummary';
+export { default as DonutChart } from './DonutChart/DonutChart';

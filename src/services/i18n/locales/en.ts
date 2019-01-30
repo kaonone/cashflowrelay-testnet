@@ -2,7 +2,7 @@
 export default {
   shared: {
     menu: {
-      myC2FCs: 'My C2FCs',
+      myCashflows: 'My cashflows',
       marketplace: 'Marketplace',
     },
     validation: {
@@ -21,6 +21,38 @@ export default {
     },
   },
   features: {
+    manageCashFlows: {
+      status: {
+        pending: 'tx pending',
+        saving: 'saving',
+        awaiting: 'Awaiting buyer',
+        sold: 'sold',
+      },
+      name: 'Name',
+      payersRating: 'Payer’s rating',
+      performance: 'Performance',
+      rating: 'Rating',
+      nextInstalment: 'Next instalment',
+      cashFlowBalance: 'Cashflow balance',
+      discount: 'Discount',
+      dueAmount: 'Due amount',
+      id: 'Cashflow number',
+      payer: 'Cashflow payer',
+      lender: 'Cashflow lender',
+      instalmentSize: 'Instalment size',
+      firstInstalmentDate: 'First instalment',
+      lastInstalmentDate: 'Last instalment',
+      availableBalance: 'Available balance',
+      discountValue: 'Discount value',
+      nextInstalmentInfo: '+%{amount} DAI on %{date}',
+      daiMonthly: '%{amount} DAI/monthly',
+      howMuchInstalmentIsComplete: '%{paid} / %{total} DAI %{percent}% complete',
+      price: 'Price',
+      sellCashflow: 'Sell cashflow',
+      withdrawDai: 'Withdraw DAI',
+      payInstalment: 'Pay instalment',
+      buyCashflow: 'Buy cashflow',
+    },
     signIn: {
       button: 'Connect to %{address}',
       logout: 'Log out',

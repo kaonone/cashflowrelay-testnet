@@ -5,6 +5,6 @@ import { connectedRouterRedirect } from 'shared/helpers/authWrapper';
 export default connectedRouterRedirect({
   authenticatedSelector: selectors.selectIsLogged,
   wrapperDisplayName: 'IsNotLoggedRedirect',
-  allowRedirectBack: true,
+  allowRedirectBack: false,
   redirectPath: routes.marketplace.getRedirectPath(),
 });

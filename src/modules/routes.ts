@@ -2,7 +2,7 @@ import build, { getParam } from 'build-route-tree';
 
 const rawTree = {
   marketplace: null,
-  c2fc: {
+  cashFlows: {
     type: getParam(null),
   },
   create: null,

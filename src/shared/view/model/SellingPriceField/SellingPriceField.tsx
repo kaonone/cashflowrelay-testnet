@@ -29,15 +29,17 @@ class SellingPriceField extends React.Component<IProps> {
             <NumberInput
               className={classes.sellInputField}
               margin="none"
-              color="secondary"
               variant="outlined"
               value={sellPrice || 1000}
               InputProps={{
-                className: classes.input,
+                inputProps: {
+                  className: classes.input,
+                },
                 classes: {
                   root: classes.cssOutlinedInput,
                   focused: classes.cssFocused,
                   notchedOutline: classes.notchedOutline,
+
                 },
               }}
               onChange={this.onChangeSellPrice}

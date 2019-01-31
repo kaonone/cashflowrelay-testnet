@@ -13,18 +13,15 @@ const styles = ({ extra: theme }: Theme) => ({
     textAlign: 'right',
   }),
 
-  // try to colored mui input †††
   cssOutlinedInput: {
-    '&$cssFocused $notchedOutline': {
-      borderColor: `red !important`,
+    '&$cssFocused $notchedOutline, &:hover $notchedOutline': {
+      borderColor: `${theme.colors.silver} !important`,
     },
   },
   cssFocused: {},
   notchedOutline: {
-    borderWidth: '1px',
-    borderColor: 'green !important',
+    borderColor: `${theme.colors.silver} !important`,
   },
-  // try to colored mui input †††
 
   sellPrice: rule({
     display: 'flex',

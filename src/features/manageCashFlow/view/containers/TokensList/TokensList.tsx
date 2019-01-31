@@ -2,10 +2,9 @@ import * as React from 'react';
 import { bind } from 'decko';
 import * as cn from 'classnames';
 
-import { TokenType } from 'shared/types/models';
+import { TokenType, IToken } from 'shared/types/models';
 import { i18nConnect, ITranslateProps, tKeys as tKeysAll } from 'services/i18n';
 import { AngleArrow } from 'shared/view/elements/Icons';
-import { incomingMock, obligationsMock } from 'shared/helpers/mocks';
 
 import { StylesProps, provideStyles } from './TokensList.style';
 import TokenCard from '../../components/TokenCard/TokenCard';
@@ -24,6 +23,7 @@ const sellingTitles = titlesKeys.concat(['instalmentSize', 'nextInstalment', 'pr
 
 interface IOwnProps {
   type: TokenType;
+  tokenIds: number[];
 }
 
 interface IState {
@@ -32,10 +32,16 @@ interface IState {
 
 type IProps = IOwnProps & ITranslateProps & StylesProps;
 
+const isNeedTokenByType: Record<TokenType, (token: IToken) => boolean> = {
+  selling: () => true,
+  obligations: token => token.isCreatedByMe,
+  incoming: token => !token.isCreatedByMe,
+};
+
 class TokensList extends React.PureComponent<IProps, IState> {
   public state: IState = { expandedTokenId: null };
   public render() {
-    const { classes, t, type } = this.props;
+    const { classes, t, type, tokenIds } = this.props;
     const { expandedTokenId } = this.state;
 
     const headerTitles = type === 'selling' ? sellingTitles : cashFlowTitles;
@@ -54,17 +60,19 @@ class TokensList extends React.PureComponent<IProps, IState> {
           <div className={classes.stubCell} />
         </div>
         <div className={classes.tokens}>
-          {(type === 'obligations' ? obligationsMock : incomingMock).map(token => (
-            <div key={token.id} className={classes.tokenCard}>
-              <TokenCard
-                onToggle={this.expandCard}
-                expanded={token.id === expandedTokenId}
-                token={token}
-                type={type}
-              />
-            </div>
+          {tokenIds.map(tokenId => (
+            <TokenCard
+              key={tokenId}
+              className={classes.tokenCard}
+              onToggle={this.expandCard}
+              expanded={tokenId === expandedTokenId}
+              tokenId={tokenId}
+              type={type}
+              isNeedDisplay={isNeedTokenByType[type]}
+            />
           ))}
         </div>
+        <div className={classes.emptyStub}>Empty list</div>
       </div>
     );
   }

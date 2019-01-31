@@ -1,9 +1,13 @@
 import * as React from 'react';
 import * as cn from 'classnames';
+import * as moment from 'moment';
+import BigNumber from 'bignumber.js';
 
-import { TokenType, IToken } from 'shared/types/models';
-import { Star, OutlinedStar, CircleArrow } from 'shared/view/elements/Icons';
 import { i18nConnect, ITranslateProps, tKeys as tKeysAll } from 'services/i18n';
+
+import { TokenType, IToken, ITokenStatus } from 'shared/types/models';
+import { Star, OutlinedStar, CircleArrow } from 'shared/view/elements/Icons';
+import { formatNumber } from 'shared/helpers/format';
 
 import { StylesProps, provideStyles } from './Header.style';
 
@@ -22,9 +26,24 @@ class Header extends React.PureComponent<IProps> {
     const {
       classes, type, t, expanded,
       token: {
-        discount, dueAmount, instalments, nextInstalmentDate, instalmentSize,
-        rating, name, status, payerRating, balance, price },
+        interestRate, createdAt, periodDuration, lastInstalmentDate, instalmentSize, name, balance },
     } = this.props;
+
+    const nextInstalmentDate = moment.min(
+      moment(lastInstalmentDate),
+      moment(Math.ceil((Date.now() - createdAt) / periodDuration) * periodDuration),
+    );
+
+    const dueAmount = new BigNumber(100); // TODO ds: calculate from orders
+    const paidInstallments = 2; // TODO ds: calculate from orders
+    const dueInstallments = 2; // TODO ds: calculate from orders
+    const missedInstallments = 2; // TODO ds: calculate from orders
+    const rating = 3; // TODO ds: calculate from orders
+    const payerRating = 75; // TODO ds: calculate from orders
+
+    const price = new BigNumber(1000); // TODO ds: get price from relayer
+    const status: ITokenStatus = 'pending' as ITokenStatus; // TODO ds: calculate status
+
     return (
       <div className={classes.root}>
         <div className={classes.title}>{name}</div>
@@ -32,9 +51,9 @@ class Header extends React.PureComponent<IProps> {
           {type !== 'obligations' && <span className={classes.payersRatingValue}>{`${payerRating}%`}</span>}
         </div>
         <div className={classes.instalments}>
-          <div className={cn(classes.instalment, classes.paid)}>{instalments.paid}</div>
-          <div className={cn(classes.instalment, classes.due)}>{instalments.due}</div>
-          <div className={cn(classes.instalment, classes.missed)}>{instalments.missed}</div>
+          <div className={cn(classes.instalment, classes.paid)}>{paidInstallments}</div>
+          <div className={cn(classes.instalment, classes.due)}>{dueInstallments}</div>
+          <div className={cn(classes.instalment, classes.missed)}>{missedInstallments}</div>
         </div>
         <div className={classes.stars}>
           {rating ?
@@ -44,16 +63,16 @@ class Header extends React.PureComponent<IProps> {
           }
         </div>
         <div className={classes.discountCell}>
-          <div className={classes.discount}>{`${discount}%`}</div>
+          <div className={classes.discount}>{`${interestRate}%`}</div>
         </div>
         <div className={classes.statusCell}>
           <div className={cn(classes.status, { [classes.contained]: status === 'sold' || type === 'incoming' })}>
             {(() => {
               switch (type) {
                 case 'incoming':
-                  return `${balance} DAI`;
+                  return `${formatNumber(balance.toNumber(), 2)} DAI`;
                 case 'selling':
-                  return `+${instalmentSize} DAI`;
+                  return `+${formatNumber(instalmentSize.toNumber(), 2)} DAI`;
                 default:
                   return t(tKeys.status[status].getKey());
               }
@@ -61,10 +80,12 @@ class Header extends React.PureComponent<IProps> {
           </div>
         </div>
         <div className={classes.nextInstalmentCell}>
-          <div className={classes.nextInstalment}>{nextInstalmentDate}</div>
+          <div className={classes.nextInstalment}>{nextInstalmentDate.format('LL')}</div>
 
         </div>
-        <div className={classes.amount}>{`${type === 'selling' ? price : dueAmount} DAI`}</div>
+        <div className={classes.amount}>
+          {`${formatNumber((type === 'selling' ? price : dueAmount).toNumber(), 2)} DAI`}
+        </div>
         <CircleArrow className={cn(classes.expandIcon, { [classes.isRotated]: expanded })} />
       </div>
     );

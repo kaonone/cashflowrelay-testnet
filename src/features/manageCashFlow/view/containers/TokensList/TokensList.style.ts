@@ -11,6 +11,14 @@ const styles = ({ extra: theme }: Theme) => ({
 
   }),
 
+  emptyStub: rule({
+    display: 'none',
+
+    '$tokens:empty + &': {
+      display: 'block',
+    },
+  }),
+
   header: rule({
     display: 'flex',
     justifyContent: 'space-between',

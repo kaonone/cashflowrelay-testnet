@@ -70,7 +70,9 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         _;
     }
      
-    modifier isExistsOrder(uint256 orderId) {
+    
+    //is Exist Order
+    modifier isExistOrder(uint256 orderId) {
         require(orderId<=_totalSupplyOrders(), "TokenId doesn't exit");
         _;
     }
@@ -137,8 +139,6 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
     /*
       Payments Block
     */
-
-
     //Create Order
     function createOrder(        
         uint256 tokenId,
@@ -151,11 +151,10 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
     }
 
     //Get Order By Id
-    
     function getByOrderId(
         uint256 tokenId,
         uint256 orderId //OrderId
-    ) public
+    ) public isExistToken(tokenId) isExistOrder(orderId)
         returns (
             address subscriber,  
             uint256 pendingDatePayment, 
@@ -180,9 +179,9 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         uint256 tokenId, 
         uint256 amount
     ) public onlyPublisher(tokenId) returns (bool success)  {
-        address owner = ownerOf(tokenId);
-        IERC20(tokenAddress).transfer(owner, amount);
-        emit WithDrawPayment(tokenId, amount, owner, block.timestamp);
+        address _owner = ownerOf(tokenId);
+        IERC20(tokenAddress).transfer(_owner, amount);
+        emit WithDrawPayment(tokenId, amount, _owner, block.timestamp);
 
         return true;
     }
@@ -222,9 +221,11 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         uint256 tokenAmount //the token amount paid to the publisher)
     )   internal
         returns (bool success) {
+        uint256 _orderId = _totalSupplyOrders().add(1);
 
-        //uint256 _orderId = _totalSupplyOrders.add(1);
-        //_ordersIds[orderId] = Order()
+        Cashflow storage _c = _cashflowsIds[tokenId];
+
+        _ordersIds[tokenId][_orderId] = Order(_c.subscriber, 0, 0, tokenAmount, false);
         
         return true;
     }

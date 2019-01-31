@@ -49,31 +49,29 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         // solhint-disable-previous-line no-empty-blocks
     }
 
-
-
     //check publisher
     modifier onlyPublisher(uint256 tokenId) {
-        address owner = ownerOf(tokenId);
-        require(msg.sender == owner, "User is not owner");
+        require(isPublisher(tokenId), "User is not owner");
         _;
     }
-
 
     //check subscriber
     modifier onlySubscriber(uint256 tokenId) {
-        Cashflow storage c = _cashflowsIds[tokenId];
-        require(msg.sender == c.subscriber, "User is not subscriber");
+        require(isSubscriber(tokenId), "User is not subscriber");
         _;
     }
 
+    //check subscriber or owner
+    modifier onlySubscriberOrOwner(uint256 tokenId) {
+        require(isOwner() || isSubscriber(tokenId), "User is not subscriber or publisher");
+        _;
+    }
 
     //is Exist token
     modifier isExistToken(uint256 tokenId) {
         require(tokenId<=totalSupply(), "TokenId doesn't exit");
         _;
     }
-     
-    
     //is Exist Order
     modifier isExistOrder(uint256 orderId) {
         require(orderId<=_totalSupplyOrders(), "TokenId doesn't exit");
@@ -146,7 +144,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
     function createOrder(        
         uint256 tokenId,
         uint256 tokenAmount //the token amount paid to the publisher)
-    )   public
+    )   public onlySubscriberOrOwner(tokenId)
         returns (bool success) {  
 
         _createOrder(tokenId, tokenAmount);
@@ -158,6 +156,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         uint256 tokenId,
         uint256 orderId //OrderId
     ) public view isExistToken(tokenId) isExistOrder(orderId)
+
         returns (
             address subscriber,  
             uint256 pendingDatePayment, 
@@ -239,5 +238,22 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         _ordersIds[tokenId][_orderId] = Order(_c.subscriber, _pendingPaymentDate, 0, tokenAmount, false);
         
         return true;
+    }
+
+    /**
+     * @return true if `msg.sender` is subscriber of token.
+     */
+    function isSubscriber(uint256 tokenId) public view returns (bool) {
+        Cashflow storage _c = _cashflowsIds[tokenId];
+        return msg.sender == _c.subscriber;
+    }
+
+    /**
+     * @return true if `msg.sender` is publisher of token.
+     */
+
+    function isPublisher(uint256 tokenId) public view returns(bool) {
+        address _o = ownerOf(tokenId);
+        return msg.sender == _o;
     }
 }

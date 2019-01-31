@@ -43,7 +43,6 @@ contract IC2FCPayments is IC2FC {
 
     function cancelPayment(
         uint256 tokenId,
-        address to, //the publisher
         address tokenAddress, //the token address paid to the publisher
         uint256 tokenAmount
     ) external
@@ -51,7 +50,6 @@ contract IC2FCPayments is IC2FC {
 
     function createOrder(        
         uint256 tokenId,
-        address to, //the publisher
         address tokenAddress, //the token address paid to the publisher
         uint256 tokenAmount //the token amount paid to the publisher)
     )   public
@@ -75,7 +73,6 @@ contract IC2FCPayments is IC2FC {
     
     function executePayment(
         uint256 tokenId,
-        address to, //the publisher
         address tokenAddress, //the token address paid to the publisher
         uint256 tokenAmount //the token amount paid to the publisher
     ) public

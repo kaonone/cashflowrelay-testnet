@@ -48,7 +48,7 @@ export default {
       availableBalance: 'Available balance',
       discountValue: 'Discount value',
       nextInstalmentInfo: '+%{amount} DAI on %{date}',
-      daiMonthly: '%{amount} DAI/monthly',
+      daiMonthly: '%{amount} DAI / monthly',
       months: '%{amount} month',
       howMuchInstalmentIsComplete: '%{paid} / %{total} DAI %{percent}% complete',
       price: 'Price',
@@ -59,6 +59,8 @@ export default {
       duration: 'Duration',
       repayingAmount: 'Repaying amount',
       recommendedPrice: 'Recommended price',
+      sellingPrice: 'Selling price',
+      borrowingAmount: 'Borrowing amount',
     },
     signIn: {
       button: 'Connect to %{address}',

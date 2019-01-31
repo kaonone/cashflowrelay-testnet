@@ -17,6 +17,8 @@ export const mockCashFlow: IToken = {
   balance: 20,
   discount: 18,
   totalInstalment: 1800,
+  duration: 7,
+  repayingAmount: 2178,
 };
 
 const token1: IToken = { ...mockCashFlow, id: 1, discount: 10 };

@@ -1,25 +1,52 @@
 import * as React from 'react';
-import Drawer, { DrawerProps } from '@material-ui/core/Drawer';
-import { Omit } from '_helpers';
 
 import { provideStyles, StylesProps } from './DrawerModal.style';
+import { i18nConnect, ITranslateProps, tKeys } from 'services/i18n';
+import { Button, Drawer } from 'shared/view/elements';
+import { Alert } from 'shared/view/elements/Icons';
 
-type IProps = Omit<DrawerProps, 'classes'> & StylesProps;
+interface IOwnProps {
+  title: string;
+  open: boolean;
+  actions: Array<React.ReactElement<any>>;
+  hint?: string;
+
+  onClose(): void;
+}
+
+type IProps = IOwnProps & StylesProps & ITranslateProps;
 
 class DrawerModal extends React.Component<IProps> {
   public render() {
-    const { classes, children, title, ...rest } = this.props;
+    const {
+      classes, t, children, onClose, open, actions, hint, title,
+    } = this.props;
 
     return (
       <Drawer
-        {...rest}
-        classes={{ paper: classes.root }}
+        onClose={onClose}
+        open={open}
+        anchor="right"
       >
-        {children}
+        <div className={classes.root}>
+          <div className={classes.title}>{title}</div>
+          <div className={classes.content}>{children}</div>
+          {hint &&
+            <div className={classes.hint}>
+              <Alert className={classes.hintIcon} />
+              {hint}</div>
+          }
+          <div className={classes.actions}>
+            {actions.map((action, i) => <div className={classes.action} key={i}>{action}</div>)}
+            <Button variant="outlined" className={classes.cancleButton} onClick={onClose} fullWidth>
+              {t(tKeys.shared.cancel.getKey())}
+            </Button>
+          </div>
+        </div>
       </Drawer>
     );
   }
 }
 
 export { IProps };
-export default provideStyles(DrawerModal);
+export default i18nConnect(provideStyles(DrawerModal));

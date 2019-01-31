@@ -25,3 +25,4 @@ export { default as ExpansionPanel } from './ExpansionPanel/ExpansionPanel';
 export { default as ExpansionPanelDetails } from './ExpansionPanelDetails/ExpansionPanelDetails';
 export { default as ExpansionPanelSummary } from '@material-ui/core/ExpansionPanelSummary';
 export { default as DonutChart } from './DonutChart/DonutChart';
+export { default as Drawer } from './Drawer/Drawer';

@@ -3,15 +3,9 @@ import { rule } from 'shared/helpers/style';
 
 const styles = ({ extra: theme }: Theme) => ({
   root: rule({
-    padding: '2rem 2.375rem',
-    color: theme.colors.silver,
-    fontFamily: theme.typography.primaryFont,
-  }),
+    width: '26.875rem',
+    backgroundColor: theme.colors.blackCurrant,
 
-  title: rule({
-    fontSize: '21px',
-    fontWeight: 'bold',
-    marginBottom: '2rem',
   }),
 
   daiAmount: rule({
@@ -26,10 +20,6 @@ const styles = ({ extra: theme }: Theme) => ({
     marginBottom: '2rem',
     fontSize: '0.75rem',
     textAlign: 'right',
-  }),
-
-  sellPrice: rule({
-    composes: '$daiAmount',
   }),
 
   sellInput: rule({
@@ -48,44 +38,15 @@ const styles = ({ extra: theme }: Theme) => ({
   tokenFields: rule({
     marginBottom: '3.4375rem',
 
-    '&$doubleMargin': {
-      marginBottom: '6.875rem',
-    },
+    // '&$doubleMargin': {
+    //   marginBottom: '6.875rem',
+    // },
   }),
-  doubleMargin: {},
 
   tokenField: rule({
     display: 'flex',
     justifyContent: 'space-between',
     marginBottom: '1.125rem',
-  }),
-
-  hint: rule({
-    display: 'flex',
-    alignItems: 'center',
-    padding: '0.75rem 1.375rem',
-    fontSize: '0.75rem',
-    border: `solid 0.125rem ${theme.colors.silver}`,
-    borderRadius: '0.25rem',
-  }),
-
-  hintIcon: rule({
-    marginRight: '1.875rem',
-    fontSize: '2rem',
-    color: theme.colors.silver,
-  }),
-
-  actions: rule({
-    marginTop: '3.4375rem',
-  }),
-
-  action: rule({
-    marginBottom: '0.875rem',
-  }),
-
-  cancleButton: rule({
-    color: theme.colors.dustyGray,
-    borderColor: theme.colors.dustyGray,
   }),
 });
 

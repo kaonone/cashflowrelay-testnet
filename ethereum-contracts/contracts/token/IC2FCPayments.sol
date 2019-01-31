@@ -38,6 +38,12 @@ contract IC2FCPayments is IC2FC {
         uint256 datePayment //the period in seconds between payments
     );
 
+    event WithDrawPayment(
+        uint256 tokenId,
+        uint256 amount,
+        address publisher
+    );
+
     function isPaymentsActive (uint tokenId) public view returns (bool);
 
 

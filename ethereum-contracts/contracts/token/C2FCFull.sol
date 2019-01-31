@@ -2,14 +2,14 @@ pragma solidity ^0.5.2;
 
 import "../token/ERC721Full.sol";
 import "../token/ERC721Mintable.sol";
-import "../token/IC2FC.sol";
+import "../token/IC2FCPayments.sol";
 import "../ownership/Ownable.sol";
 
 /**
  * @title C2FCFull
  */
 
-contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FC {
+contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
 
     //Cashflow struct
     struct Cashflow {
@@ -29,6 +29,19 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FC {
 
     constructor (string memory name, string memory symbol) public ERC721Full(name, symbol) {
         // solhint-disable-previous-line no-empty-blocks
+    }
+
+
+    modifier onlyPublisher(uint256 tokenId) {
+        address owner = ownerOf(tokenId);
+        require(msg.sender == owner, "User is not owner");
+        _;
+    }
+
+    modifier onlySubscriber(uint256 tokenId) {
+        Cashflow storage c = _cashflowsIds[tokenId];
+        require(msg.sender == c.subscriber, "User is not subscriber");
+        _;
     }
 
     function createCashFlow(
@@ -99,4 +112,13 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FC {
     {
         return _ownedTokens[_owner];
     }
+
+    /*
+      Payments Block
+    */
+
+    //check publisher
+
+
+
 }

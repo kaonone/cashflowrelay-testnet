@@ -79,7 +79,9 @@ contract IC2FCPayments is IC2FC {
     function getOrdersList(
         uint256 tokenId //tokenId
     ) public
-        returns (uint256[] orderIds);
+        returns (
+            uint256[] memory tokenIds
+        );
 
     
     function executePayment(

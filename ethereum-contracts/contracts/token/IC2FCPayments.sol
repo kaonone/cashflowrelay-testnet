@@ -7,7 +7,6 @@ contract IC2FCPayments is IC2FC {
         uint256 tokenId,
         address indexed from, //the subscriber
         address indexed to, //the publisher
-        address tokenAddress, //the token address paid to the publisher
         uint256 tokenAmount, //the token amount paid to the publisher
         uint256 datePayment //the period in seconds between payments
     );
@@ -50,7 +49,6 @@ contract IC2FCPayments is IC2FC {
 
     function createOrder(        
         uint256 tokenId,
-        address tokenAddress, //the token address paid to the publisher
         uint256 tokenAmount //the token amount paid to the publisher)
     )   public
         returns (bool success);
@@ -73,7 +71,6 @@ contract IC2FCPayments is IC2FC {
     
     function executePayment(
         uint256 tokenId,
-        address tokenAddress, //the token address paid to the publisher
         uint256 tokenAmount //the token amount paid to the publisher
     ) public
         returns (bool success);

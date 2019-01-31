@@ -35,15 +35,15 @@ contract IC2FCPayments is IC2FC {
         address indexed to, //the publisher
         address tokenAddress, //the token address paid to the publisher
         uint256 tokenAmount, //the token amount paid to the publisher
-        uint256 datePayment
+        uint256 datePayment //the period in seconds between payments
     );
 
     function isPaymentsActive (uint tokenId) public view returns (bool);
 
-    function cancelPayment(
-        uint256 tokenId,
-        address tokenAddress, //the token address paid to the publisher
-        uint256 tokenAmount
+
+    //cancel order
+    function cancelOrderById(
+        uint256 orderId
     ) external
         returns (bool success);
 
@@ -61,7 +61,14 @@ contract IC2FCPayments is IC2FC {
     function getByOrderId(
         uint256 orderId //OrderId
     ) public
-        returns (uint256 pendingDatePayment, uint256 datePayment, uint256 amount, bool status);
+        returns (
+            address subscriber, 
+            address publisher, 
+            uint256 pendingDatePayment, 
+            uint256 datePayment, 
+            uint256 amount, 
+            bool status
+        );
 
     function getOrdersList(
         uint256 tokenId //tokenId
@@ -76,5 +83,10 @@ contract IC2FCPayments is IC2FC {
         returns (bool success);
          
     
-    function withdrawPayments(uint256 tokenId, uint256 amount) public returns (bool);
+    function withdrawPayments(
+        uint256 tokenId, 
+        uint256 amount
+    ) 
+    public 
+        returns (bool success);
 }

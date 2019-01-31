@@ -53,7 +53,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FC {
 
     function cashflowFor(uint256 tokenId) public view returns
     (
-        address subscriber,
+        address publisher,
         string memory name,
         uint256 value, 
         uint256 commit,

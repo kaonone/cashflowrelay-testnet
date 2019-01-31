@@ -1,5 +1,6 @@
 import { SubsetMapStrict } from '_helpers';
 import BigNumber from 'bignumber.js';
+import { IBlockChainToken, IToken } from './cashFlow';
 
 export interface ITransaction {
   txid: string;
@@ -24,6 +25,20 @@ export type TransactionRequestDataByType = SubsetMapStrict<Record<TransactionTyp
   ownerOf: { tokenId: number };
   idsOfCashflowsFor: { address?: string };
   cashflowFor: { tokenId: number };
+}>;
+
+export type TransactionResponseDataByType = SubsetMapStrict<Record<GetTransactionType, any>, {
+  isMinter: boolean;
+  ownerOf: string; // address
+  idsOfCashflowsFor: string[];
+  cashflowFor: IBlockChainToken;
+}>;
+
+export type TransactionDataByType = SubsetMapStrict<Record<GetTransactionType, any>, {
+  isMinter: boolean;
+  ownerOf: string; // address
+  idsOfCashflowsFor: number[];
+  cashflowFor: IToken;
 }>;
 
 export type SetTransactionRequest = {

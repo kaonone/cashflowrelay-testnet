@@ -16,9 +16,9 @@ import { provideStyles, StylesProps } from './CashFlow.style';
 
 const tKeys = tKeysAll.features.manageCashFlows;
 
-const links = [
+const links: Array<{ type: TokenType, title: string }> = [
   { type: 'obligations', title: tKeys.obligations.getKey() },
-  { type: 'income', title: tKeys.income.getKey() },
+  { type: 'incoming', title: tKeys.income.getKey() },
 ];
 
 const NavToggleButton = withComponent(Link)(ToggleButton);
@@ -33,7 +33,6 @@ class Marketplace extends React.PureComponent<IProps> {
     return (
       <BaseLayout>
         <div className={classes.root}>
-          Cash flows:<ShowMainContractData<'idsOfCashflowsFor'> type="idsOfCashflowsFor" data={{}} /><br />
           <div className={classes.head}>
             <ToggleButtonGroup className={classes.links} value={selectedType} exclusive nullable={false} >
               {links.map(({ type, title }, index: number) => (
@@ -52,7 +51,9 @@ class Marketplace extends React.PureComponent<IProps> {
               {t(tKeys.borrowLink.getKey())}
             </NavButton>
           </div>
-          <TokensList type={selectedType} />
+          <ShowMainContractData<'idsOfCashflowsFor'> type="idsOfCashflowsFor" request={{}}>
+            {({ data }) => !data ? 'Loading...' : <TokensList type={selectedType} tokenIds={data} />}
+          </ShowMainContractData>
         </div>
       </BaseLayout >
     );

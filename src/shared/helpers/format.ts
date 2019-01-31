@@ -2,9 +2,11 @@ import accounting from 'accounting';
 import { GetProps } from '_helpers';
 import SliderSelectField from 'shared/view/form/SliderSelectField/SliderSelectField';
 
-export function formatUSDAmount(value: number): string {
+export function formatUSD(value: number): string {
   return accounting.formatMoney(value);
 }
+
+export const formatNumber = accounting.formatNumber;
 
 export function formatPercent(value: number): string {
   return accounting.formatNumber(value) + '%';

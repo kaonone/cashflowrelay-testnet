@@ -25,8 +25,23 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         uint256 lastPayment;
     }
 
+    struct Order {
+        address subscriber;
+        address publisher;
+        uint256 pendingDatePayment;
+        uint256 datePayment;
+        uint256 amount;
+        bool status;
+    }
+
     //index => Cashflows store
     mapping (uint256 =>Cashflow) private _cashflowsIds;
+
+    //orderid => Orders store
+    mapping (uint256 => mapping(uint256 => Order)) private _ordersIds;
+
+    //all orders
+    uint256[] _allOrders;
 
     constructor (string memory name, string memory symbol) public ERC721Full(name, symbol) {
         // solhint-disable-previous-line no-empty-blocks
@@ -49,6 +64,18 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         _;
     }
 
+
+    //is Exist token
+    modifier isExistToken(uint256 tokenId) {
+        require(tokenId<=totalSupply(), "TokenId doesn't exit");
+        _;
+    }
+     
+    modifier isExistsOrder(uint256 orderId) {
+        require(orderId<=_totalSupplyOrders(), "TokenId doesn't exit");
+        _;
+    }
+
     function createCashFlow(
         string memory name, 
         uint256 value, 
@@ -58,18 +85,11 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         ) 
         public returns (bool) 
     {
-        uint256 _tokenId = totalSupply().add(1);
-
-        require(mint(msg.sender, _tokenId), "Doesnt' mint");
-
-        _cashflowsIds[_tokenId] = Cashflow(msg.sender, name, value, commit, interestRate, duration, 0, block.timestamp, 0);
-
-        emit CashflowCreated(msg.sender, name, value, commit, interestRate, duration, _tokenId, block.timestamp);
-
+        _createCashFlow(name, value, commit, interestRate, duration);
         return true;
     }
 
-    function cashflowFor(uint256 tokenId) public view returns
+    function cashflowFor(uint256 tokenId) public isExistToken(tokenId) view returns
     (
         address publisher,
         string memory name,
@@ -82,10 +102,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         uint256 lastPayment
      ) 
     {
-        require(tokenId<=totalSupply(), "TokenId doesn't exit");
-
         Cashflow memory _c = _cashflowsIds[tokenId];
-
         return (
             _c.subscriber, 
             _c.name, 
@@ -122,9 +139,16 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
       Payments Block
     */
 
-    
+    function createOrder(        
+        uint256 tokenId,
+        uint256 tokenAmount //the token amount paid to the publisher)
+    )   public
+        returns (bool success) {
 
-    
+        return true;
+    }
+
+
     //Withdraw Payments
     function withdrawPayments(
         uint256 tokenId, 
@@ -138,4 +162,44 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
     }
 
 
+    //internal functions
+
+    //create order
+    function _createCashFlow(
+        string memory name, 
+        uint256 value, 
+        uint256 commit, 
+        uint256 interestRate, 
+        uint256 duration
+        ) 
+        internal returns (bool) 
+    {
+        uint256 _tokenId = totalSupply().add(1);
+
+        require(mint(msg.sender, _tokenId), "Doesnt' mint");
+
+        _cashflowsIds[_tokenId] = Cashflow(msg.sender, name, value, commit, interestRate, duration, 0, block.timestamp, 0);
+
+        emit CashflowCreated(msg.sender, name, value, commit, interestRate, duration, _tokenId, block.timestamp);
+
+        return true;
+    }
+
+    //total orders
+    function _totalSupplyOrders() internal view returns (uint256) {
+        return _allOrders.length;
+    }
+
+    //create order
+    function _createOrder (        
+        uint256 tokenId,
+        uint256 tokenAmount //the token amount paid to the publisher)
+    )   internal
+        returns (bool success) {
+
+        uint256 _orderId = _totalSupplyOrders.add(1);
+        //_ordersIds[orderId] = Order()
+        
+        return true;
+    }
 }

@@ -4,6 +4,7 @@ import "../token/ERC721Full.sol";
 import "../token/ERC721Mintable.sol";
 import "../token/IC2FCPayments.sol";
 import "../ownership/Ownable.sol";
+import "../token/ERC20/IERC20.sol";
 
 /**
  * @title C2FCFull
@@ -32,12 +33,16 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
     }
 
 
+
+    //check publisher
     modifier onlyPublisher(uint256 tokenId) {
         address owner = ownerOf(tokenId);
         require(msg.sender == owner, "User is not owner");
         _;
     }
 
+
+    //check subscriber
     modifier onlySubscriber(uint256 tokenId) {
         Cashflow storage c = _cashflowsIds[tokenId];
         require(msg.sender == c.subscriber, "User is not subscriber");
@@ -117,8 +122,20 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
       Payments Block
     */
 
-    //check publisher
+    
 
+    
+    //Withdraw Payments
+    function withdrawPayments(
+        uint256 tokenId, 
+        uint256 amount
+    ) public onlyPublisher(tokenId) returns (bool success)  {
+        address owner = ownerOf(tokenId);
+        IERC20(tokenAddress).transfer(owner, amount);
+        emit WithDrawPayment(tokenId, amount, owner, block.timestamp);
+
+        return true;
+    }
 
 
 }

@@ -41,7 +41,8 @@ contract IC2FCPayments is IC2FC {
     event WithDrawPayment(
         uint256 tokenId,
         uint256 amount,
-        address publisher
+        address indexed publisher,
+        uint256 datePayment
     );
 
     function isPaymentsActive (uint tokenId) public view returns (bool);

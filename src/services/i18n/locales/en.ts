@@ -7,6 +7,7 @@ export default {
     },
     validation: {
       isRequired: 'Field is required',
+      moreThen: 'Should be more then %{value}',
       moreThenOrEqual: 'Should be more then or equal %{value}',
       lessThenOrEqual: 'Should be less then or equal %{value}',
       invalidWalletAddress: 'Invalid wallet address',
@@ -61,6 +62,7 @@ export default {
       recommendedPrice: 'Recommended price',
       sellingPrice: 'Selling price',
       borrowingAmount: 'Borrowing amount',
+      borrowLink: 'Borrow',
     },
     signIn: {
       button: 'Connect to %{address}',
@@ -75,11 +77,21 @@ export default {
         },
       },
     },
-    signTransaction: {
-      title: 'Sign transaction',
-      description: 'Scan this QR code with your mobile device to continue transaction',
-      openApp: 'Open application',
-      copyLink: 'Copy link',
+    createCashFlow: {
+      getButton: 'Get in fund',
+      modalTitle: 'Choice of conditions',
+      form: {
+        fields: {
+          name: 'CashFlow name',
+          amount: 'I want to borrow',
+          interest: 'With interest rate of',
+          installmentSize: 'Installment size',
+          installmentCount: 'Installment count',
+          periodicity: 'Installment periodicity',
+        },
+        periodicityItemPrefix: 'once per',
+        submitButton: 'Borrow',
+      },
     },
   },
   documents: {},

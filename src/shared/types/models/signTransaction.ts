@@ -1,45 +1,41 @@
 import { SubsetMapStrict } from '_helpers';
+import BigNumber from 'bignumber.js';
 
 export interface ITransaction {
   txid: string;
 }
 
-export type SetTransactionType = 'transferFrom' | 'addMinter' | 'createToken';
-export type GetTransactionType = 'isMinter' | 'ownerOf' | 'totalSupply' | 'tokenByIndex';
+export type SetTransactionType = 'addMinter' | 'createCashFlow';
+export type GetTransactionType = 'isMinter' | 'ownerOf' | 'idsOfCashflowsFor' | 'cashflowFor';
 export type TransactionType = SetTransactionType | GetTransactionType;
 
-export type TransactionDataByType = SubsetMapStrict<Record<TransactionType, any>, {
+export type TransactionRequestDataByType = SubsetMapStrict<Record<TransactionType, any>, {
   // set
   addMinter: null;
-  createToken: {
-    tokenId: number;
-    // loanAmount: number;
-    // interest: number;
-    // instalmentSize: number;
-    // periodicity: number;
-  };
-  transferFrom: {
-    from: string;
-    to: string;
-    tokenId: number;
+  createCashFlow: {
+    name: string;
+    value: BigNumber; // full repayment amount
+    commit: BigNumber; // installment size
+    interestRate: number;
+    duration: number; // in seconds
   };
   // get
+  isMinter: { address?: string };
   ownerOf: { tokenId: number };
-  totalSupply: null;
-  tokenByIndex: { index: number };
-  isMinter: { address: string }
+  idsOfCashflowsFor: { address?: string };
+  cashflowFor: { tokenId: number };
 }>;
 
 export type SetTransactionRequest = {
   [key in SetTransactionType]: {
     type: key;
-    data: TransactionDataByType[key];
+    data: TransactionRequestDataByType[key];
   };
 }[SetTransactionType];
 
 export type GetTransactionRequest = {
   [key in GetTransactionType]: {
     type: key;
-    data: TransactionDataByType[key];
+    data: TransactionRequestDataByType[key];
   };
 }[GetTransactionType];

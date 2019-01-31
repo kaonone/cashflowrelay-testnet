@@ -1,12 +1,12 @@
 import * as React from 'react';
 
-import { GetTransactionType, TransactionDataByType } from 'shared/types/models';
+import { GetTransactionType, TransactionRequestDataByType } from 'shared/types/models';
 import { withDrizzle, InjectDrizzleProps } from 'shared/helpers/react';
 import { mainContractName } from 'shared/constants';
 
 interface IOwnProps<T extends GetTransactionType> {
   type: T;
-  data: TransactionDataByType[T];
+  data: TransactionRequestDataByType[T];
 }
 
 type IProps = IOwnProps<GetTransactionType> & InjectDrizzleProps;
@@ -19,10 +19,11 @@ class ShowMainContractData extends React.PureComponent<IProps, IState> {
   public state: IState = { dataKey: '' };
 
   public componentDidMount() {
-    const { drizzle, type, data } = this.props;
+    const { drizzle, drizzleState, type, data } = this.props;
     const contract = drizzle.contracts[mainContractName];
+    const account = drizzleState.accounts[0];
 
-    const params = (getParamsByRequest[type] as ParamsConverter)(data);
+    const params = (getParamsByRequest[type] as ParamsConverter)(data, account);
 
     const dataKey = contract.methods[type].cacheCall(...params);
 
@@ -39,13 +40,13 @@ class ShowMainContractData extends React.PureComponent<IProps, IState> {
 }
 
 type ParamsConverter<T extends GetTransactionType = GetTransactionType> =
-  (data: TransactionDataByType[T]) => string[];
+  (data: TransactionRequestDataByType[T], account: string) => string[];
 
 const getParamsByRequest: { [key in GetTransactionType]: ParamsConverter<key> } = {
-  isMinter: (data) => [data.address.toString()],
+  isMinter: (data, account) => [data.address || account],
   ownerOf: (data) => [data.tokenId.toString()],
-  tokenByIndex: (data) => [data.index.toString()],
-  totalSupply: () => [],
+  cashflowFor: (data) => [data.tokenId.toString()],
+  idsOfCashflowsFor: (data, account) => [data.address || account],
 };
 
 const Container = withDrizzle(ShowMainContractData);

@@ -6,6 +6,10 @@ export function formatUSDAmount(value: number): string {
   return accounting.formatMoney(value);
 }
 
+export function formatPercent(value: number): string {
+  return accounting.formatNumber(value) + '%';
+}
+
 export const formatSliderLabelDefault: NonNullable<GetProps<typeof SliderSelectField>['formatLabel']> =
   item => item.label || '';
 

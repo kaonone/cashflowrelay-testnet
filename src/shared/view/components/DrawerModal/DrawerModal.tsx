@@ -38,7 +38,7 @@ class DrawerModal extends React.Component<IProps> {
           }
           <div className={classes.actions}>
             {actions.map((action, i) => <div className={classes.action} key={i}>{action}</div>)}
-            <Button variant="outlined" className={classes.cancleButton} onClick={onClose} fullWidth>
+            <Button variant="outlined" className={classes.cancelButton} onClick={onClose} fullWidth>
               {t(tKeys.shared.cancel.getKey())}
             </Button>
           </div>

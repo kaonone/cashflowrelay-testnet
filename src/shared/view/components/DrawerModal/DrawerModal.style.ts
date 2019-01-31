@@ -40,7 +40,7 @@ const styles = ({ extra: theme }: Theme) => ({
     marginBottom: '0.875rem',
   }),
 
-  cancleButton: rule({
+  cancelButton: rule({
     color: theme.colors.dustyGray,
     borderColor: theme.colors.dustyGray,
   }),

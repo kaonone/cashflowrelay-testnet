@@ -1,10 +1,10 @@
 import * as React from 'react';
-
-import { provideStyles, StylesProps } from './SellingPriceField.style';
 import { bind } from 'decko';
-import { NumberInput } from 'shared/view/elements';
-import { i18nConnect, ITranslateProps, tKeys as tkeysAll } from 'services/i18n';
 import { NumberFormatValues } from 'react-number-format';
+
+import { i18nConnect, ITranslateProps, tKeys as tkeysAll } from 'services/i18n';
+import { NumberInput } from 'shared/view/elements';
+import { provideStyles, StylesProps } from './SellingPriceField.style';
 
 const tKeys = tkeysAll.features.manageCashFlows;
 
@@ -32,7 +32,7 @@ class SellingPriceField extends React.Component<IProps> {
               color="secondary"
               variant="outlined"
               value={sellPrice || 1000}
-              inputProps={{
+              InputProps={{
                 className: classes.input,
                 classes: {
                   root: classes.cssOutlinedInput,

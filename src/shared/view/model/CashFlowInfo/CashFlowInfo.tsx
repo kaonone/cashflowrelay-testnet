@@ -1,15 +1,16 @@
 import * as React from 'react';
+import { SubSet } from '_helpers';
 
-import { provideStyles, StylesProps } from './CashFlowInfo.style';
-import { IToken } from 'shared/types/models';
 import { i18nConnect, ITranslateProps, tKeys as tkeysAll } from 'services/i18n';
+import { IToken } from 'shared/types/models';
+import { provideStyles, StylesProps } from './CashFlowInfo.style';
 
 const tKeys = tkeysAll.features.manageCashFlows;
 
-type TokenField = keyof
-  Pick<IToken,
-    'dueAmount' | 'repayingAmount' | 'instalmentSize' | 'duration' | 'firstInstalmentDate' | 'lastInstalmentDate'
-  >;
+type TokenField = SubSet<
+  keyof IToken,
+  'dueAmount' | 'repayingAmount' | 'instalmentSize' | 'duration' | 'firstInstalmentDate' | 'lastInstalmentDate'
+>;
 
 interface IOwnProps {
   token: IToken;

@@ -3,7 +3,7 @@ import { rule } from 'shared/helpers/style';
 
 const styles = ({ extra: theme }: Theme) => ({
   root: rule({
-    
+
   }),
   transaction: rule({
     marginBottom: theme.spacing.unit,

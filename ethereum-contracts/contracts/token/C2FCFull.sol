@@ -39,6 +39,9 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
     //orderid => Orders store
     mapping (uint256 => mapping(uint256 => Order)) private _ordersIds;
 
+    
+    mapping(uint256 => uint256)  private _executedOrdersCount;
+
     //all orders
     uint256[] _allOrders;
 
@@ -222,10 +225,18 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
     )   internal
         returns (bool success) {
         uint256 _orderId = _totalSupplyOrders().add(1);
-
         Cashflow storage _c = _cashflowsIds[tokenId];
 
-        _ordersIds[tokenId][_orderId] = Order(_c.subscriber, 0, 0, tokenAmount, false);
+        uint256 _pendingPaymentDate = 0;
+
+        if (_c.lastPayment>0) {
+            uint256 _countExecutedOrders = _executedOrdersCount[tokenId];
+            _pendingPaymentDate = _c.lastPayment+(_countExecutedOrders*2629743);
+        } else {
+            _pendingPaymentDate = _c.created+2629743; //+30 days
+        }
+        
+        _ordersIds[tokenId][_orderId] = Order(_c.subscriber, _pendingPaymentDate, 0, tokenAmount, false);
         
         return true;
     }

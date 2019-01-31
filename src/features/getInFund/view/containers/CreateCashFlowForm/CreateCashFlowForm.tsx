@@ -7,29 +7,19 @@ import * as moment from 'moment';
 import BigNumber from 'bignumber.js';
 import createDecorator from 'final-form-calculate';
 
-import { i18nConnect, ITranslateProps, tKeys as allKeys, ITranslateFunction, ITranslateKey } from 'services/i18n';
+import { i18nConnect, ITranslateProps, tKeys as allKeys, ITranslateKey } from 'services/i18n';
 import { actions as transactionActions } from 'services/transactions';
-
-import { TimePeriod } from 'shared/types/models';
-import { Button, MenuItem } from 'shared/view/elements';
-import { TextInputField, NumberInputField, SliderField, SliderSelectField } from 'shared/view/form';
 import { lessThenOrEqual, moreThenOrEqual, moreThen, isRequired } from 'shared/validators';
-import { formatSliderLabelDefault, formatPercent } from 'shared/helpers/format';
 import { calcRepaymentAmount, calcInstallmentSize, OneDAI } from 'shared/helpers/model';
+import { TextInputField } from 'shared/view/form';
+import { Button } from 'shared/view/elements';
 
-import { createCashFlowConfig } from '../../constants';
+import { createCashFlowConfig } from '../../../constants';
+import { LoanSummary, ConfigurationCommitment } from '../../components';
+import { IFormData } from '../../../namespace';
 import { StylesProps, provideStyles } from './CreateCashFlowForm.style';
 
 const tKeys = allKeys.features.createCashFlow.form;
-
-interface IFormData {
-  name: string;
-  amount: number;
-  interest: number;
-  installmentSize: number;
-  installmentCount: number;
-  periodicity: TimePeriod;
-}
 
 // tslint:disable-next-line:no-empty-interface
 interface IOwnProps {
@@ -61,13 +51,6 @@ const names: { [key in keyof IFormData]: key } = {
   installmentCount: 'installmentCount',
   periodicity: 'periodicity',
 };
-
-const getFieldProps = (field: keyof IFormData, t: ITranslateFunction) => ({
-  required: true,
-  fullWidth: true,
-  name: names[field],
-  label: t(tKeys.fields[field].getKey()),
-});
 
 function validateForm(values: IFormData): Partial<MarkAs<ITranslateKey, IFormData>> {
   return {
@@ -106,78 +89,29 @@ class CreateCashFlowForm extends React.PureComponent<IProps> {
   public render() {
     const { classes, t } = this.props;
 
-    const periodicityItems = createCashFlowConfig.availablePeriodicity.map(item => (
-      <MenuItem key={item} value={item}>{t(tKeys.periodicityItemPrefix.getKey())} {item}</MenuItem>
-    ));
-
     return (
       <Form
         onSubmit={this.onSubmit}
         validate={validateForm}
         initialValues={initialValues}
-        subscription={{}}
+        subscription={{ values: true }}
         decorators={[calculateDecorator]}
       >
-        {({ handleSubmit }) => (
+        {({ handleSubmit, values }) => (
           <form className={classes.root} onSubmit={handleSubmit}>
-            <div className={classes.field}>
-              <TextInputField {...getFieldProps('name', t)} />
+            <div className={classes.commitmentFields}>
+              <ConfigurationCommitment />
             </div>
-            <div className={classes.field}>
-              <NumberInputField
-                {...getFieldProps('amount', t)}
-                thousandSeparator
-                suffix="DAI"
-                decimalScale={2}
+            <div className={classes.loanSummary}>
+              <LoanSummary
+                nameInput={<TextInputField name="name" required fullWidth />}
+                actions={[
+                  <Button key="" fullWidth variant="contained" color="primary">
+                    {t(tKeys.submitButton.getKey())}
+                  </Button>]
+                }
+                fields={values as IFormData}
               />
-            </div>
-            <div className={classes.field}>
-              <NumberInputField
-                {...getFieldProps('interest', t)}
-                thousandSeparator
-                suffix="%"
-                decimalScale={0}
-              />
-              <div className={classes.slider}>
-                <SliderField
-                  name={names.interest}
-                  min={createCashFlowConfig.minInterest}
-                  max={createCashFlowConfig.maxInterest}
-                  step={1}
-                  formatLabel={formatPercent}
-                />
-              </div>
-            </div>
-            <div className={classes.field}>
-              <NumberInputField
-                {...getFieldProps('installmentSize', t)}
-                disabled
-                thousandSeparator
-                suffix="DAI"
-                decimalScale={2}
-              />
-            </div>
-            <div className={classes.field}>
-              <TextInputField {...getFieldProps('periodicity', t)} select>
-                {periodicityItems}
-              </TextInputField>
-              <div className={classes.slider}>
-                <SliderSelectField name={names.periodicity} formatLabel={formatSliderLabelDefault}>
-                  {periodicityItems}
-                </SliderSelectField>
-              </div>
-            </div>
-            <div className={classes.field}>
-              <NumberInputField
-                {...getFieldProps('installmentCount', t)}
-                thousandSeparator
-                decimalScale={0}
-              />
-            </div>
-            <div className={classes.actions}>
-              <Button className={classes.action} fullWidth type="submit" variant="contained" color="primary">
-                {t(tKeys.submitButton.getKey())}
-              </Button>
             </div>
           </form>
         )}

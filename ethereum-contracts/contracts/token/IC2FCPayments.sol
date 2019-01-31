@@ -69,8 +69,7 @@ contract IC2FCPayments is IC2FC {
         uint256 orderId //OrderId
     ) public
         returns (
-            address subscriber, 
-            address publisher, 
+            address subscriber,
             uint256 pendingDatePayment, 
             uint256 datePayment, 
             uint256 amount, 

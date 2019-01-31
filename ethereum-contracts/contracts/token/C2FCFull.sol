@@ -27,7 +27,6 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
 
     struct Order {
         address subscriber;
-        address publisher;
         uint256 pendingDatePayment;
         uint256 datePayment;
         uint256 amount;
@@ -139,15 +138,42 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
       Payments Block
     */
 
+
+    //Create Order
     function createOrder(        
         uint256 tokenId,
         uint256 tokenAmount //the token amount paid to the publisher)
     )   public
-        returns (bool success) {
+        returns (bool success) {  
 
+        _createOrder(tokenId, tokenAmount);
         return true;
     }
 
+    //Get Order By Id
+    
+    function getByOrderId(
+        uint256 tokenId,
+        uint256 orderId //OrderId
+    ) public
+        returns (
+            address subscriber,  
+            uint256 pendingDatePayment, 
+            uint256 datePayment, 
+            uint256 amount, 
+            bool status
+        ) 
+    {
+        Order storage _o = _ordersIds[tokenId][orderId];
+
+        return (
+            _o.subscriber,
+            _o.pendingDatePayment,
+            _o.datePayment,
+            _o.amount,
+            _o.status
+        );
+    }
 
     //Withdraw Payments
     function withdrawPayments(
@@ -197,7 +223,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
     )   internal
         returns (bool success) {
 
-        uint256 _orderId = _totalSupplyOrders.add(1);
+        //uint256 _orderId = _totalSupplyOrders.add(1);
         //_ordersIds[orderId] = Order()
         
         return true;

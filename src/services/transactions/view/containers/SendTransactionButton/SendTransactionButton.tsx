@@ -3,14 +3,14 @@ import { bind } from 'decko';
 import { connect } from 'react-redux';
 import { GetProps, Omit } from '_helpers';
 
-import { SetTransactionType, TransactionDataByType, SetTransactionRequest } from 'shared/types/models';
+import { SetTransactionType, TransactionRequestDataByType, SetTransactionRequest } from 'shared/types/models';
 import { Button } from 'shared/view/elements';
 
 import * as actions from './../../../redux/actions';
 
 type IOwnProps<T extends SetTransactionType> = Omit<GetProps<typeof Button>, 'type'> & {
   type: T;
-  data: TransactionDataByType[T];
+  data: TransactionRequestDataByType[T];
 };
 
 type IActionProps = typeof mapDispatch;

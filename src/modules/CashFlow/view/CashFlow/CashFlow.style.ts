@@ -6,8 +6,14 @@ const styles = () => ({
   root: rule({
   }),
 
+  head: rule({
+    display: 'flex',
+    alignItems: 'center',
+  }),
+
   links: rule({
     backgroundColor: 'transparent',
+    marginRight: 'auto',
   }),
 
   link: rule({

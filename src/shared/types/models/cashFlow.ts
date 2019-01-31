@@ -19,6 +19,8 @@ export interface IToken {
   balance: number;
   discount: number;
   price?: number;
+  duration: number;
+  repayingAmount: number;
 }
 
 export type TokenType = 'incoming' | 'obligations' | 'selling';

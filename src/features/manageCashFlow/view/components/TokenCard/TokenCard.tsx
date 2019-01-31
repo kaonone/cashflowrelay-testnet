@@ -7,7 +7,7 @@ import { StylesProps, provideStyles } from './TokenCard.style';
 
 import Header from './Header/Header';
 import { ExpansionPanel, ExpansionPanelDetails, Button, DonutChart, ExpansionPanelSummary } from 'shared/view/elements';
-import { ContentCopy, QrCode, CircleArrow } from 'shared/view/elements/Icons';
+import { ContentCopy, CircleArrow } from 'shared/view/elements/Icons';
 import { i18nConnect, ITranslateProps, tKeys as tKeysAll } from 'services/i18n';
 import { toFixed } from 'shared/helpers/integer';
 import { IToken, TokenType } from 'shared/types/models';
@@ -107,10 +107,7 @@ class TokenCard extends React.PureComponent<IProps> {
           {key === 'instalmentSize' ? t(tKeys.daiMonthly.getKey(), { amount: token[key] }) : token[key]}
           {
             (key === 'lender' || key === 'payer') &&
-            <>
-              <ContentCopy className={classes.icon} />
-              <QrCode className={classes.icon} />
-            </>
+            <ContentCopy className={classes.icon} />
           }
         </div>
       </div>
@@ -144,11 +141,9 @@ class TokenCard extends React.PureComponent<IProps> {
         );
       case 'selling':
         return (
-          <>
-            <Button className={classes.footerButton} variant="contained" color="primary">
-              {t(tKeys.buyCashflow.getKey())}
-            </Button>
-          </>
+          <Button className={classes.footerButton} variant="contained" color="primary">
+            {t(tKeys.buyCashflow.getKey())}
+          </Button>
         );
     }
   }

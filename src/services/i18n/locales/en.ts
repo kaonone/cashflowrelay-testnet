@@ -14,6 +14,7 @@ export default {
     },
     pageNotFound: 'We can’t find this page',
     copiedAtClipboard: 'Copied at clipboard',
+    cancel: 'Cancel',
   },
   components: {
     fund: {
@@ -48,13 +49,19 @@ export default {
       availableBalance: 'Available balance',
       discountValue: 'Discount value',
       nextInstalmentInfo: '+%{amount} DAI on %{date}',
-      daiMonthly: '%{amount} DAI/monthly',
+      daiMonthly: '%{amount} DAI / monthly',
+      months: '%{amount} month',
       howMuchInstalmentIsComplete: '%{paid} / %{total} DAI %{percent}% complete',
       price: 'Price',
       sellCashflow: 'Sell cashflow',
       withdrawDai: 'Withdraw DAI',
       payInstalment: 'Pay instalment',
       buyCashflow: 'Buy cashflow',
+      duration: 'Duration',
+      repayingAmount: 'Repaying amount',
+      recommendedPrice: 'Recommended price',
+      sellingPrice: 'Selling price',
+      borrowingAmount: 'Borrowing amount',
       borrowLink: 'Borrow',
     },
     signIn: {

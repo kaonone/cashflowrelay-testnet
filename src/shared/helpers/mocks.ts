@@ -1,6 +1,6 @@
 import { IToken } from 'shared/types/models';
 // tslint:disable:max-line-length
-const mockCashFlow: IToken = {
+export const mockCashFlow: IToken = {
   id: 0,
   status: 'pending',
   name: 'Money for programming course',
@@ -17,6 +17,8 @@ const mockCashFlow: IToken = {
   balance: 20,
   discount: 18,
   totalInstalment: 1800,
+  duration: 7,
+  repayingAmount: 2178,
 };
 
 const token1: IToken = { ...mockCashFlow, id: 1, discount: 10 };

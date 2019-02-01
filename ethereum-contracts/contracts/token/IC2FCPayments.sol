@@ -70,8 +70,9 @@ contract IC2FCPayments is IC2FC {
         returns (bool success);
 
     //cancel order
-    
+
     function cancelOrder(
+        uint256 tokenId,
         uint256 orderId
     ) public
         returns (bool success);
@@ -90,7 +91,8 @@ contract IC2FCPayments is IC2FC {
             uint256 pendingDatePayment, 
             uint256 datePayment, 
             uint256 amount, 
-            bool status
+            bool isPayed,
+            bool isDeleted
         );
 
     function getOrdersList(

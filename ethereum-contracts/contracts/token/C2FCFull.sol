@@ -30,7 +30,8 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         uint256 pendingDatePayment;
         uint256 datePayment;
         uint256 amount;
-        bool status;
+        bool isPayed;
+        bool isDeleted;
     }
 
     //index => Cashflows store
@@ -68,13 +69,27 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
     }
 
     //is Exist token
-    modifier isExistToken(uint256 tokenId) {
+    modifier onlyExistToken(uint256 tokenId) {
         require(tokenId<=totalSupply(), "TokenId doesn't exit");
         _;
     }
     //is Exist Order
-    modifier isExistOrder(uint256 orderId) {
+    modifier onlyExistOrder(uint256 orderId) {
         require(orderId<=_totalSupplyOrders(), "TokenId doesn't exit");
+        _;
+    }
+
+    //Order is Payed
+    modifier onlyOrderPayed(uint256 tokenId, uint256 orderId) {
+        Order storage _o = _ordersIds[tokenId][orderId];
+        require(_o.isPayed == true, "Order is not payed");
+        _;
+    }
+
+    //Order is not Payed
+    modifier onlyOrderNotPayed(uint256 tokenId, uint256 orderId) {
+        Order storage _o = _ordersIds[tokenId][orderId];
+        require(_o.isPayed == false, "Order is payed");
         _;
     }
 
@@ -91,7 +106,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         return true;
     }
 
-    function cashflowFor(uint256 tokenId) public isExistToken(tokenId) view returns
+    function cashflowFor(uint256 tokenId) public onlyExistToken(tokenId) view returns
     (
         address publisher,
         string memory name,
@@ -151,18 +166,30 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         return true;
     }
 
+    //Cancel Order
+    function cancelOrder(
+        uint256 tokenId,
+        uint256 orderId
+    )
+        public onlySubscriberOrOwner(tokenId) onlyOrderNotPayed(tokenId, orderId)
+        returns (bool success) {
+        _ordersIds[tokenId][orderId].isDeleted = true;
+        return true;
+    }
+
     //Get Order By Id
     function getByOrderId(
         uint256 tokenId,
         uint256 orderId //OrderId
-    ) public view isExistToken(tokenId) isExistOrder(orderId)
+    ) public view onlyExistToken(tokenId) onlyExistOrder(orderId)
 
         returns (
             address subscriber,  
             uint256 pendingDatePayment, 
             uint256 datePayment, 
             uint256 amount, 
-            bool status
+            bool isPayed,
+            bool isDeleted
         ) 
     {
         Order storage _o = _ordersIds[tokenId][orderId];
@@ -172,7 +199,8 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
             _o.pendingDatePayment,
             _o.datePayment,
             _o.amount,
-            _o.status
+            _o.isPayed,
+            _o.isDeleted
         );
     }
 
@@ -235,7 +263,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
             _pendingPaymentDate = _c.created+2629743; //+30 days
         }
 
-        _ordersIds[tokenId][_orderId] = Order(_c.subscriber, _pendingPaymentDate, 0, tokenAmount, false);
+        _ordersIds[tokenId][_orderId] = Order(_c.subscriber, _pendingPaymentDate, 0, tokenAmount, false, false);
         
         return true;
     }

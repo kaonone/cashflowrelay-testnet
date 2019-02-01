@@ -207,7 +207,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         );
     }
 
-
+    //Execute Order
     function executeOrder(
         uint256 tokenId, //tokenId
         uint256 orderId //orderId
@@ -224,6 +224,13 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
             return false;
         }
     }
+
+    //function Execute Payment
+
+    //function Cancel Payment
+
+    //function IsPaymentActive
+    
 
     //Withdraw Payments
     function withdrawPayments(
@@ -284,9 +291,12 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
             _pendingPaymentDate = _c.created+2629743; //+30 days
         }
 
-        _ordersIds[tokenId][_orderId] = Order(_c.subscriber, _pendingPaymentDate, 0, tokenAmount, false, false);
-        
-        return true;
+        if (_pendingPaymentDate <= (_c.created+_c.duration)) { 
+            _ordersIds[tokenId][_orderId] = Order(_c.subscriber, _pendingPaymentDate, 0, tokenAmount, false, false);
+            return true;
+        } else {
+            return false;
+        }  
     }
 
     /**

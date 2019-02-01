@@ -40,7 +40,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
     //orderid => Orders store
     mapping (uint256 => mapping(uint256 => Order)) private _ordersIds;
 
-    
+    //Count of Executed Orders
     mapping(uint256 => uint256)  private _executedOrdersCount;
 
     //all orders
@@ -236,7 +236,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
     function executePayment(
         uint256 tokenId,
         uint256 tokenAmount //the token amount paid to the publisher
-    ) public
+    ) public onlySubscriberOrOwner(tokenId)
         returns (bool success) {
         uint256 _pendingPaymentDate = block.timestamp;
         uint256 _orderId = _createOrder(tokenId, tokenAmount, _pendingPaymentDate, false);
@@ -244,10 +244,16 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         return true;
     }
 
-    //function Cancel Payment
-
     //function IsPaymentActive
-    
+    function isPaymentsActive (uint tokenId) public view returns (bool) {
+        
+        uint256 _pendingPaymentDate = 0;
+        Cashflow storage _c = _cashflowsIds[tokenId];
+        uint256 _countExecutedOrders = _executedOrdersCount[tokenId];
+        _pendingPaymentDate = _c.created+(_countExecutedOrders*2629743);
+        
+        return (_pendingPaymentDate <= (_c.created+_c.duration));
+    }
 
     //Withdraw Payments
     function withdrawPayments(
@@ -299,13 +305,15 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
     )   internal
         returns (uint256 orderId) {
         uint256 _orderId = _totalSupplyOrders().add(1);
+        address _owner = ownerOf(tokenId);
         Cashflow storage _c = _cashflowsIds[tokenId];
-
 
         if (isRegular == true) {
             if (pendingPaymentDate <= (_c.created+_c.duration)) { 
                 _ordersIds[tokenId][_orderId] = Order(_c.subscriber, pendingPaymentDate, 0, tokenAmount, false, false);
                 _allOrders.push(_orderId);
+
+                emit CreateOrder(tokenId, _c.subscriber, _owner, tokenAddress, tokenAmount, pendingPaymentDate);
                 return _orderId;
             } else {
                 return 0;
@@ -313,6 +321,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         } else {
             _ordersIds[tokenId][_orderId] = Order(_c.subscriber, pendingPaymentDate, 0, tokenAmount, false, false);
             _allOrders.push(_orderId);
+            emit CreateOrder(tokenId, _c.subscriber, _owner, tokenAddress, tokenAmount, pendingPaymentDate);
             return _orderId;
         }  
     }
@@ -325,11 +334,13 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         returns (bool success)
     {
         Order storage _o = _ordersIds[tokenId][orderId];
+        address _owner = ownerOf(tokenId);
         uint256 _a = IERC20(tokenAddress).allowance(_o.subscriber, address(this));
 
         if (_o.amount >= _a) {
             IERC20(tokenAddress).transferFrom(_o.subscriber, address(this), _o.amount); 
             _o.isPayed = true;
+            emit ExecuteOrder(tokenId, _o.subscriber, _owner, tokenAddress, _o.amount, block.timestamp);
             return true;
         } else {
             return false;

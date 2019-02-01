@@ -47,13 +47,6 @@ contract IC2FCPayments is IC2FC {
 
     function isPaymentsActive (uint tokenId) public view returns (bool);
 
-
-    //cancel order
-    function cancelOrderById(
-        uint256 orderId
-    ) external
-        returns (bool success);
-
     function createOrder(        
         uint256 tokenId,
         uint256 tokenAmount //the token amount paid to the publisher)

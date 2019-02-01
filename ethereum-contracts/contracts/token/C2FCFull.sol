@@ -40,6 +40,9 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
     //orderid => Orders store
     mapping (uint256 => mapping(uint256 => Order)) private _ordersIds;
 
+    //Token => orders array
+    mapping (uint256 => uint256[]) private _tokenOrdersIds;
+
     //Count of Executed Orders
     mapping(uint256 => uint256)  private _executedOrdersCount;
 
@@ -198,7 +201,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
     ) public view onlyExistToken(tokenId) onlyExistOrder(orderId)
 
         returns (
-            address subscriber,  
+            address subscriber,
             uint256 pendingDatePayment, 
             uint256 datePayment, 
             uint256 amount, 
@@ -230,6 +233,17 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
             _executedOrdersCount[tokenId].add(1);
         }
         return isPayed;
+    }
+
+    //get orders list
+    function getOrdersList(
+        uint256 tokenId //tokenId
+    ) public
+        returns (
+            uint256[] memory tokenIds
+        ) 
+    {
+        return  _tokenOrdersIds[tokenId];
     }
 
     //function Execute Payment
@@ -266,6 +280,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
 
         return true;
     }
+
 
 
     //internal functions
@@ -312,6 +327,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
             if (pendingPaymentDate <= (_c.created+_c.duration)) { 
                 _ordersIds[tokenId][_orderId] = Order(_c.subscriber, pendingPaymentDate, 0, tokenAmount, false, false);
                 _allOrders.push(_orderId);
+                _tokenOrdersIds[tokenId].push(_orderId);
 
                 emit CreateOrder(tokenId, _c.subscriber, _owner, tokenAddress, tokenAmount, pendingPaymentDate);
                 return _orderId;
@@ -321,6 +337,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         } else {
             _ordersIds[tokenId][_orderId] = Order(_c.subscriber, pendingPaymentDate, 0, tokenAmount, false, false);
             _allOrders.push(_orderId);
+            _tokenOrdersIds[tokenId].push(_orderId);
             emit CreateOrder(tokenId, _c.subscriber, _owner, tokenAddress, tokenAmount, pendingPaymentDate);
             return _orderId;
         }  

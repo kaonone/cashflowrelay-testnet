@@ -29,6 +29,15 @@ contract IC2FCPayments is IC2FC {
         uint256 datePayment //the period in seconds between payments
     );
 
+    event CancelOrder(
+        uint256 tokenId,
+        address indexed from, //the subscriber
+        address indexed to, //the publisher
+        address tokenAddress, //the token address paid to the publisher
+        uint256 tokenAmount, //the token amount paid to the publisher
+        uint256 datePayment //the period in seconds between payments
+    );
+
     event CancelPayment(
         uint256 tokenId,
         address indexed from, //the subscriber
@@ -59,6 +68,14 @@ contract IC2FCPayments is IC2FC {
         uint256 tokenAmount //the token amount paid to the publisher)
     )   public
         returns (bool success);
+
+    //cancel order
+    
+    function cancelOrder(
+        uint256 orderId
+    ) public
+        returns (bool success);
+
     
     function executeOrder(
         uint256 orderId //orderId

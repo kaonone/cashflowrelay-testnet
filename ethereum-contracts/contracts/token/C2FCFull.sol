@@ -230,7 +230,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
 
         if (_c.lastPayment>0) {
             uint256 _countExecutedOrders = _executedOrdersCount[tokenId];
-            _pendingPaymentDate = _c.lastPayment+(_countExecutedOrders*2629743);
+            _pendingPaymentDate = _c.created+(_countExecutedOrders*2629743);
         } else {
             _pendingPaymentDate = _c.created+2629743; //+30 days
         }

@@ -1,11 +1,11 @@
 import * as React from 'react';
 
-import { Transactions } from 'services/transactions';
 import RowsLayout, { IProps as IRowsLayoutProps } from 'shared/view/elements/RowsLayout/RowsLayout';
 
 import Header from '../Header/Header';
 
 import { StylesProps, provideStyles } from './BaseLayout.style';
+import { Notifications } from 'services/notifications';
 
 interface IOwnProps {
   children: React.ReactNode;
@@ -22,7 +22,9 @@ class BaseLayout extends React.PureComponent<IProps> {
         headerContent={<Header />}
         {...rest}
       >
-        <Transactions />
+        {/* <Transactions /> */}
+        <Notifications />
+
         <div className={classes.content}>
           {children}
         </div>

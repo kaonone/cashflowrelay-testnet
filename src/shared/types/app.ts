@@ -10,6 +10,7 @@ import * as dataProviderNS from 'services/dataProvider/namespace';
 import * as i18nNS from 'services/i18n/namespace';
 import * as transactionsNS from 'services/transactions/namespace';
 import * as userNS from 'services/user/namespace';
+import * as notificationNS from 'services/notifications/namespace';
 import Api from 'services/api/Api';
 
 import * as signInNS from 'features/signIn/namespace';
@@ -66,6 +67,7 @@ export interface IAppReduxState {
   i18n: i18nNS.IReduxState;
   transactions: transactionsNS.IReduxState;
   user: userNS.IReduxState;
+  notifications: notificationNS.IReduxState;
   // features
   signIn: signInNS.IReduxState;
 }

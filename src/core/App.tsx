@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Provider } from 'react-redux';
+import { SnackbarProvider } from 'notistack';
 import { BrowserRouter, StaticRouter } from 'react-router-dom';
 import { MuiPickersUtilsProvider } from 'material-ui-pickers';
 import { MuiThemeProvider } from '@material-ui/core/styles';
@@ -22,9 +23,17 @@ interface IAppProps {
 export function App({ modules, store, jssDeps, disableStylesGeneration, drizzle }: IAppData & IAppProps) {
   return (
     <Provider store={store}>
-      <BrowserRouter>
-        {renderSharedPart(modules, drizzle, jssDeps, disableStylesGeneration)}
-      </BrowserRouter>
+      <SnackbarProvider
+        maxSnack={1}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        <BrowserRouter>
+          {renderSharedPart(modules, drizzle, jssDeps, disableStylesGeneration)}
+        </BrowserRouter>
+      </SnackbarProvider>
     </Provider >
   );
 }

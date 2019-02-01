@@ -11,6 +11,7 @@ import { ContentCopy, QrCode, CircleArrow } from 'shared/view/elements/Icons';
 import { i18nConnect, ITranslateProps, tKeys as tKeysAll } from 'services/i18n';
 import { toFixed } from 'shared/helpers/integer';
 import { IToken, TokenType } from 'shared/types/models';
+import { SendTransactionButton } from 'services/transactions';
 
 const tKeys = tKeysAll.features.manageCashFlows;
 
@@ -134,9 +135,14 @@ class TokenCard extends React.PureComponent<IProps> {
       case 'obligations':
         return (
           <>
-            <Button className={classes.footerButton} variant="contained" color="primary" >
-              {t(tKeys.payInstalment.getKey())}
-            </Button>
+            <SendTransactionButton
+              type="addMinter"
+              variant="contained"
+              color="primary"
+              data={null}
+            >
+              Add Minter
+            </SendTransactionButton>
             <Button className={classes.footerButton} variant="contained" color="primary">
               {t(tKeys.sellCashflow.getKey())}
             </Button>

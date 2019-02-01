@@ -79,13 +79,15 @@ contract IC2FCPayments is IC2FC {
 
     
     function executeOrder(
+        uint256 tokenId, //tokenId
         uint256 orderId //orderId
     ) public
         returns (bool success);
 
     function getByOrderId(
+        uint256 tokenId, //TokenId
         uint256 orderId //OrderId
-    ) public
+    ) public view
         returns (
             address subscriber,
             uint256 pendingDatePayment, 

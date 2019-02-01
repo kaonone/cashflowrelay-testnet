@@ -173,7 +173,10 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
     )
         public onlySubscriberOrOwner(tokenId) onlyOrderNotPayed(tokenId, orderId)
         returns (bool success) {
-        _ordersIds[tokenId][orderId].isDeleted = true;
+        address _owner = ownerOf(tokenId);
+        Order storage _o = _ordersIds[tokenId][orderId];
+        _o.isDeleted = true;
+        emit CancelOrder(tokenId, _o.subscriber, _owner, tokenAddress, _o.amount, _o.datePayment);
         return true;
     }
 
@@ -202,6 +205,24 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
             _o.isPayed,
             _o.isDeleted
         );
+    }
+
+
+    function executeOrder(
+        uint256 tokenId, //tokenId
+        uint256 orderId //orderId
+    ) public onlySubscriberOrOwner(tokenId)
+        returns (bool success)
+    {
+        Order storage _o = _ordersIds[tokenId][orderId];
+        uint256 _a = IERC20(tokenAddress).allowance(_o.subscriber, address(this));
+
+        if (_o.amount >= _a) {
+            IERC20(tokenAddress).transferFrom(_o.subscriber, address(this), _o.amount); 
+            return true;
+        } else {
+            return false;
+        }
     }
 
     //Withdraw Payments

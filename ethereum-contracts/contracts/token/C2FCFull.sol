@@ -171,8 +171,8 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         } else {
             _pendingPaymentDate = _c.created+2629743; //+30 days
         }
-        
-        _createOrder(tokenId, tokenAmount, _pendingPaymentDate);
+
+        _createOrder(tokenId, tokenAmount, _pendingPaymentDate, true);
 
         return true;
     }
@@ -225,15 +225,11 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
     ) public onlySubscriberOrOwner(tokenId)
         returns (bool success)
     {
-        Order storage _o = _ordersIds[tokenId][orderId];
-        uint256 _a = IERC20(tokenAddress).allowance(_o.subscriber, address(this));
-
-        if (_o.amount >= _a) {
-            IERC20(tokenAddress).transferFrom(_o.subscriber, address(this), _o.amount); 
-            return true;
-        } else {
-            return false;
+        bool isPayed = _executeOrder(tokenId, orderId);
+        if (isPayed == true) {
+            _executedOrdersCount[tokenId].add(1);
         }
+        return isPayed;
     }
 
     //function Execute Payment
@@ -242,7 +238,9 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         uint256 tokenAmount //the token amount paid to the publisher
     ) public
         returns (bool success) {
-        
+        uint256 _pendingPaymentDate = block.timestamp;
+        uint256 _orderId = _createOrder(tokenId, tokenAmount, _pendingPaymentDate, false);
+        _executeOrder(tokenId, _orderId);
         return true;
     }
 
@@ -296,18 +294,46 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
     function _createOrder (        
         uint256 tokenId,
         uint256 tokenAmount, //the token amount paid to the publisher)
-        uint256 pendingPaymentDate
+        uint256 pendingPaymentDate,
+        bool isRegular
     )   internal
-        returns (bool success) {
+        returns (uint256 orderId) {
         uint256 _orderId = _totalSupplyOrders().add(1);
         Cashflow storage _c = _cashflowsIds[tokenId];
 
-        if (pendingPaymentDate <= (_c.created+_c.duration)) { 
+
+        if (isRegular == true) {
+            if (pendingPaymentDate <= (_c.created+_c.duration)) { 
+                _ordersIds[tokenId][_orderId] = Order(_c.subscriber, pendingPaymentDate, 0, tokenAmount, false, false);
+                _allOrders.push(_orderId);
+                return _orderId;
+            } else {
+                return 0;
+            }
+        } else {
             _ordersIds[tokenId][_orderId] = Order(_c.subscriber, pendingPaymentDate, 0, tokenAmount, false, false);
+            _allOrders.push(_orderId);
+            return _orderId;
+        }  
+    }
+
+
+    function _executeOrder(
+        uint256 tokenId, //tokenId
+        uint256 orderId //orderId
+    ) internal 
+        returns (bool success)
+    {
+        Order storage _o = _ordersIds[tokenId][orderId];
+        uint256 _a = IERC20(tokenAddress).allowance(_o.subscriber, address(this));
+
+        if (_o.amount >= _a) {
+            IERC20(tokenAddress).transferFrom(_o.subscriber, address(this), _o.amount); 
+            _o.isPayed = true;
             return true;
         } else {
             return false;
-        }  
+        }
     }
 
     /**

@@ -43,10 +43,10 @@ const getParamsByRequest: { [key in SetTransactionType]: ParamsConverter<key> } 
   addMinter: () => [],
   createCashFlow: (data) => [
     data.name,
-    data.value.toString(),
-    data.commit.toString(),
-    data.interestRate.toString(),
-    data.duration.toString(),
+    data.value.toFixed(0),
+    data.commit.toFixed(0),
+    data.interestRate.toFixed(0),
+    data.duration.toFixed(0),
   ],
 };
 

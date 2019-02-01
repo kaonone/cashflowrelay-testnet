@@ -161,8 +161,19 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         uint256 tokenAmount //the token amount paid to the publisher)
     )   public onlySubscriberOrOwner(tokenId)
         returns (bool success) {  
+        
+        uint256 _pendingPaymentDate = 0;
+        Cashflow storage _c = _cashflowsIds[tokenId];
 
-        _createOrder(tokenId, tokenAmount);
+        if (_c.lastPayment>0) {
+            uint256 _countExecutedOrders = _executedOrdersCount[tokenId];
+            _pendingPaymentDate = _c.created+(_countExecutedOrders*2629743);
+        } else {
+            _pendingPaymentDate = _c.created+2629743; //+30 days
+        }
+        
+        _createOrder(tokenId, tokenAmount, _pendingPaymentDate);
+
         return true;
     }
 
@@ -226,6 +237,14 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
     }
 
     //function Execute Payment
+    function executePayment(
+        uint256 tokenId,
+        uint256 tokenAmount //the token amount paid to the publisher
+    ) public
+        returns (bool success) {
+        
+        return true;
+    }
 
     //function Cancel Payment
 
@@ -276,23 +295,15 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
     //create order
     function _createOrder (        
         uint256 tokenId,
-        uint256 tokenAmount //the token amount paid to the publisher)
+        uint256 tokenAmount, //the token amount paid to the publisher)
+        uint256 pendingPaymentDate
     )   internal
         returns (bool success) {
         uint256 _orderId = _totalSupplyOrders().add(1);
         Cashflow storage _c = _cashflowsIds[tokenId];
 
-        uint256 _pendingPaymentDate = 0;
-
-        if (_c.lastPayment>0) {
-            uint256 _countExecutedOrders = _executedOrdersCount[tokenId];
-            _pendingPaymentDate = _c.created+(_countExecutedOrders*2629743);
-        } else {
-            _pendingPaymentDate = _c.created+2629743; //+30 days
-        }
-
-        if (_pendingPaymentDate <= (_c.created+_c.duration)) { 
-            _ordersIds[tokenId][_orderId] = Order(_c.subscriber, _pendingPaymentDate, 0, tokenAmount, false, false);
+        if (pendingPaymentDate <= (_c.created+_c.duration)) { 
+            _ordersIds[tokenId][_orderId] = Order(_c.subscriber, pendingPaymentDate, 0, tokenAmount, false, false);
             return true;
         } else {
             return false;

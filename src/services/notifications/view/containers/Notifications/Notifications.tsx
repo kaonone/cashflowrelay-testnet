@@ -41,7 +41,7 @@ class Notifications extends React.Component<IProps> {
 
   public render() {
     return (
-      <Button onClick={this.testClick}>TEdtd</Button>
+      <Button variant="contained" onClick={this.testClick}>Push notification</Button>
     );
   }
 
@@ -51,9 +51,10 @@ class Notifications extends React.Component<IProps> {
       {
         id: uuid(),
         options: {
-          variant: 'success'
+          variant: 'success',
+          autoHideDuration: 10000,
         },
-        message: 'test',
+        message: 'Notification succes',
       },
     );
   }

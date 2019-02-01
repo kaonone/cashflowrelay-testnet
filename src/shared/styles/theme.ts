@@ -25,6 +25,7 @@ const colors = {
   tundora: '#4A4A4A',
   salem: '#0EA33A',
   ripeLemon: '#f8e71c',
+  blackCurrant: '#2E2639',
 };
 
 export const theme = {

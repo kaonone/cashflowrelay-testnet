@@ -13,3 +13,4 @@ export { default as OutlinedStar } from './OutlinedStar';
 export { default as ContentCopy } from './ContentCopy';
 export { default as QrCode } from './QrCode';
 export { default as CircleArrow } from './CircleArrow';
+export { default as Alert } from './Alert';

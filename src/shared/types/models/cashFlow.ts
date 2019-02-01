@@ -1,24 +1,38 @@
+import BigNumber from 'bignumber.js';
+
 export type Instalments = Record<'paid' | 'due' | 'missed', number>;
 
 export interface IToken {
+  // from contract
+  amount: BigNumber;
+  balance: BigNumber;
+  createdAt: number; // in milliseconds
+  duration: number; // in milliseconds
   id: number;
-  status: ITokenStatus;
-  number: number;
+  instalmentSize: BigNumber;
+  interestRate: number; // in percent
+  lastPaymentDate: number; // in milliseconds
   name: string;
   payer: string;
-  lender: string;
-  rating?: number;
-  payerRating: number;
-  firstInstalmentDate: string;
-  lastInstalmentDate: string;
-  nextInstalmentDate: string;
-  instalmentSize: number;
-  instalments: Instalments;
-  totalInstalment: number;
-  dueAmount: number;
-  balance: number;
-  discount: number;
-  price?: number;
+
+  // contract derivative
+  isCreatedByMe: boolean;
+  periodDuration: number; // in millisecond
+  firstInstalmentDate: number; // in milliseconds
+  lastInstalmentDate: number; // in milliseconds
+  instalmentCount: number;
+}
+
+export interface IBlockChainToken {
+  balance: string; // c2fc balance
+  commit: string; // installment size
+  created: string; // in seconds
+  duration: string; // in seconds
+  interestRate: string;
+  lastPayment: string; // in seconds
+  name: string; // token name
+  subscriber: string; // payer address
+  value: string; // full repayment amount
 }
 
 export type TokenType = 'incoming' | 'obligations' | 'selling';

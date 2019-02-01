@@ -1,118 +1,142 @@
 import * as React from 'react';
 import { bind } from 'decko';
+import * as moment from 'moment';
+import cn from 'classnames';
 
-import { StylesProps, provideStyles } from './TokenCard.style';
+import { ShowMainContractData } from 'services/transactions';
+import { i18nConnect, ITranslateProps, tKeys as tKeysAll } from 'services/i18n';
 
-// import { ExpansionPanelSummary } from '@material-ui/core';
+import { IToken, TokenType } from 'shared/types/models';
+import { ExpansionPanel, ExpansionPanelDetails, Button, DonutChart, ExpansionPanelSummary } from 'shared/view/elements';
+import { ContentCopy, CircleArrow } from 'shared/view/elements/Icons';
+import { toFixed } from 'shared/helpers/integer';
+import { formatNumber } from 'shared/helpers/format';
 
 import Header from './Header/Header';
-import { ExpansionPanel, ExpansionPanelDetails, Button, DonutChart, ExpansionPanelSummary } from 'shared/view/elements';
-import { ContentCopy, QrCode, CircleArrow } from 'shared/view/elements/Icons';
-import { i18nConnect, ITranslateProps, tKeys as tKeysAll } from 'services/i18n';
-import { toFixed } from 'shared/helpers/integer';
-import { IToken, TokenType } from 'shared/types/models';
-import { SendTransactionButton } from 'services/transactions';
+import { StylesProps, provideStyles } from './TokenCard.style';
 
 const tKeys = tKeysAll.features.manageCashFlows;
 
-type MetricKeys =
-  keyof Pick<IToken, 'id' | 'payer' | 'lender' | 'instalmentSize' | 'firstInstalmentDate' | 'lastInstalmentDate'>;
+type MetricKey =
+  keyof Pick<IToken, 'id' | 'payer' | 'instalmentSize' | 'firstInstalmentDate' | 'lastInstalmentDate'> | 'lender';
 
 interface IOwnProps {
+  className?: string;
+  tokenId: number;
   type: TokenType;
-  token: IToken;
   expanded: boolean;
   onToggle(id: number): void;
+  isNeedDisplay?(token: IToken): boolean;
 }
 
 type IProps = IOwnProps & StylesProps & ITranslateProps;
 
 class TokenCard extends React.PureComponent<IProps> {
   public render() {
-    const {
-      classes, type, expanded, token,
-      t, theme } = this.props;
-
-    const { instalmentSize, instalments, totalInstalment } = token;
-    const paided = instalmentSize * instalments.paid;
-    const paidedPercent = toFixed(paided / instalmentSize, 1);
+    const { classes, className, type, expanded, t, theme, isNeedDisplay, tokenId } = this.props;
 
     return (
-      <div className={classes.root}>
-        <ExpansionPanel expanded={expanded} onChange={this.onToggle}>
-          <ExpansionPanelSummary
-            className={classes.summary}
-            classes={{ content: classes.summaryContent }}
-          >
-            <Header
-              token={token}
-              expanded={expanded}
-              type={type}
-            />
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails className={classes.details}>
-            <div className={classes.main}>
-              <div className={classes.leftSection} >
-                {(['id', 'payer', 'lender'] as MetricKeys[]).map(this.renderMetric)}
-              </div>
-              <div className={classes.rightSection}>
-                {(['instalmentSize', 'firstInstalmentDate', 'lastInstalmentDate'] as MetricKeys[])
-                  .map(this.renderMetric)}
-              </div>
-              <div className={classes.progress}>
-                <DonutChart
-                  title={t(
-                    tKeys.howMuchInstalmentIsComplete.getKey(),
-                    { paid: paided, total: totalInstalment, percent: paidedPercent },
-                  )}
-                  total={totalInstalment}
-                  segments={[
-                    { color: theme!.extra.colors.salem, value: paided },
-                    { color: theme!.extra.colors.monza, value: instalmentSize * instalments.missed },
-                    { color: theme!.extra.colors.buttercup, value: instalmentSize * instalments.due },
-                  ]}
-                />
-              </div>
-            </div>
-            {['Repayment history', 'Withdrawal history'].map(stub => (
-              <div key={stub} className={classes.stubSection}>
-                <span>{stub}</span>
-                <CircleArrow />
-              </div>
-            ))}
-          </ExpansionPanelDetails>
-          <div className={classes.footer}>
-            {this.renderActions()}
+      <ShowMainContractData<'cashflowFor'> type="cashflowFor" request={{ tokenId }}>
+        {({ data: token }) => {
+          if (!token) { return 'Token loading...'; }
+          if (isNeedDisplay && !isNeedDisplay(token)) { return null; }
 
-          </div>
-        </ExpansionPanel>
-      </div>
+          const { instalmentSize, amount } = token;
+          const paidAmount = 100; // TODO ds: calculate from orders
+          const missedAmount = 100; // TODO ds: calculate from orders
+          const dueAmount = 100; // TODO ds: calculate from orders
+          const paidPercent = toFixed(paidAmount / instalmentSize.toNumber(), 1);
+
+          return (
+            <div className={cn(classes.root, className)}>
+              <ExpansionPanel expanded={expanded} onChange={this.onToggle}>
+                <ExpansionPanelSummary
+                  className={classes.summary}
+                  classes={{ content: classes.summaryContent }}
+                >
+                  <Header
+                    token={token}
+                    expanded={expanded}
+                    type={type}
+                  />
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails className={classes.details}>
+                  <div className={classes.main}>
+                    <div className={classes.leftSection} >
+                      {(['id', 'payer', 'lender'] as MetricKey[]).map(this.renderMetric.bind(null, token))}
+                    </div>
+                    <div className={classes.rightSection}>
+                      {(['instalmentSize', 'firstInstalmentDate', 'lastInstalmentDate'] as MetricKey[])
+                        .map(this.renderMetric.bind(null, token))}
+                    </div>
+                    <div className={classes.progress}>
+                      <DonutChart
+                        title={t(
+                          tKeys.howMuchInstalmentIsComplete.getKey(),
+                          { paid: paidAmount, total: amount.toNumber(), percent: paidPercent },
+                        )}
+                        total={amount.toNumber()}
+                        segments={[
+                          { color: theme!.extra.colors.salem, value: paidAmount },
+                          { color: theme!.extra.colors.monza, value: missedAmount },
+                          { color: theme!.extra.colors.buttercup, value: dueAmount },
+                        ]}
+                      />
+                    </div>
+                  </div>
+                  {['Repayment history', 'Withdrawal history'].map(stub => (
+                    <div key={stub} className={classes.stubSection}>
+                      <span>{stub}</span>
+                      <CircleArrow />
+                    </div>
+                  ))}
+                </ExpansionPanelDetails>
+                <div className={classes.footer}>
+                  {this.renderActions()}
+                </div>
+              </ExpansionPanel>
+            </div>
+          );
+        }}
+      </ShowMainContractData>
     );
   }
 
   @bind
   public onToggle() {
-    const { token, onToggle } = this.props;
-    onToggle(token.id);
+    const { tokenId, onToggle } = this.props;
+    onToggle(tokenId);
   }
 
   @bind
-  public renderMetric(key: MetricKeys) {
-    const { classes, t, token } = this.props;
+  public renderMetric(token: IToken, key: MetricKey) {
+    const { classes, t } = this.props;
+    const valueByMetricKey: Record<MetricKey, () => React.ReactNode> = {
+      id: () => token.id,
+      firstInstalmentDate: () => moment(token.firstInstalmentDate).format('LL'),
+      lastInstalmentDate: () => moment(token.lastInstalmentDate).format('LL'),
+      instalmentSize: () => t(tKeys.amountPerPeriodicity.getKey(), {
+        amount: formatNumber(token.instalmentSize.toNumber(), 2),
+        periodicity: moment.duration(token.periodDuration).humanize(),
+      }),
+      payer: () => token.payer,
+      lender: () => (
+        <ShowMainContractData<'ownerOf'> type="ownerOf" request={{ tokenId: token.id }}>
+          {({ data }) => data || 'Loading...'}
+        </ShowMainContractData>
+      ),
+    };
+
     return (
       <div key={key} className={classes.metricField}>
         <div className={classes.metricTitle}>
           {t(tKeys[key].getKey())}
         </div>
         <div className={classes.metricValue}>
-          {key === 'instalmentSize' ? t(tKeys.daiMonthly.getKey(), { amount: token[key] }) : token[key]}
-          {
-            (key === 'lender' || key === 'payer') &&
-            <>
-              <ContentCopy className={classes.icon} />
-              <QrCode className={classes.icon} />
-            </>
-          }
+          {valueByMetricKey[key]()}
+          {(key === 'lender' || key === 'payer') && (<>
+            <ContentCopy className={classes.icon} />
+          </>)}
         </div>
       </div>
     );
@@ -120,41 +144,43 @@ class TokenCard extends React.PureComponent<IProps> {
 
   public renderActions() {
     const { classes, t, type } = this.props;
+    const onSaleNow: boolean = false; // TODO ds: check token on sale
+    const isFullRepaid: boolean = false; // TODO ds: check full repaid
+
+    const withdrawButton = (
+      <Button className={classes.footerButton} variant="contained" color="primary">
+        {t(tKeys.withdrawDai.getKey())}
+      </Button>
+    );
+    const sellButton = (
+      <Button className={classes.footerButton} variant="contained" color="primary" disabled={onSaleNow}>
+        {t(tKeys.sellCashflow.getKey())}
+      </Button>
+    );
+
     switch (type) {
       case 'incoming':
         return (
           <>
-            <Button className={classes.footerButton} variant="contained" color="primary">
-              {t(tKeys.sellCashflow.getKey())}
-            </Button>
-            <Button className={classes.footerButton} variant="contained" color="primary" >
-              {t(tKeys.withdrawDai.getKey())}
-            </Button>
+            {sellButton}
+            {!onSaleNow && withdrawButton}
           </>
         );
       case 'obligations':
         return (
           <>
-            <SendTransactionButton
-              type="addMinter"
-              variant="contained"
-              color="primary"
-              data={null}
-            >
-              Add Minter
-            </SendTransactionButton>
-            <Button className={classes.footerButton} variant="contained" color="primary">
-              {t(tKeys.sellCashflow.getKey())}
+            <Button className={classes.footerButton} variant="contained" color="primary" >
+              {t(tKeys.payInstalment.getKey())}
             </Button>
+            {sellButton}
+            {!onSaleNow && isFullRepaid && withdrawButton}
           </>
         );
       case 'selling':
         return (
-          <>
-            <Button className={classes.footerButton} variant="contained" color="primary">
-              {t(tKeys.buyCashflow.getKey())}
-            </Button>
-          </>
+          <Button className={classes.footerButton} variant="contained" color="primary">
+            {t(tKeys.buyCashflow.getKey())}
+          </Button>
         );
     }
   }

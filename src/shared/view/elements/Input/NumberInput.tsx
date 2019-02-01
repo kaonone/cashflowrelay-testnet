@@ -16,6 +16,7 @@ interface ICustomProps {
 interface INumberProps {
   thousandSeparator?: boolean | string;
   prefix?: string;
+  suffix?: string;
   decimalScale?: number;
 }
 
@@ -38,7 +39,7 @@ const makeNumberInput = R.memoizeWith(R.toString, (ownProps: NumberFormatProps) 
 
 class NumberInput extends React.PureComponent<IProps> {
   public render() {
-    const { thousandSeparator, prefix, decimalScale, ...rest } = this.props;
+    const { thousandSeparator, prefix, suffix, decimalScale, ...rest } = this.props;
     return (
       <TextInput
         {...rest}
@@ -49,7 +50,7 @@ class NumberInput extends React.PureComponent<IProps> {
         }}
         InputProps={{
           ...rest.InputProps,
-          inputComponent: makeNumberInput({ prefix, thousandSeparator, decimalScale }),
+          inputComponent: makeNumberInput({ prefix, suffix, thousandSeparator, decimalScale }),
         }}
       />
     );

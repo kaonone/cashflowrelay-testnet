@@ -12,7 +12,7 @@ declare module 'drizzle' {
       [fnName: string]: Record<string, undefined | {
         args: any[];
         fnIndex: number;
-        value: string;
+        value: any;
       }>;
     }>;
     drizzleStatus: {

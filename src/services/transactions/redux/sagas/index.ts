@@ -2,7 +2,7 @@ import { put, takeEvery } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
 
 import { IDependencies } from 'shared/types/app';
-import { SetTransactionType, TransactionDataByType } from 'shared/types/models';
+import { SetTransactionType, TransactionRequestDataByType } from 'shared/types/models';
 import { mainContractName } from 'shared/constants';
 
 import * as NS from '../../namespace';
@@ -33,17 +33,21 @@ function* sendSaga({ drizzle }: IDependencies, action: NS.ISendTransaction) {
 
 const methodByType: Record<SetTransactionType, string> = {
   addMinter: 'addMinter',
-  createToken: 'mint',
-  transferFrom: 'transferFrom',
+  createCashFlow: 'createCashFlow',
 };
 
 type ParamsConverter<T extends SetTransactionType = SetTransactionType> =
-  (data: TransactionDataByType[T], account: string) => string[];
+  (data: TransactionRequestDataByType[T], account: string) => string[];
 
 const getParamsByRequest: { [key in SetTransactionType]: ParamsConverter<key> } = {
-  'addMinter': () => [],
-  'createToken': (data, account) => [account, data.tokenId.toString()],
-  'transferFrom': (data) => [data.from, data.to, data.tokenId.toString()],
+  addMinter: () => [],
+  createCashFlow: (data) => [
+    data.name,
+    data.value.toFixed(0),
+    data.commit.toFixed(0),
+    data.interestRate.toFixed(0),
+    data.duration.toFixed(0),
+  ],
 };
 
 export { getSaga };

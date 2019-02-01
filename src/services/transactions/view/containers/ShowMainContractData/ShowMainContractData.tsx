@@ -1,12 +1,21 @@
 import * as React from 'react';
+import BigNumber from 'bignumber.js';
 
-import { GetTransactionType, TransactionDataByType } from 'shared/types/models';
+import {
+  GetTransactionType, TransactionRequestDataByType, TransactionResponseDataByType, TransactionDataByType,
+} from 'shared/types/models';
 import { withDrizzle, InjectDrizzleProps } from 'shared/helpers/react';
+import { OneDAI } from 'shared/helpers/model';
 import { mainContractName } from 'shared/constants';
+
+interface IChildrenProps<T extends GetTransactionType> {
+  data: TransactionDataByType[T] | null;
+}
 
 interface IOwnProps<T extends GetTransactionType> {
   type: T;
-  data: TransactionDataByType[T];
+  request: TransactionRequestDataByType[T];
+  children?(props: IChildrenProps<T>): React.ReactNode;
 }
 
 type IProps = IOwnProps<GetTransactionType> & InjectDrizzleProps;
@@ -19,10 +28,11 @@ class ShowMainContractData extends React.PureComponent<IProps, IState> {
   public state: IState = { dataKey: '' };
 
   public componentDidMount() {
-    const { drizzle, type, data } = this.props;
+    const { drizzle, drizzleState, type, request } = this.props;
     const contract = drizzle.contracts[mainContractName];
+    const account = drizzleState.accounts[0];
 
-    const params = (getParamsByRequest[type] as ParamsConverter)(data);
+    const params = (getParamsByRequest[type] as ParamsConverter)(request, account);
 
     const dataKey = contract.methods[type].cacheCall(...params);
 
@@ -30,22 +40,64 @@ class ShowMainContractData extends React.PureComponent<IProps, IState> {
   }
 
   public render() {
-    const { drizzleState, type } = this.props;
+    const { drizzleState, type, request, children } = this.props;
     const contract = drizzleState.contracts[mainContractName];
+    const account = drizzleState.accounts[0];
 
-    const data = contract[type][this.state.dataKey];
-    return data && data.value !== undefined && data.value.toString() || null;
+    const fullResponse = contract[type][this.state.dataKey];
+    const response = fullResponse && fullResponse.value !== undefined && fullResponse.value || null;
+    const data = response && (convertResponseByType[type] as ResponseConverter)(response, request, account);
+    return typeof children === 'function' ? children({ data }) : response.toString();
   }
 }
 
 type ParamsConverter<T extends GetTransactionType = GetTransactionType> =
-  (data: TransactionDataByType[T]) => string[];
+  (request: TransactionRequestDataByType[T], account: string) => string[];
 
 const getParamsByRequest: { [key in GetTransactionType]: ParamsConverter<key> } = {
-  isMinter: (data) => [data.address.toString()],
+  isMinter: (data, account) => [data.address || account],
   ownerOf: (data) => [data.tokenId.toString()],
-  tokenByIndex: (data) => [data.index.toString()],
-  totalSupply: () => [],
+  cashflowFor: (data) => [data.tokenId.toString()],
+  idsOfCashflowsFor: (data, account) => [data.address || account],
+};
+
+type ResponseConverter<T extends GetTransactionType = GetTransactionType> =
+  (response: TransactionResponseDataByType[T], request: TransactionRequestDataByType[T], account: string) =>
+    TransactionDataByType[T];
+
+const convertResponseByType: { [key in GetTransactionType]: ResponseConverter<key> } = {
+  isMinter: response => response,
+  ownerOf: response => response,
+  // TODO ds: add memoize
+  cashflowFor: (response, request, account) => {
+    const amount = new BigNumber(response.value).div(OneDAI);
+    const balance = new BigNumber(response.balance).div(OneDAI);
+    const instalmentSize = new BigNumber(response.commit).div(OneDAI);
+    const instalmentCount = amount.div(instalmentSize).toNumber();
+    const duration = Number(response.duration) * 1000;
+    const periodDuration = duration / instalmentCount;
+    const createdAt = Number(response.created) * 1000;
+
+    return {
+      amount,
+      balance,
+      createdAt,
+      duration,
+      id: request.tokenId,
+      instalmentSize,
+      interestRate: Number(response.interestRate),
+      lastPaymentDate: Number(response.lastPayment) * 1000,
+      name: response.name,
+      payer: response.subscriber,
+
+      isCreatedByMe: response.subscriber === account,
+      instalmentCount,
+      periodDuration,
+      firstInstalmentDate: createdAt + periodDuration,
+      lastInstalmentDate: createdAt + duration,
+    };
+  },
+  idsOfCashflowsFor: response => response.map(Number),
 };
 
 const Container = withDrizzle(ShowMainContractData);

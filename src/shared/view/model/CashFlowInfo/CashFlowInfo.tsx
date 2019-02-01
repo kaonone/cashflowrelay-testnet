@@ -16,13 +16,13 @@ type PartialToken = Pick<
 
 type TokenField = SubSet<
   keyof PartialToken,
-  'amount' | 'instalmentSize' | 'duration' | 'firstInstalmentDate' | 'lastInstalmentDate'
+  'instalmentSize' | 'duration' | 'firstInstalmentDate' | 'lastInstalmentDate'
 >;
 
 interface IOwnProps {
   token: PartialToken;
   fields: TokenField[];
-  price?: number;
+  repayingAmount?: number;
   recommendedPrice?: string;
 }
 
@@ -37,21 +37,20 @@ class CashFlowInfo extends React.Component<IProps> {
       amount: formatNumber(this.props.token.instalmentSize.toNumber(), 2),
       periodicity: moment.duration(this.props.token.periodDuration).humanize(),
     }),
-    amount: () => `${formatNumber(this.props.token.amount.toNumber(), 2)} DAI`,
   };
 
   public render() {
-    const { classes, t, recommendedPrice, price, fields } = this.props;
+    const { classes, t, recommendedPrice, repayingAmount, fields, token } = this.props;
 
     return (
       <div>
-        {price !== undefined &&
+        {recommendedPrice === undefined &&
           <>
             <div className={classes.daiAmount}>
               <span>{t(tKeys.borrowingAmount.getKey())}</span>
-              <span>{`${formatNumber(price, 2)} DAI`}</span>
+              <span>{`${formatNumber(token.amount.toNumber(), 2)} DAI`}</span>
             </div>
-            <div className={classes.usdAmount}>{`${formatNumber(price, 2)} USD`}</div>
+            <div className={classes.usdAmount}>{`${formatNumber(token.amount.toNumber(), 2)} USD`}</div>
           </>
         }
         <div className={classes.tokenFields}>
@@ -59,6 +58,12 @@ class CashFlowInfo extends React.Component<IProps> {
             <div className={classes.tokenField}>
               <span>{t(tKeys.recommendedPrice.getKey())}</span>
               <span>{recommendedPrice}</span>
+            </div>
+          }
+          {repayingAmount &&
+            <div className={classes.tokenField}>
+              <span>{t(tKeys.repayingAmount.getKey())}</span>
+              <span>{`${repayingAmount} DAI`}</span>
             </div>
           }
           {fields.map(field => (

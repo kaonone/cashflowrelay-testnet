@@ -2,10 +2,12 @@ import * as React from 'react';
 
 import { BaseLayout } from 'modules/shared';
 import { CreateCashFlowForm } from 'features/getInFund';
+import { InjectedAuthRouterProps } from 'shared/helpers/authWrapper';
 
 import { provideStyles, StylesProps } from './CreateCashFlow.style';
 
-class CreateCashFlow extends React.PureComponent<StylesProps> {
+type IProps = InjectedAuthRouterProps & StylesProps;
+class CreateCashFlow extends React.PureComponent<IProps> {
 
   public render() {
     const { classes } = this.props;

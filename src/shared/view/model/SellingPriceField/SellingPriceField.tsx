@@ -39,7 +39,6 @@ class SellingPriceField extends React.Component<IProps> {
                   root: classes.cssOutlinedInput,
                   focused: classes.cssFocused,
                   notchedOutline: classes.notchedOutline,
-
                 },
               }}
               onChange={this.onChangeSellPrice}

@@ -5,7 +5,9 @@ import { connect } from 'react-redux';
 import { withRouter, RouteComponentProps } from 'react-router';
 
 import { withDrizzle } from 'shared/helpers/react';
-import { actions as userActions } from 'services/user';
+import { actions as userActions, selectors as userSelectors } from 'services/user';
+import { IAppReduxState } from 'shared/types/app';
+import { ICommunication } from 'shared/types/redux';
 
 interface IOwnProps {
   errorComp?: React.ReactNode;
@@ -13,24 +15,34 @@ interface IOwnProps {
   children: React.ReactNode;
   onInitialize?(drizzle: Drizzle): void;
 }
+
+interface IStateProps {
+  checkingAuth: ICommunication;
+}
+
 type ActionProps = typeof mapDispatch;
 
-type IProps = IOwnProps & ActionProps & InjectDrizzleProps & RouteComponentProps;
+type IProps = IOwnProps & ActionProps & IStateProps & InjectDrizzleProps & RouteComponentProps;
 
-class LoadingContainer extends React.Component<IProps> {
+interface IState {
+  checkedAuth: boolean;
+}
+class LoadingContainer extends React.Component<IProps, IState> {
+  public state: IState = { checkedAuth: false };
 
   public componentDidUpdate(prevProps: IProps) {
-    const { initialized, drizzle, onInitialize, checkIsUserSigned } = this.props;
-
+    const { initialized, drizzle, onInitialize, checkIsUserSigned, checkingAuth } = this.props;
     if (!prevProps.initialized && initialized) {
       checkIsUserSigned();
       onInitialize && onInitialize(drizzle);
+    }
+    if (prevProps.checkingAuth.isRequesting && !checkingAuth.isRequesting) {
+      this.setState({ checkedAuth: true });
     }
   }
 
   public render() {
     const { drizzleState, initialized } = this.props;
-
     if (drizzleState && drizzleState.web3.status === 'failed') {
       if (this.props.errorComp) {
         return this.props.errorComp;
@@ -74,7 +86,7 @@ class LoadingContainer extends React.Component<IProps> {
       );
     }
 
-    if (initialized) {
+    if (initialized && this.state.checkedAuth) {
       return this.props.children;
     }
 
@@ -95,8 +107,14 @@ class LoadingContainer extends React.Component<IProps> {
   }
 }
 
+function mapState(state: IAppReduxState): IStateProps {
+  return {
+    checkingAuth: userSelectors.selectCommunication(state, 'checkingIsUserSigned'),
+  };
+}
+
 const mapDispatch = {
   checkIsUserSigned: userActions.checkIsUserSigned,
 };
 
-export default withDrizzle(withRouter(connect(null, mapDispatch)(LoadingContainer)));
+export default withDrizzle(withRouter(connect(mapState, mapDispatch)(LoadingContainer)));

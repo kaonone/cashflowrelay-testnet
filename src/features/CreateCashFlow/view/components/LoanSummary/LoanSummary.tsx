@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as moment from 'moment';
-import { bind } from 'decko';
 
 import { i18nConnect, ITranslateProps, tKeys as allKeys } from 'services/i18n';
 import { formatNumber } from 'shared/helpers/format';

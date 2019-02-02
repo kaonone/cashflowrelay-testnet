@@ -18,7 +18,7 @@ const MarketplaceModule: IModule = {
         </Switch>
       </Route>
     ), (
-      <Route key="createCashFlow" path={routes.create.getRoutePath()} component={isLoggedRedirect(CreateCashFlow)} />
+      <Route key="createCashFlow" path={routes.create.getRoutePath()} component={CreateCashFlow} />
     )];
   },
 };

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { bind } from 'decko';
-import { Form } from 'react-final-form';
+import { Form, FormSpy } from 'react-final-form';
 import { MarkAs } from '_helpers';
 import { connect } from 'react-redux';
 import * as moment from 'moment';
@@ -11,6 +11,8 @@ import { i18nConnect, ITranslateProps, tKeys as allKeys, ITranslateKey } from 's
 import { actions as transactionActions } from 'services/transactions';
 import { lessThenOrEqual, moreThenOrEqual, moreThen, isRequired } from 'shared/validators';
 import { calcRepaymentAmount, calcInstallmentSize, OneDAI } from 'shared/helpers/model';
+import CashFlowInfo from 'shared/view/model/CashFlowInfo/CashFlowInfo';
+import { DrawerModal } from 'shared/view/components';
 import { TextInputField } from 'shared/view/form';
 import { Button } from 'shared/view/elements';
 
@@ -18,8 +20,7 @@ import { createCashFlowConfig } from '../../../constants';
 import { LoanSummary, ConfigurationCommitment } from '../../components';
 import { IFormData } from '../../../namespace';
 import { StylesProps, provideStyles } from './CreateCashFlowForm.style';
-import { DrawerModal } from 'shared/view/components';
-import CashFlowInfo from 'shared/view/model/CashFlowInfo/CashFlowInfo';
+
 
 const tKeys = allKeys.features.createCashFlow.form;
 
@@ -110,67 +111,86 @@ class CreateCashFlowForm extends React.PureComponent<IProps> {
 
     return (
       <Form
-        onSubmit={this.onSubmit}
+        onSubmit={this.openConfirmModal}
         validate={validateForm}
         initialValues={initialValues}
-        subscription={{ values: true }}
+        subscription={{ values: true, invalid: true }}
         decorators={[calculateDecorator]}
       >
-        {({ handleSubmit, values }) => {
-          const {
-            firstInstallmentDate, lastInstallmentDate, installmentSize,
-            duration, interest, amount, repayingAmount, periodDuration,
-          } = this.convertFormValues(values as IFormData);
-          return (
-            <form className={classes.root} onSubmit={handleSubmit}>
-              <div className={classes.commitmentFields}>
-                <ConfigurationCommitment />
-              </div>
-              <div className={classes.loanSummary}>
-                <LoanSummary
-                  nameInput={<TextInputField name="name" required fullWidth />}
-                  firstInstallmentDate={firstInstallmentDate}
-                  lastInstallmentDate={lastInstallmentDate}
-                  installmentSize={installmentSize}
-                  duration={duration}
-                  interest={interest}
-                  amount={amount}
-                  repayingAmount={repayingAmount}
-                  periodDuration={periodDuration}
-                  actions={[
-                    <Button key="" onClick={this.openConfirmModal} fullWidth variant="contained" color="primary">
-                      {t(tKeys.submitButton.getKey())}
-                    </Button>]
-                  }
-                />
-              </div>
-              <DrawerModal
-                open={this.state.openConfirmModal}
-                title={values.name}
-                onClose={this.closeConfirmModal}
-                hint={t(tKeys.creationHint.getKey())}
-                actions={
-                  [<Button variant="contained" color="primary" key="" fullWidth>
-                    {t(tKeys.createCashFlow.getKey())}
-                  </Button>]
-                }
-              >
-                <CashFlowInfo
-                  token={{
-                    instalmentSize: new BigNumber(installmentSize),
-                    amount: new BigNumber(amount),
-                    duration,
-                    firstInstalmentDate: firstInstallmentDate,
-                    lastInstalmentDate: lastInstallmentDate,
-                    periodDuration,
-                  }}
-                  repayingAmount={repayingAmount}
-                  fields={['instalmentSize', 'duration', 'firstInstalmentDate', 'lastInstalmentDate']}
-                />
-              </DrawerModal>
-            </form>
-          );
-        }}
+        {({ handleSubmit, invalid }) => (
+          <form className={classes.root} onSubmit={handleSubmit}>
+            <div className={classes.commitmentFields}>
+              <ConfigurationCommitment />
+            </div>
+            <FormSpy subscription={{ values: true }}>
+              {({ values }) => {
+                const {
+                  firstInstallmentDate, lastInstallmentDate, installmentSize,
+                  duration, interest, amount, repayingAmount, periodDuration,
+                } = this.convertFormValues(values as IFormData);
+
+                return (
+                  <>
+                    <div className={classes.loanSummary}>
+                      <LoanSummary
+                        nameInput={<TextInputField name={names.name} required fullWidth />}
+                        firstInstallmentDate={firstInstallmentDate}
+                        lastInstallmentDate={lastInstallmentDate}
+                        installmentSize={installmentSize}
+                        duration={duration}
+                        interest={interest}
+                        amount={amount}
+                        repayingAmount={repayingAmount}
+                        periodDuration={periodDuration}
+                        actions={[
+                          <Button
+                            key=""
+                            disabled={invalid}
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                          >
+                            {t(tKeys.submitButton.getKey())}
+                          </Button>]
+                        }
+                      />
+                    </div>
+                    <DrawerModal
+                      open={this.state.openConfirmModal}
+                      title={values.name}
+                      onClose={this.closeConfirmModal}
+                      hint={t(tKeys.creationHint.getKey())}
+                      actions={
+                        [<Button
+                          onClick={this.onSubmit.bind(this, values)}
+                          variant="contained"
+                          color="primary"
+                          fullWidth
+                          key=""
+                        >
+                          {t(tKeys.createCashFlow.getKey())}
+                        </Button>]
+                      }
+                    >
+                      <CashFlowInfo
+                        token={{
+                          instalmentSize: new BigNumber(installmentSize),
+                          amount: new BigNumber(repayingAmount),
+                          duration,
+                          firstInstalmentDate: firstInstallmentDate,
+                          lastInstalmentDate: lastInstallmentDate,
+                          periodDuration,
+                        }}
+                        price={amount}
+                        fields={['amount', 'instalmentSize', 'duration', 'firstInstalmentDate', 'lastInstalmentDate']}
+                      />
+                    </DrawerModal></>
+                );
+              }}
+            </FormSpy>
+          </form>
+        )}
       </Form>
     );
   }
@@ -222,6 +242,7 @@ class CreateCashFlowForm extends React.PureComponent<IProps> {
         interestRate: data.interest,
       },
     });
+    this.closeConfirmModal();
   }
 }
 

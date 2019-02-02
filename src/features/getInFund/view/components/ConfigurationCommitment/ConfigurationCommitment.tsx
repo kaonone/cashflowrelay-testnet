@@ -20,7 +20,7 @@ const getFieldProps = (field: keyof IFormData, t: ITranslateFunction) => ({
   label: t(tKeys.fields[field].getKey()),
 });
 
-class CreateCashFlowForm extends React.PureComponent<IProps> {
+class ConfigurationCommitment extends React.PureComponent<IProps> {
   public render() {
     const { classes, t } = this.props;
 
@@ -30,14 +30,13 @@ class CreateCashFlowForm extends React.PureComponent<IProps> {
 
     return (
       <div className={classes.root}>
-        <div className={classes.title}>Borrow</div>
+        <div className={classes.title}>{t(tKeys.borrow.getKey())}</div>
         <div className={classes.description}>
-          Create a commitment to future cashflow (C2FC) and
-          place it on the marketplace to get the money you need
+          {t(tKeys.creationDescription.getKey())}
         </div>
         <div className={classes.field}>
           <div className={classes.borrowAmount}>
-            <span>I want to borrow</span>
+            <span>{t(tKeys.fields.amount.getKey())}</span>
             <NumberInputField
               className={classes.borrowAmountInput}
               required
@@ -101,7 +100,7 @@ class CreateCashFlowForm extends React.PureComponent<IProps> {
 export default (
   i18nConnect(
     provideStyles(
-      CreateCashFlowForm,
+      ConfigurationCommitment,
     ),
   )
 );

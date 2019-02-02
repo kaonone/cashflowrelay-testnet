@@ -1,12 +1,12 @@
 import * as React from 'react';
 import * as moment from 'moment';
+import { bind } from 'decko';
 
 import { i18nConnect, ITranslateProps, tKeys as allKeys } from 'services/i18n';
+import { formatNumber } from 'shared/helpers/format';
 import { toFixed } from 'shared/helpers/integer';
 
 import { StylesProps, provideStyles } from './LoanSummary.style';
-import { bind } from 'decko';
-import { formatNumber } from 'shared/helpers/format';
 
 const tKeys = allKeys.features.createCashFlow.form;
 
@@ -68,11 +68,11 @@ class CreateCashFlowForm extends React.PureComponent<IProps> {
           </div>
           <div className={classes.field}>
             <span className={classes.fieldName}>{t(tKeys.fields.firstInstalment.getKey())}</span>
-            <span className={classes.fieldValue}>{moment(firstInstallmentDate).format('DD MMMM YYYY')}</span>
+            <span className={classes.fieldValue}>{moment(firstInstallmentDate).format('LL')}</span>
           </div>
           <div className={classes.field}>
             <span className={classes.fieldName}>{t(tKeys.fields.lastInstalment.getKey())}</span>
-            <span className={classes.fieldValue}>{moment(lastInstallmentDate).format('DD MMMM YYYY')}</span>
+            <span className={classes.fieldValue}>{moment(lastInstallmentDate).format('LL')}</span>
           </div>
           <div className={classes.actions}>
             {actions.map((action, i) => (

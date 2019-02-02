@@ -40,9 +40,9 @@ class Marketplace extends React.PureComponent<IProps> {
         >
           <CashFlowInfo
             token={mockCashFlow}
-            repayingAmount={2000}
+            price={1000}
             fields={[
-              'instalmentSize', 'duration',
+              'amount', 'instalmentSize', 'duration',
               'firstInstalmentDate', 'lastInstalmentDate',
             ]}
           />
@@ -57,9 +57,9 @@ class Marketplace extends React.PureComponent<IProps> {
         >
           <CashFlowInfo
             token={mockCashFlow}
-            repayingAmount={2000}
+            price={1000}
             fields={[
-              'instalmentSize', 'duration',
+              'amount', 'instalmentSize', 'duration',
               'firstInstalmentDate', 'lastInstalmentDate',
             ]}
           />

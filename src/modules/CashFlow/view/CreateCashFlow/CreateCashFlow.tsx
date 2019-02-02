@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { BaseLayout } from 'modules/shared';
-import { CreateCashFlowForm } from 'features/getInFund';
+import { CreateCashFlowForm } from 'features/CreateCashFlow';
 import { InjectedAuthRouterProps } from 'shared/helpers/authWrapper';
 
 import { provideStyles, StylesProps } from './CreateCashFlow.style';

@@ -21,7 +21,6 @@ import { LoanSummary, ConfigurationCommitment } from '../../components';
 import { IFormData } from '../../../namespace';
 import { StylesProps, provideStyles } from './CreateCashFlowForm.style';
 
-
 const tKeys = allKeys.features.createCashFlow.form;
 
 interface IPreparedFormData {

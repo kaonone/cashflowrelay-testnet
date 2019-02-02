@@ -88,9 +88,9 @@ const convertResponseByType: { [key in GetTransactionType]: ResponseConverter<ke
       interestRate: Number(response.interestRate),
       lastPaymentDate: Number(response.lastPayment) * 1000,
       name: response.name,
-      payer: response.subscriber,
+      payer: response.publisher,
 
-      isCreatedByMe: response.subscriber === account,
+      isCreatedByMe: response.publisher === account,
       instalmentCount,
       periodDuration,
       firstInstalmentDate: createdAt + periodDuration,

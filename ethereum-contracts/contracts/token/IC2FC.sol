@@ -7,6 +7,8 @@ import "../introspection/IERC165.sol";
 
 contract IC2FC is IERC165 {
 
+    address tokenAddress = 0xC4375B7De8af5a38a93548eb8453a498222C4fF2;
+
     event CashflowCreated(
         address subscriber, 
         string name, 
@@ -30,18 +32,18 @@ contract IC2FC is IERC165 {
         uint256 balance,
         uint256 created,
         uint256 lastPayment
-     );
+        );
 
 
     function balanceOfCashflowFor(uint256 tokenId) public view returns
     (
         uint256 balance
-    );
+        );
 
     function  idsOfCashflowsFor(address _owner) public view returns 
     (
         uint256[] memory tokenIds
-    );
+        );
 
     function createCashFlow(
         string memory name, 

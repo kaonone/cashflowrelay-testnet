@@ -4,7 +4,6 @@ import { bind } from 'decko';
 
 import { i18nConnect, ITranslateProps, tKeys as allKeys } from 'services/i18n';
 import { formatNumber } from 'shared/helpers/format';
-import { toFixed } from 'shared/helpers/integer';
 
 import { StylesProps, provideStyles } from './LoanSummary.style';
 
@@ -27,13 +26,7 @@ interface IOwnProps {
 
 type IProps = IOwnProps & StylesProps & ITranslateProps;
 
-interface IState {
-  openConfirmModal: boolean;
-}
-
-class CreateCashFlowForm extends React.PureComponent<IProps> {
-  public state: IState = { openConfirmModal: false };
-
+class LoanSummary extends React.PureComponent<IProps> {
   public render() {
     const {
       classes, t, nameInput, actions, duration, periodDuration,
@@ -47,11 +40,11 @@ class CreateCashFlowForm extends React.PureComponent<IProps> {
         <div>
           <div className={classes.field}>
             <span className={classes.fieldName}>{t(tKeys.fields.borrowingAmount.getKey())}</span>
-            <span className={classes.fieldValue}>{`${amount || '-'} DAI`}</span>
+            <span className={classes.fieldValue}>{`${formatNumber(amount, 2)} DAI`}</span>
           </div>
           <div className={classes.field}>
             <span className={classes.fieldName}>{t(tKeys.fields.repayingAmount.getKey())}</span>
-            <span className={classes.fieldValue}>{`${toFixed(repayingAmount, 2)} DAI (${interest}%)`}</span>
+            <span className={classes.fieldValue}>{`${formatNumber(repayingAmount, 2)} DAI (${interest}%)`}</span>
           </div>
           <div className={classes.field}>
             <span className={classes.fieldName}>{t(tKeys.fields.installmentSize.getKey())}</span>
@@ -63,7 +56,7 @@ class CreateCashFlowForm extends React.PureComponent<IProps> {
             </span>
           </div>
           <div className={classes.field}>
-            <span className={classes.fieldName}>{t(tKeys.fields.installmentCount.getKey())}</span>
+            <span className={classes.fieldName}>{t(tKeys.fields.duration.getKey())}</span>
             <span className={classes.fieldValue}>{moment.duration(duration).humanize()}</span>
           </div>
           <div className={classes.field}>
@@ -83,18 +76,13 @@ class CreateCashFlowForm extends React.PureComponent<IProps> {
       </div>
     );
   }
-
-  @bind
-  public closeConfirmModal() {
-    this.setState({ openConfirmModal: false });
-  }
 }
 
 export { IOwnProps };
 export default (
   i18nConnect(
     provideStyles(
-      CreateCashFlowForm,
+      LoanSummary,
     ),
   )
 );

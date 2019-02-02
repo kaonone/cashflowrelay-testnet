@@ -113,21 +113,20 @@ class CreateCashFlowForm extends React.PureComponent<IProps> {
         onSubmit={this.openConfirmModal}
         validate={validateForm}
         initialValues={initialValues}
-        subscription={{ values: true, invalid: true }}
         decorators={[calculateDecorator]}
+        subscription={{}}
       >
-        {({ handleSubmit, invalid }) => (
+        {({ handleSubmit }) => (
           <form className={classes.root} onSubmit={handleSubmit}>
             <div className={classes.commitmentFields}>
               <ConfigurationCommitment />
             </div>
-            <FormSpy subscription={{ values: true }}>
-              {({ values }) => {
+            <FormSpy subscription={{ values: true, invalid: true, submitFailed: true }}>
+              {({ values, invalid, submitFailed }) => {
                 const {
                   firstInstallmentDate, lastInstallmentDate, installmentSize,
                   duration, interest, amount, repayingAmount, periodDuration,
                 } = this.convertFormValues(values as IFormData);
-
                 return (
                   <>
                     <div className={classes.loanSummary}>
@@ -144,7 +143,7 @@ class CreateCashFlowForm extends React.PureComponent<IProps> {
                         actions={[
                           <Button
                             key=""
-                            disabled={invalid}
+                            disabled={submitFailed && invalid}
                             type="submit"
                             fullWidth
                             variant="contained"

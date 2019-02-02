@@ -72,6 +72,5 @@ class CashFlowInfo extends React.Component<IProps> {
     );
   }
 }
-
 export { IProps };
 export default i18nConnect(provideStyles(CashFlowInfo));

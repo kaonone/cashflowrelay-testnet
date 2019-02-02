@@ -1,7 +1,11 @@
 import * as React from 'react';
 import { Drizzle } from 'drizzle';
 import { InjectDrizzleProps } from 'drizzle-react';
+import { connect } from 'react-redux';
+import { withRouter, RouteComponentProps } from 'react-router';
+
 import { withDrizzle } from 'shared/helpers/react';
+import { actions as userActions } from 'services/user';
 
 interface IOwnProps {
   errorComp?: React.ReactNode;
@@ -9,13 +13,17 @@ interface IOwnProps {
   children: React.ReactNode;
   onInitialize?(drizzle: Drizzle): void;
 }
+type ActionProps = typeof mapDispatch;
 
-type IProps = IOwnProps & InjectDrizzleProps;
+type IProps = IOwnProps & ActionProps & InjectDrizzleProps & RouteComponentProps;
 
 class LoadingContainer extends React.Component<IProps> {
+
   public componentDidUpdate(prevProps: IProps) {
-    const { initialized, drizzle, onInitialize } = this.props;
+    const { initialized, drizzle, onInitialize, checkIsUserSigned } = this.props;
+
     if (!prevProps.initialized && initialized) {
+      checkIsUserSigned();
       onInitialize && onInitialize(drizzle);
     }
   }
@@ -87,4 +95,8 @@ class LoadingContainer extends React.Component<IProps> {
   }
 }
 
-export default withDrizzle(LoadingContainer);
+const mapDispatch = {
+  checkIsUserSigned: userActions.checkIsUserSigned,
+};
+
+export default withDrizzle(withRouter(connect(null, mapDispatch)(LoadingContainer)));

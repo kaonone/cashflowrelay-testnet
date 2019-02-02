@@ -5,7 +5,9 @@ import * as sigUtil from 'eth-sig-util';
 import { PromisedReturnType } from '_helpers';
 import { JsonRPCResponse } from 'web3/providers';
 
+import { storageKeys } from 'services/storage';
 import { actions as userAction } from 'services/user';
+import { messageForSignature } from 'shared/constants';
 import { IDependencies } from 'shared/types/app';
 import { getErrorMsg } from 'shared/helpers';
 
@@ -20,13 +22,15 @@ function getSaga(deps: IDependencies) {
   };
 }
 
-export function* signInSaga({ drizzle }: IDependencies, action: NS.ISignIn) {
+export function* signInSaga({ drizzle, storage }: IDependencies, action: NS.ISignIn) {
   const { address } = action.payload;
   try {
-    const isSigned: PromisedReturnType<typeof signMsg> = yield call(signMsg, drizzle.web3, address);
-    if (!isSigned) {
+    const res: PromisedReturnType<typeof signMsg> = yield call(signMsg, drizzle.web3, address);
+    if (!res.signed) {
       throw new Error('Is not signed');
     }
+
+    storage.set(storageKeys.signResult, res.result);
     yield put(actions.signInSuccess());
     yield put(userAction.completeAuthentication(address));
   } catch (error) {
@@ -35,9 +39,9 @@ export function* signInSaga({ drizzle }: IDependencies, action: NS.ISignIn) {
   }
 }
 
-async function signMsg(web3: Web3, from: string): Promise<boolean> {
+async function signMsg(web3: Web3, from: string): Promise<{ signed: boolean, result?: any }> {
   return new Promise((resolve, reject) => {
-    const msg = web3.utils.stringToHex('Sign this message');
+    const msg = web3.utils.stringToHex(messageForSignature);
     (web3.currentProvider as any).sendAsync({
       method: 'personal_sign',
       params: [msg, from],
@@ -51,9 +55,9 @@ async function signMsg(web3: Web3, from: string): Promise<boolean> {
         sig: result.result,
       });
       if (recovered.toLowerCase() === from.toLowerCase()) {
-        resolve(true);
+        resolve({ signed: true, result: result.result });
       } else {
-        resolve(false);
+        resolve({ signed: false });
       }
     });
   });

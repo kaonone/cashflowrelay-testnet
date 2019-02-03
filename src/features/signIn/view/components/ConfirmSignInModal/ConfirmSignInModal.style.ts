@@ -3,19 +3,25 @@ import { rule } from 'shared/helpers/style';
 
 const styles = ({ extra: theme }: Theme) => ({
   root: rule({
-    padding: theme.spacing.unit * 4,
+    padding: theme.spacing.unit * 3,
+    paddingTop: theme.spacing.unit * 1.5,
   }),
   paragraph: rule({
-    fontSize: '1rem',
+    fontSize: '0.625rem',
+    color: theme.colors.tundora,
     marginTop: theme.spacing.unit * 2,
   }),
   address: rule({
-    fontSize: '1.5rem',
-    color: theme.palette.text.positive,
+    fontWeight: 'bold',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+
   }),
   actions: rule({
     display: 'flex',
     marginTop: theme.spacing.unit * 2,
+    fontSize: '0.75rem',
   }),
   action: rule({
     width: 0,

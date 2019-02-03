@@ -44,12 +44,9 @@ class Modal extends React.Component<IProps> {
       >
         {!!title && (
           <div className={classes.title}>
-            <CrossButton isHidden classes={classes} />
             {title}
-            <CrossButton classes={classes} onClick={onClose} />
           </div>
         )}
-        {!title && <CrossButton isAbsolute classes={classes} onClick={onClose} />}
         {children}
       </ReactModal>
     );

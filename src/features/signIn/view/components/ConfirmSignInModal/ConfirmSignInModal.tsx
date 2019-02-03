@@ -21,7 +21,7 @@ interface IProps {
 function ConfirmSignInModal(props: IProps & StylesProps & ITranslateProps) {
   const { classes, isOpen, t, address, onClose: onCancel, onConfirm, signing: { isRequesting } } = props;
   return (
-    <Modal size="large" isOpen={isOpen} title={t(tKeys.title.getKey())} onClose={!isRequesting ? onCancel : undefined}>
+    <Modal size="small" isOpen={isOpen} title={t(tKeys.title.getKey())} onClose={!isRequesting ? onCancel : undefined}>
       <div className={classes.root}>
         <p className={classes.paragraph}>{t(tKeys.beforeAddressDescription.getKey())}</p>
         <p className={cn(classes.paragraph, classes.address)}>{address}</p>
@@ -29,8 +29,7 @@ function ConfirmSignInModal(props: IProps & StylesProps & ITranslateProps) {
         <div className={classes.actions}>
           <Button
             className={classes.action}
-            variant="outlined"
-            color="primary"
+            color="secondary"
             onClick={onCancel}
             disabled={isRequesting}
           >
@@ -38,8 +37,8 @@ function ConfirmSignInModal(props: IProps & StylesProps & ITranslateProps) {
           </Button>
           <Button
             className={classes.action}
-            variant="contained"
-            color="primary"
+            variant="outlined"
+            color="secondary"
             onClick={onConfirm}
             disabled={isRequesting}
           >

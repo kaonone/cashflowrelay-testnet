@@ -42,9 +42,12 @@ const styles = ({ extra: theme }: Theme) => ({
     alignItems: 'stretch',
     justifyContent: 'center',
     flexDirection: 'column',
-    backgroundColor: theme.colors.white,
+    overflow: 'hidden',
+    backgroundColor: theme.colors.mercury,
     outline: 'none',
     opacity: 0,
+    border: `solid 1px ${theme.colors.tundora}`,
+    borderRadius: '4px',
 
     [theme.breakpoints.up('sm')]: rule({
       flexGrow: 0,
@@ -95,15 +98,13 @@ const styles = ({ extra: theme }: Theme) => ({
     display: 'flex',
     alignItems: 'center',
     textAlign: 'center',
-    justifyContent: 'space-between',
-    margin: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 4 - iconButtonPadding}px 0 ${theme.spacing.unit * 4}px`,
-    fontSize: '1.25rem',
-    fontWeight: 'bold',
+    justifyContent: 'center',
+    padding: `${theme.spacing.unit}px`,
+    fontSize: '12px',
+    fontWeight: 600,
     fontFamily: theme.typography.primaryFont,
-
-    [theme.breakpoints.up('sm')]: {
-      fontSize: '1.5rem',
-    },
+    backgroundColor: theme.colors.electricViolet,
+    color: theme.colors.white,
   }),
 
   cross: rule({

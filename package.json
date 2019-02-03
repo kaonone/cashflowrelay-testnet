@@ -204,6 +204,9 @@
     "yo": "^2.0.5"
   },
   "dependencies": {
+    "0x.js": "^3.0.3",
+    "@0x/connect": "^3.0.13",
+    "@0x/web3-wrapper": "^3.2.4",
     "@date-io/moment": "^1.0.1",
     "@material-ui/core": "^3.6.2",
     "@material-ui/icons": "^3.0.1",

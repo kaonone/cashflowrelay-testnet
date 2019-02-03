@@ -4,6 +4,9 @@ import { Store, Reducer, ActionCreator, Action } from 'redux';
 import { SagaIterator } from 'redux-saga';
 import { GenerateClassName } from 'jss';
 import { Drizzle } from 'drizzle';
+import { ContractWrappers } from '0x.js';
+import { Client } from '@0x/connect';
+import { Web3Wrapper } from '@0x/web3-wrapper';
 
 import * as adaptabilityNS from 'services/adaptability/namespace';
 import * as dataProviderNS from 'services/dataProvider/namespace';
@@ -40,6 +43,11 @@ export interface IDependencies {
   api: Api;
   drizzle: Drizzle;
   storage: LocalStorage;
+  Ox: {
+    client: Client;
+    contractWrappers: ContractWrappers;
+    web3Wrapper: Web3Wrapper;
+  };
 }
 
 export type IDictionary<T, S extends keyof any = string> = {

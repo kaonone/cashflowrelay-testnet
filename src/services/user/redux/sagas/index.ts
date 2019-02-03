@@ -21,13 +21,12 @@ export function getSaga(deps: IDependencies) {
     yield takeLatest(completeAuthenticationType, listenAccountChange, deps);
     yield takeLatest(checkIsUserSignedType, checkIsUserSigned, deps);
     yield takeLatest(logoutType, logoutSaga, deps);
-
   };
 }
 
 export function* checkIsUserSigned({ drizzle, storage }: IDependencies) {
   try {
-    const result = storage.get<string>(storageKeys.signResult);
+    const result = storage.get<string>(storageKeys.signedMessage);
 
     if (result) {
       const msg = drizzle.web3.utils.stringToHex(messageForSignature);

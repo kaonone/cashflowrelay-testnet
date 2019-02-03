@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { LoadingContainer } from 'shared/view/components';
+import LoadingContainer from './LoadingContainer/LoadingContainer';
 
 class App extends React.Component {
   public render() {

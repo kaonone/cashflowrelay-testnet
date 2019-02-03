@@ -1,3 +1,3 @@
 export const storageKeys = {
-  signResult: 'signResult',
+  signedMessage: 'signedMessage',
 };

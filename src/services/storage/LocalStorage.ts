@@ -45,7 +45,7 @@ class LocalStorage {
 
   public reset() {
     if (this.isLocalStorageAvailable) {
-      localStorage.removeItem(storageKeys.signResult);
+      localStorage.removeItem(storageKeys.signedMessage);
     }
   }
 

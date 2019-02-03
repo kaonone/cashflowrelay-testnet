@@ -7,6 +7,7 @@ export interface IReduxState {
   data: {
     confirmedAddress: string | null;
     isLogged: boolean;
+    isChecked: boolean;
   };
 }
 

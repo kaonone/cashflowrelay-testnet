@@ -9,5 +9,6 @@ export const initial: NS.IReduxState = {
   data: {
     confirmedAddress: null,
     isLogged: false,
+    isChecked: false,
   },
 };

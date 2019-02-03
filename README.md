@@ -4,8 +4,8 @@
 ### Install all dependencies
 - ```npm i``` install frontend and contracts dependencies
 
-### To start ethereum network locally
-- ```npm run start``` for start network, build and deploy contracts
+### Compile c2fc contracts
+- ```npm run compile-contract``` for compile c2fc contract
 
 ### To start locally
 - ```npm run dev``` for development environment in watch mode

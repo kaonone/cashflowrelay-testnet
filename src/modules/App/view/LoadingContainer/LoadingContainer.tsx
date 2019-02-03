@@ -24,23 +24,15 @@ type ActionProps = typeof mapDispatch;
 type IProps = IOwnProps & ActionProps & IStateProps & InjectDrizzleProps & RouteComponentProps;
 
 class LoadingContainer extends React.Component<IProps> {
-  public isEmptyAccounts: boolean = false;
 
   public componentDidUpdate(prevProps: IProps) {
     const { initialized, drizzle, onDrizzleInitialize, checkIsUserSigned, drizzleState } = this.props;
 
-    this.isEmptyAccounts = (
-      drizzleState &&
-      drizzleState.web3.status === 'initialized' &&
-      Object.keys(drizzleState.accounts).length === 0
-    );
-
     if (!prevProps.initialized && initialized) {
-      !this.isEmptyAccounts && drizzleState.web3.status !== 'failed' && checkIsUserSigned();
+      !this.isEmptyAccounts() && drizzleState.web3.status !== 'failed' && checkIsUserSigned();
       onDrizzleInitialize && onDrizzleInitialize(drizzle);
     }
   }
-
   public render() {
     const { drizzleState, initialized, isChecked } = this.props;
 
@@ -65,7 +57,7 @@ class LoadingContainer extends React.Component<IProps> {
       );
     }
 
-    if (this.isEmptyAccounts) {
+    if (this.isEmptyAccounts()) {
       return (
         <main className="container loading-screen">
           <div className="pure-g">
@@ -99,6 +91,13 @@ class LoadingContainer extends React.Component<IProps> {
         </div>
       </main>
     );
+  }
+
+  private isEmptyAccounts() {
+    const { drizzleState } = this.props;
+    return drizzleState &&
+      drizzleState.web3.status === 'initialized' &&
+      Object.keys(drizzleState.accounts).length === 0;
   }
 }
 

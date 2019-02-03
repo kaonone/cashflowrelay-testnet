@@ -4,7 +4,7 @@
   "description": "C2FC Exchanger",
   "scripts": {
     "postinstall": "npm --prefix ./ethereum-contracts i",
-    "start": "npm --prefix ./ethereum-contracts start",
+    "compile-contract": "npm --prefix ./ethereum-contracts run compile-contracts",
     "check-types": "node_modules/.bin/tsc -p . --noEmit -w",
     "dev": "npm run watch:dev",
     "fast": "better-npm-run watch:dev:fast",

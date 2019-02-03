@@ -6,6 +6,7 @@ import { IDependencies, IAppReduxState } from 'shared/types/app';
 
 import daiABI from 'blockchain/abi/dai.json';
 import C2FCFull from 'contracts/C2FCFull.json';
+import { LocalStorage } from 'services/storage';
 
 import { RPCSubprovider, Web3ProviderEngine, ContractWrappers } from '0x.js';
 import { HttpClient } from '@0x/connect';
@@ -42,6 +43,7 @@ export default function configureDeps(_store: Store<IAppReduxState>): IDependenc
   const options: IDrizzleOptions = { contracts };
   const drizzleStore = generateStore(options);
   const drizzle = new Drizzle(options, drizzleStore);
+  const storage = new LocalStorage('v1');
 
   const providerEngine = new Web3ProviderEngine();
   providerEngine.addProvider(new RPCSubprovider(networkConfig.rpcUrl));
@@ -54,6 +56,7 @@ export default function configureDeps(_store: Store<IAppReduxState>): IDependenc
   return {
     api,
     drizzle,
+    storage,
     Ox: {
       client: client0x,
       contractWrappers,

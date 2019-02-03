@@ -1,27 +1,40 @@
 import * as React from 'react';
 import { Drizzle } from 'drizzle';
 import { InjectDrizzleProps } from 'drizzle-react';
+import { connect } from 'react-redux';
+import { withRouter, RouteComponentProps } from 'react-router';
+
 import { withDrizzle } from 'shared/helpers/react';
+import { actions as userActions, selectors as userSelectors } from 'services/user';
+import { IAppReduxState } from 'shared/types/app';
 
 interface IOwnProps {
   errorComp?: React.ReactNode;
   loadingComp?: React.ReactNode;
   children: React.ReactNode;
-  onInitialize?(drizzle: Drizzle): void;
+  onDrizzleInitialize?(drizzle: Drizzle): void;
 }
 
-type IProps = IOwnProps & InjectDrizzleProps;
+interface IStateProps {
+  isChecked: boolean;
+}
+
+type ActionProps = typeof mapDispatch;
+
+type IProps = IOwnProps & ActionProps & IStateProps & InjectDrizzleProps & RouteComponentProps;
 
 class LoadingContainer extends React.Component<IProps> {
+
   public componentDidUpdate(prevProps: IProps) {
-    const { initialized, drizzle, onInitialize } = this.props;
+    const { initialized, drizzle, onDrizzleInitialize, checkIsUserSigned, drizzleState } = this.props;
+
     if (!prevProps.initialized && initialized) {
-      onInitialize && onInitialize(drizzle);
+      !this.isEmptyAccounts() && drizzleState.web3.status !== 'failed' && checkIsUserSigned();
+      onDrizzleInitialize && onDrizzleInitialize(drizzle);
     }
   }
-
   public render() {
-    const { drizzleState, initialized } = this.props;
+    const { drizzleState, initialized, isChecked } = this.props;
 
     if (drizzleState && drizzleState.web3.status === 'failed') {
       if (this.props.errorComp) {
@@ -44,13 +57,7 @@ class LoadingContainer extends React.Component<IProps> {
       );
     }
 
-    const isEmptyAccounts: boolean = (
-      drizzleState &&
-      drizzleState.web3.status === 'initialized' &&
-      Object.keys(drizzleState.accounts).length === 0
-    );
-
-    if (isEmptyAccounts) {
+    if (this.isEmptyAccounts()) {
       return (
         <main className="container loading-screen">
           <div className="pure-g">
@@ -66,7 +73,7 @@ class LoadingContainer extends React.Component<IProps> {
       );
     }
 
-    if (initialized) {
+    if (initialized && isChecked) {
       return this.props.children;
     }
 
@@ -85,6 +92,23 @@ class LoadingContainer extends React.Component<IProps> {
       </main>
     );
   }
+
+  private isEmptyAccounts() {
+    const { drizzleState } = this.props;
+    return drizzleState &&
+      drizzleState.web3.status === 'initialized' &&
+      Object.keys(drizzleState.accounts).length === 0;
+  }
 }
 
-export default withDrizzle(LoadingContainer);
+function mapState(state: IAppReduxState): IStateProps {
+  return {
+    isChecked: userSelectors.selectIsChecked(state),
+  };
+}
+
+const mapDispatch = {
+  checkIsUserSigned: userActions.checkIsUserSigned,
+};
+
+export default withDrizzle(withRouter(connect(mapState, mapDispatch)(LoadingContainer)));

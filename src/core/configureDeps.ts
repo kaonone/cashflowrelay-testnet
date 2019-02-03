@@ -8,6 +8,7 @@ import Api from 'services/api/Api';
 
 import daiABI from 'blockchain/abi/dai.json';
 import C2FCFull from 'contracts/C2FCFull.json';
+import { LocalStorage } from 'services/storage';
 
 const web3 = new Web3();
 
@@ -25,6 +26,7 @@ export default function configureDeps(_store: Store<IAppReduxState>): IDependenc
   const options: IDrizzleOptions = { contracts };
   const drizzleStore = generateStore(options);
   const drizzle = new Drizzle(options, drizzleStore);
+  const storage = new LocalStorage('v1');
 
-  return { api, drizzle };
+  return { api, drizzle, storage };
 }

@@ -12,11 +12,11 @@ const styles = ({ extra: theme }: Theme) => ({
     marginTop: theme.spacing.unit * 2,
   }),
   address: rule({
-    fontWeight: 'bold',
-    whiteSpace: 'nowrap',
+    fontSize: '1.5rem',
+    color: theme.palette.text.positive,
     overflow: 'hidden',
+    whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
-
   }),
   actions: rule({
     display: 'flex',

@@ -48,6 +48,7 @@ export const getCommonPlugins: (type: BuildType) => webpack.Plugin[] = (type) =>
   new webpack.DefinePlugin({
     '__HOST__': JSON.stringify('http://localhost:3000'),
     '__LANG__': JSON.stringify(process.env.LANG || 'en'),
+    '__NETWORK__': JSON.stringify(process.env.NETWORK || '42'),
     '__CLIENT__': true,
     '__SERVER__': false,
   }),
@@ -199,6 +200,9 @@ export const commonConfig: webpack.Configuration = {
     plugins: withHot ? [
       new ReactJssHmrPlugin(),
     ] : undefined,
+    alias: {
+      'ethers$': 'ethers/dist/ethers.js',
+    },
   },
   optimization: {
     runtimeChunk: 'single',

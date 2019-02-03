@@ -34,6 +34,9 @@ declare module 'drizzle' {
     contractName: string;
     abi?: ABIDefinition[];
     web3Contract?: Contract;
+    networks?: Record<string, {
+      address: string;
+    }>;
   }
 
   export interface IDrizzleOptions {

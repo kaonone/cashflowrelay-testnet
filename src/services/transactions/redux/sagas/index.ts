@@ -1,12 +1,15 @@
-import { put, takeEvery } from 'redux-saga/effects';
+import { put, takeEvery, select, call } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
 
 import { IDependencies } from 'shared/types/app';
 import { SetTransactionType, TransactionRequestDataByType } from 'shared/types/models';
 import { mainContractName } from 'shared/constants';
+// import { actions as notificationActions } from 'services/notifications'
 
 import * as NS from '../../namespace';
-import * as actions from '../actions';
+// import * as actions from '../actions';
+import * as selectors from '../selectors';
+import transitions from '@material-ui/core/styles/transitions';
 
 const sendType: NS.ISendTransaction['type'] = 'TRANSACTIONS:SEND_TRANSACTION';
 
@@ -16,16 +19,22 @@ function getSaga(deps: IDependencies) {
   };
 }
 
-function* sendSaga({ drizzle }: IDependencies, action: NS.ISendTransaction) {
+function* sendSaga({ drizzle, Ox: { web3Wrapper } }: IDependencies, action: NS.ISendTransaction) {
   const { type, data } = action.payload;
-  const account = drizzle.store.getState().accounts[0];
+  const drizzleStore = drizzle.store.getState();
+  const account = drizzleStore.accounts[0];
   const contract = drizzle.contracts[mainContractName];
   const method = methodByType[type];
   const params = (getParamsByRequest[type] as ParamsConverter)(data, account);
-
+  const stackId = contract.methods[method].cacheSend(...params, { from: account });
+  const txHash = drizzleStore.transactionStack[stackId];
+  const transactions = yield select(selectors.selectSentTransactions);
+  console.log('hash', txHash);
+  console.log(transitions);
   try {
-    const stackId = contract.methods[method].cacheSend(...params, { from: account });
-    yield put(actions.pushTransactionInfo({ stackId, request: action.payload }));
+    yield call([web3Wrapper, 'awaitTransactionMinedAsync'], txHash);
+    // yield put(notificationActions.pushNotification({ type: 'positive', title: txHash }));
+    // yield put(actions.pushTransactionInfo({ stackId, request: action.payload }));
   } catch (error) {
     console.error(error);
   }

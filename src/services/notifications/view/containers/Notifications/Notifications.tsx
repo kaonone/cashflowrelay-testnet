@@ -9,12 +9,14 @@ import { Button } from 'shared/view/elements';
 import * as selectors from './../../../redux/selectors';
 import * as actions from './../../../redux/actions';
 import TopNotification from '../TopNotification/TopNotification';
-import { INotification, notificationId } from '../../../namespace';
+import { INotificationWithId, notificationId } from '../../../namespace';
 
 interface IStateProps {
-  notifications: INotification[];
+  notifications: INotificationWithId[];
   hideNotifications: notificationId[];
+  showingNotification: notificationId;
 }
+
 type IActionProps = typeof mapDispatch;
 
 type IProps = IStateProps & IActionProps;
@@ -23,21 +25,27 @@ function mapState(state: IAppReduxState): IStateProps {
   return {
     notifications: selectors.selectNotifications(state),
     hideNotifications: selectors.selectHideNotifications(state),
+    showingNotification: selectors.selectShowingNotification(state),
   };
 }
 
 const mapDispatch = {
   pushNotification: actions.pushNotification,
   hideNotification: actions.hideNotification,
+  setShowingNotification: actions.setShowingNotification,
 };
 
 class Notifications extends React.Component<IProps> {
 
   public componentDidUpdate() {
-    const { notifications, hideNotifications, hideNotification } = this.props;
+    const { notifications, hideNotifications, setShowingNotification } = this.props;
     const actualNotifications = this.getActualNotifications(notifications, hideNotifications);
+    const isShowNotification = actualNotifications.length > 0;
     const currentNotification = actualNotifications[0];
-    setTimeout(() => hideNotification(currentNotification.id), 10000);
+    if (this.props.showingNotification === '' && isShowNotification) {
+      setTimeout(() => this.hideNotification(currentNotification.id), 10000);
+      setShowingNotification(currentNotification.id);
+    }
   }
 
   public render() {
@@ -56,15 +64,21 @@ class Notifications extends React.Component<IProps> {
   }
 
   @bind
-  private getActualNotifications(allNotifications: INotification[], hideNotifications: notificationId[]) {
+  private getActualNotifications(allNotifications: INotificationWithId[], hideNotifications: notificationId[]) {
     return allNotifications.filter(notification => !hideNotifications.includes(notification.id));
+  }
+
+  @bind
+  private hideNotification(id: string) {
+    const {hideNotification, setShowingNotification} = this.props;
+    hideNotification(id);
+    setShowingNotification('');
   }
 
   @bind
   private testClick() {
     this.props.pushNotification(
       {
-        id: uuid(),
         type: 'positive',
         title: uuid(),
         description: 'Notification descriotion',

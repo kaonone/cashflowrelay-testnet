@@ -20,6 +20,13 @@ export function dataReducer(state: NS.IReduxState['data'] = initial.data, action
       };
     }
 
+    case 'NOTIFICATIONS:SET_SHOWING_NOTIFICATION': {
+      return {
+        ...state,
+        showingNotification: action.payload,
+      };
+    }
+
     default: return state;
   }
 }

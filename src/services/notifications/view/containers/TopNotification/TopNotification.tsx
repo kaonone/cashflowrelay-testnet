@@ -10,10 +10,10 @@ import { Cross } from 'shared/view/elements/Icons';
 
 import { StylesProps, provideStyles } from './TopNotification.style';
 import { NotificationIcon } from '../../components/NotificationIcon/NotificationIcon';
-import { INotification } from 'services/notifications/namespace';
+import { INotificationWithId } from 'services/notifications/namespace';
 
 interface IOwnProps {
-  notificationInfo: INotification;
+  notificationInfo: INotificationWithId;
   hideNotification: (id: string) => void;
 }
 

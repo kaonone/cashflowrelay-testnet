@@ -4,5 +4,6 @@ export const initial: NS.IReduxState = {
   data: {
     notifications: [],
     hideNotifications: [],
+    showingNotification: '',
   },
 };

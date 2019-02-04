@@ -1,4 +1,5 @@
-import BigNumber from 'bignumber.js';
+import { Order, BigNumber } from '0x.js';
+import { PaginatedCollection } from '@0x/types';
 
 export type Instalments = Record<'paid' | 'due' | 'missed', number>;
 
@@ -38,3 +39,10 @@ export interface IBlockChainToken {
 export type TokenType = 'incoming' | 'obligations' | 'selling';
 
 export type ITokenStatus = 'pending' | 'saving' | 'awaiting' | 'sold';
+
+export type IOrder = Order & {
+  price: BigNumber;
+  tokenId: BigNumber;
+};
+
+export type IOrderList = PaginatedCollection<IOrder>;

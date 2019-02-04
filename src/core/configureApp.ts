@@ -7,10 +7,11 @@ import { MarketplaceModule, CashFlowModule } from 'modules';
 import { reduxEntry as adaptabilityRE } from 'services/adaptability';
 import { reduxEntry as dataProviderRE } from 'services/dataProvider';
 import { reduxEntry as i18nRE } from 'services/i18n';
+import { reduxEntry as orderbookRE } from 'services/orderbook';
 import { reduxEntry as transactionsRE } from 'services/transactions';
 import { reduxEntry as userRE } from 'services/user';
-import { reduxEntry as sellCashFlowRE } from 'features/sellCashFlow';
 
+import { reduxEntry as sellCashFlowRE } from 'features/sellCashFlow';
 import { reduxEntry as signInRE } from 'features/signIn';
 
 import { ReducersMap } from 'shared/types/redux';
@@ -31,10 +32,11 @@ function configureApp(data?: IAppData): IAppData {
     adaptabilityRE,
     dataProviderRE,
     i18nRE,
+    orderbookRE,
+    sellCashFlowRE,
+    signInRE,
     transactionsRE,
     userRE,
-    signInRE,
-    sellCashFlowRE,
   ];
 
   const connectedSagas: RootSaga[] = [];

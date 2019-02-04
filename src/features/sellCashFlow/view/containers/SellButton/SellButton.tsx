@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { bind } from 'decko';
 import { connect } from 'react-redux';
+import { BigNumber } from '0x.js';
 
 import { ITranslateProps, i18nConnect } from 'services/i18n';
 import { IAppReduxState } from 'shared/types/app';
@@ -105,9 +106,12 @@ class SellButton extends React.PureComponent<IProps, IState> {
   @bind
   private calcRecommendedPrice(): { min: number, def: number, max: number } {
     const { amount, interestRate } = this.props.cashflow;
-    const def = amount.div(1 + interestRate / 100).integerValue();
-    const min = def.times(1 - interestRate / 300).integerValue();
-    const max = def.times(1 + interestRate / 300).integerValue();
+    const percent = new BigNumber(interestRate).div(100);
+    const delta = percent.div(3);
+
+    const def = amount.div(new BigNumber(1).plus(percent)).ceil();
+    const min = def.times(new BigNumber(1).minus(delta)).ceil();
+    const max = def.times(new BigNumber(1).plus(delta)).ceil();
     return {
       def: def.toNumber(),
       min: min.toNumber(),

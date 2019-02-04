@@ -11,6 +11,7 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 import * as adaptabilityNS from 'services/adaptability/namespace';
 import * as dataProviderNS from 'services/dataProvider/namespace';
 import * as i18nNS from 'services/i18n/namespace';
+import * as orderbookNS from 'services/orderbook/namespace';
 import * as transactionsNS from 'services/transactions/namespace';
 import * as userNS from 'services/user/namespace';
 import Api from 'services/api/Api';
@@ -76,6 +77,7 @@ export interface IAppReduxState {
   adaptability: adaptabilityNS.IReduxState;
   dataProvider: IMultiInstanceState<dataProviderNS.IReduxState>;
   i18n: i18nNS.IReduxState;
+  orderbook: orderbookNS.IReduxState;
   transactions: transactionsNS.IReduxState;
   user: userNS.IReduxState;
   // features

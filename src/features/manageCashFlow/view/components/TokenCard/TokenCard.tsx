@@ -2,6 +2,7 @@ import * as React from 'react';
 import { bind } from 'decko';
 import * as moment from 'moment';
 import cn from 'classnames';
+import { BigNumber } from '0x.js';
 
 import { ShowMainContractData } from 'services/transactions';
 import { i18nConnect, ITranslateProps, tKeys as tKeysAll } from 'services/i18n';
@@ -26,6 +27,7 @@ interface IOwnProps {
   tokenId: number;
   type: TokenType;
   expanded: boolean;
+  price?: BigNumber;
   onToggle(id: number): void;
   isNeedDisplay?(token: IToken): boolean;
 }
@@ -34,7 +36,7 @@ type IProps = IOwnProps & StylesProps & ITranslateProps;
 
 class TokenCard extends React.PureComponent<IProps> {
   public render() {
-    const { classes, className, type, expanded, t, theme, isNeedDisplay, tokenId } = this.props;
+    const { classes, className, type, expanded, t, theme, isNeedDisplay, tokenId, price } = this.props;
 
     return (
       <ShowMainContractData<'cashflowFor'> type="cashflowFor" request={{ tokenId }}>
@@ -59,6 +61,7 @@ class TokenCard extends React.PureComponent<IProps> {
                     token={token}
                     expanded={expanded}
                     type={type}
+                    price={price}
                   />
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails className={classes.details}>

@@ -1,52 +1,34 @@
 import * as React from 'react';
 import { bind } from 'decko';
 
+import { InjectOrderbookProps, withOrderbook } from 'services/orderbook';
 import { BaseLayout } from 'modules/shared';
-import { InjectedAuthRouterProps } from 'shared/helpers/authWrapper';
 import { TokensList } from 'features/manageCashFlow';
-import { Button } from 'shared/view/elements';
+
 import { mockCashFlow } from 'shared/helpers/mocks';
 import { DrawerModal } from 'shared/view/components';
+import { Button, CircleProgressBar } from 'shared/view/elements';
+import { InjectedAuthRouterProps } from 'shared/helpers/authWrapper';
 import CashFlowInfo from 'shared/view/model/CashFlowInfo/CashFlowInfo';
-import SellingPriceField from 'shared/view/model/SellingPriceField/SellingPriceField';
 
 const hintForCreation =
   'Borrowing money is a two-step process. First, a cashflow is created. Then, it’s placed on the markeplace for sale.';
 
-type IProps = InjectedAuthRouterProps;
+type IProps = InjectedAuthRouterProps & InjectOrderbookProps;
 
 interface IState {
-  modal: 'create' | 'borrow' | 'selling' | null;
+  modal: 'borrow' | null;
 }
 
 class Marketplace extends React.PureComponent<IProps> {
   public state: IState = { modal: null };
   public render() {
+    const { orders, ordersLoading } = this.props;
     return (
       <BaseLayout>
         <div style={{ display: 'flex', width: '100%', justifyContent: 'space-around' }}>
-          <Button variant="contained" onClick={this.openModal.bind(this, 'create')}>OPEN CREATE MODAL</Button>
           <Button variant="contained" onClick={this.openModal.bind(this, 'borrow')}>OPEN BORROW MODAL</Button>
-          <Button variant="contained" onClick={this.openModal.bind(this, 'selling')}>OPEN SELL MODAL</Button>
         </div>
-        <DrawerModal
-          onClose={this.closeModal}
-          open={this.state.modal === 'create'}
-          title={mockCashFlow.name}
-          hint={hintForCreation}
-          actions={
-            [<Button variant="contained" color="primary" key="" fullWidth>Create cashflow</Button>]
-          }
-        >
-          <CashFlowInfo
-            token={mockCashFlow}
-            price={1000}
-            fields={[
-              'amount', 'instalmentSize', 'duration',
-              'firstInstalmentDate', 'lastInstalmentDate',
-            ]}
-          />
-        </DrawerModal>
         <DrawerModal
           title={mockCashFlow.name}
           open={this.state.modal === 'borrow'}
@@ -64,27 +46,8 @@ class Marketplace extends React.PureComponent<IProps> {
             ]}
           />
         </DrawerModal>
-        <DrawerModal
-          open={this.state.modal === 'selling'}
-          title={mockCashFlow.name}
-          onClose={this.closeModal}
-          actions={
-            [<Button variant="contained" color="primary" key="" fullWidth>Sell cashflow</Button>]
-          }
-        >
-          <>
-            <SellingPriceField
-              sellPrice={1050}
-              onChangeSellPrice={console.log}
-            />
-            <CashFlowInfo
-              recommendedPrice="1025 - 1150 DAI"
-              token={mockCashFlow}
-              fields={['instalmentSize', 'duration', 'firstInstalmentDate', 'lastInstalmentDate']}
-            />
-          </>
-        </DrawerModal>
-        <TokensList type="selling" tokenIds={[]} />
+        {orders.records.length === 0 && ordersLoading.isRequesting && <CircleProgressBar size={40} />}
+        <TokensList type="selling" orders={orders} />
       </BaseLayout>
     );
   }
@@ -101,4 +64,4 @@ class Marketplace extends React.PureComponent<IProps> {
 
 }
 
-export default Marketplace;
+export default withOrderbook(Marketplace);

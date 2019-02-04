@@ -5,10 +5,12 @@ import { OrderConfigRequest } from '@0x/connect';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { networkConfig } from 'core/constants';
 
+import { actions as orderbookActions } from 'services/orderbook';
+
 import { IDependencies } from 'shared/types/app';
 import { IToken } from 'shared/types/models';
 import { getErrorMsg } from 'shared/helpers';
-import { NULL_ADDRESS, DEFAULT_ORDER_EXPIRATION_DURATION } from 'shared/constants';
+import { NULL_ADDRESS, DEFAULT_ORDER_EXPIRATION_DURATION, DECIMAL } from 'shared/constants';
 
 import * as NS from '../../namespace';
 import * as actions from '../actions';
@@ -26,6 +28,7 @@ export function* sellSaga(deps: IDependencies, action: NS.ISell) {
   try {
     yield call(submitOrderToOrderBook, deps, cashflow, price);
     yield put(actions.sellSuccess());
+    yield put(orderbookActions.loadMyOrders({}));
     // TODO ds: success notification
   } catch (error) {
     const message = getErrorMsg(error);
@@ -55,7 +58,7 @@ async function submitOrderToOrderBook(deps: IDependencies, token: IToken, price:
     takerAddress: NULL_ADDRESS,
     expirationTimeSeconds: DEFAULT_ORDER_EXPIRATION_DURATION.plus(Date.now() / 1000).ceil(),
     makerAssetAmount: new BigNumber(1),
-    takerAssetAmount: Web3Wrapper.toBaseUnitAmount(new BigNumber(price), 18),
+    takerAssetAmount: Web3Wrapper.toBaseUnitAmount(new BigNumber(price), DECIMAL),
     makerAssetData,
     takerAssetData,
   };

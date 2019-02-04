@@ -1,5 +1,5 @@
 import * as React from 'react';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '0x.js';
 
 import {
   GetTransactionType, TransactionRequestDataByType, TransactionResponseDataByType, TransactionDataByType,

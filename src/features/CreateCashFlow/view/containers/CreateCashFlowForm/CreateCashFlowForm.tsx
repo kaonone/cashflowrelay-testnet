@@ -4,8 +4,8 @@ import { Form, FormSpy } from 'react-final-form';
 import { MarkAs } from '_helpers';
 import { connect } from 'react-redux';
 import * as moment from 'moment';
-import BigNumber from 'bignumber.js';
 import createDecorator from 'final-form-calculate';
+import { BigNumber } from '0x.js';
 
 import { i18nConnect, ITranslateProps, tKeys as allKeys, ITranslateKey } from 'services/i18n';
 import { actions as transactionActions } from 'services/transactions';
@@ -173,8 +173,8 @@ class CreateCashFlowForm extends React.PureComponent<IProps> {
                     >
                       <CashFlowInfo
                         token={{
-                          instalmentSize: new BigNumber(installmentSize),
-                          amount: new BigNumber(repayingAmount),
+                          instalmentSize: new BigNumber(installmentSize.toString()),
+                          amount: new BigNumber(repayingAmount.toString()),
                           duration,
                           firstInstalmentDate: firstInstallmentDate,
                           lastInstalmentDate: lastInstallmentDate,
@@ -227,7 +227,7 @@ class CreateCashFlowForm extends React.PureComponent<IProps> {
   private onSubmit(data: IFormData) {
     const { sendTransaction } = this.props;
     const value = OneDAI.times(calcRepaymentAmount(data.amount, data.interest));
-    const commit = value.div(data.installmentCount).integerValue(BigNumber.ROUND_CEIL);
+    const commit = value.div(data.installmentCount).ceil();
     const resultValue = commit.times(data.installmentCount);
 
     sendTransaction({

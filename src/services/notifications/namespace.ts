@@ -1,8 +1,7 @@
-import { OptionsObject as NotificationOptions } from 'notistack';
-
 import { IAction } from 'shared/types/redux';
 
 export type notificationId = string;
+export type notificationType = 'info' | 'positive' | 'negative';
 
 export interface IReduxState {
   data: {
@@ -13,8 +12,9 @@ export interface IReduxState {
 
 export interface INotification {
   id: notificationId;
-  options: NotificationOptions;
-  message: string;
+  title: string;
+  description?: string;
+  type: notificationType;
 }
 
 export type IPushNotification = IAction<'NOTIFICATIONS:PUSH_NOTIFICATION', INotification>;

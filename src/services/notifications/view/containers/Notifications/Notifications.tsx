@@ -1,17 +1,15 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { withSnackbar, InjectedNotistackProps } from 'notistack';
 import * as uuid from 'uuid';
-import CardHeader from '@material-ui/core/CardHeader';
-import Card from '@material-ui/core/Card';
+import { bind } from 'decko';
 
 import { IAppReduxState } from 'shared/types/app';
+import { Button } from 'shared/view/elements';
 
 import * as selectors from './../../../redux/selectors';
 import * as actions from './../../../redux/actions';
+import TopNotification from '../TopNotification/TopNotification';
 import { INotification, notificationId } from '../../../namespace';
-import { Button } from 'shared/view/elements';
-import { bind } from 'decko';
 
 interface IStateProps {
   notifications: INotification[];
@@ -19,7 +17,7 @@ interface IStateProps {
 }
 type IActionProps = typeof mapDispatch;
 
-type IProps = IStateProps & IActionProps & InjectedNotistackProps;
+type IProps = IStateProps & IActionProps;
 
 function mapState(state: IAppReduxState): IStateProps {
   return {
@@ -35,36 +33,31 @@ const mapDispatch = {
 
 class Notifications extends React.Component<IProps> {
 
-  // public componentDidUpdate() {
-  //   const { enqueueSnackbar, notifications, removeNotification } = this.props;
-  // //   notifications.forEach(notification => {
-  // //     enqueueSnackbar(notification.message, notification.options);
-  // //     removeNotification(notification.id);
-  // // });
-  // }
-
   public componentDidUpdate() {
     const { notifications, hideNotifications, hideNotification } = this.props;
-    const actualNotifications = notifications.filter(notification => !hideNotifications.includes(notification.id));
-    setTimeout(() => hideNotification(actualNotifications[0].id), 10000);
+    const actualNotifications = this.getActualNotifications(notifications, hideNotifications);
+    const currentNotification = actualNotifications[0];
+    setTimeout(() => hideNotification(currentNotification.id), 10000);
   }
 
   public render() {
-    const {notifications, hideNotifications} = this.props;
-    const actualNotifications = notifications.filter(notification => !hideNotifications.includes(notification.id));
+    const {notifications, hideNotifications, hideNotification} = this.props;
+    const actualNotifications = this.getActualNotifications(notifications, hideNotifications);
+    const currentNotification = actualNotifications[0];
     const isShowNotification = actualNotifications.length > 0;
     return (
       <>
       <Button variant="contained" onClick={this.testClick}>Push notification</Button>
-          {isShowNotification && (<Card>
-              <CardHeader
-                title={actualNotifications[0].message}
-                subheader={'transaction.status'}
-              />
-            </Card>)
-          }
-          </>
+      {isShowNotification && (
+        <TopNotification hideNotification={hideNotification} notificationInfo={currentNotification}/>
+      )}
+    </>
     );
+  }
+
+  @bind
+  private getActualNotifications(allNotifications: INotification[], hideNotifications: notificationId[]) {
+    return allNotifications.filter(notification => !hideNotifications.includes(notification.id));
   }
 
   @bind
@@ -72,19 +65,16 @@ class Notifications extends React.Component<IProps> {
     this.props.pushNotification(
       {
         id: uuid(),
-        options: {
-          variant: 'default',
-          autoHideDuration: 10000,
-        },
-        message: 'Notification succes',
+        type: 'positive',
+        title: uuid(),
+        description: 'Notification descriotion',
       },
+
     );
   }
 }
 
 export {Notifications};
 export default (
-  connect(mapState, mapDispatch)(
-    withSnackbar(Notifications),
-  )
+  connect(mapState, mapDispatch)(Notifications)
 );

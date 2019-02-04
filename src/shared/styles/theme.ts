@@ -26,6 +26,9 @@ const colors = {
   salem: '#0EA33A',
   ripeLemon: '#f8e71c',
   blackCurrant: '#2E2639',
+  springWood: '#f1efe3',
+  harp: '#e3f1e3',
+  valencia: '#D63B3B',
 };
 
 export const theme = {

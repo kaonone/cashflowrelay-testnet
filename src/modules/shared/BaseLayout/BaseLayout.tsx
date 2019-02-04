@@ -23,8 +23,8 @@ class BaseLayout extends React.PureComponent<IProps> {
         {...rest}
       >
         {/* <Transactions /> */}
-        <Notifications />
 
+        <Notifications />
         <div className={classes.content}>
           {children}
         </div>

@@ -4,8 +4,8 @@ import { Store, Reducer, ActionCreator, Action } from 'redux';
 import { SagaIterator } from 'redux-saga';
 import { GenerateClassName } from 'jss';
 import { Drizzle } from 'drizzle';
-import { ContractWrappers } from '0x.js';
-import { Client } from '@0x/connect';
+import { ContractWrappers, Web3ProviderEngine } from '0x.js';
+import { HttpClient } from '@0x/connect';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 
 import * as adaptabilityNS from 'services/adaptability/namespace';
@@ -16,6 +16,7 @@ import * as userNS from 'services/user/namespace';
 import Api from 'services/api/Api';
 
 import * as signInNS from 'features/signIn/namespace';
+import * as sellCashFlowNS from 'features/sellCashFlow/namespace';
 
 import { JSS, Theme } from 'shared/styles';
 import { IMultiInstanceState } from 'shared/helpers/redux';
@@ -44,9 +45,10 @@ export interface IDependencies {
   drizzle: Drizzle;
   storage: LocalStorage;
   Ox: {
-    client: Client;
+    client: HttpClient;
     contractWrappers: ContractWrappers;
     web3Wrapper: Web3Wrapper;
+    providerEngine: Web3ProviderEngine;
   };
 }
 
@@ -77,6 +79,7 @@ export interface IAppReduxState {
   transactions: transactionsNS.IReduxState;
   user: userNS.IReduxState;
   // features
+  sellCashFlow: sellCashFlowNS.IReduxState;
   signIn: signInNS.IReduxState;
 }
 

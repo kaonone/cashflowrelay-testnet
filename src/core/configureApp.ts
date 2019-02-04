@@ -9,6 +9,7 @@ import { reduxEntry as dataProviderRE } from 'services/dataProvider';
 import { reduxEntry as i18nRE } from 'services/i18n';
 import { reduxEntry as transactionsRE } from 'services/transactions';
 import { reduxEntry as userRE } from 'services/user';
+import { reduxEntry as sellCashFlowRE } from 'features/sellCashFlow';
 
 import { reduxEntry as signInRE } from 'features/signIn';
 
@@ -33,6 +34,7 @@ function configureApp(data?: IAppData): IAppData {
     transactionsRE,
     userRE,
     signInRE,
+    sellCashFlowRE,
   ];
 
   const connectedSagas: RootSaga[] = [];

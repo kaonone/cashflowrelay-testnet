@@ -5,6 +5,7 @@ import cn from 'classnames';
 
 import { ShowMainContractData } from 'services/transactions';
 import { i18nConnect, ITranslateProps, tKeys as tKeysAll } from 'services/i18n';
+import { SellButton } from 'features/sellCashFlow';
 
 import { IToken, TokenType } from 'shared/types/models';
 import { ExpansionPanel, ExpansionPanelDetails, Button, DonutChart, ExpansionPanelSummary } from 'shared/view/elements';
@@ -143,7 +144,7 @@ class TokenCard extends React.PureComponent<IProps> {
   }
 
   public renderActions() {
-    const { classes, t, type } = this.props;
+    const { classes, t, type, tokenId } = this.props;
     const onSaleNow: boolean = false; // TODO ds: check token on sale
     const isFullRepaid: boolean = false; // TODO ds: check full repaid
 
@@ -153,9 +154,13 @@ class TokenCard extends React.PureComponent<IProps> {
       </Button>
     );
     const sellButton = (
-      <Button className={classes.footerButton} variant="contained" color="primary" disabled={onSaleNow}>
-        {t(tKeys.sellCashflow.getKey())}
-      </Button>
+      <ShowMainContractData<'cashflowFor'> type="cashflowFor" request={{ tokenId }}>
+        {({ data: cashflow }) => cashflow && (
+          <div className={classes.footerButton}>
+            <SellButton cashflow={cashflow} disabled={onSaleNow} />
+          </div>
+        )}
+      </ShowMainContractData>
     );
 
     switch (type) {

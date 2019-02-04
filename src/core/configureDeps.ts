@@ -11,6 +11,7 @@ import { LocalStorage } from 'services/storage';
 import { RPCSubprovider, Web3ProviderEngine, ContractWrappers } from '0x.js';
 import { HttpClient } from '@0x/connect';
 import { Web3Wrapper } from '@0x/web3-wrapper';
+import { MetamaskSubprovider } from '@0x/subproviders';
 import { networkConfig } from './constants';
 
 const contracts: IContract[] = [
@@ -46,6 +47,9 @@ export default function configureDeps(_store: Store<IAppReduxState>): IDependenc
   const storage = new LocalStorage('v1');
 
   const providerEngine = new Web3ProviderEngine();
+  if ((window as any).web3 && (window as any).web3.currentProvider) {
+    providerEngine.addProvider(new MetamaskSubprovider((window as any).web3.currentProvider));
+  }
   providerEngine.addProvider(new RPCSubprovider(networkConfig.rpcUrl));
   providerEngine.start();
 
@@ -58,6 +62,7 @@ export default function configureDeps(_store: Store<IAppReduxState>): IDependenc
     drizzle,
     storage,
     Ox: {
+      providerEngine,
       client: client0x,
       contractWrappers,
       web3Wrapper,

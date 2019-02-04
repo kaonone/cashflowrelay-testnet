@@ -1,1 +1,1 @@
-export { default as SignInButton } from './ConnectToMetamask/ConnectToMetamask';
+export { default as SignInButton } from './SignInButton/SignInButton';

@@ -23,6 +23,13 @@ export function dataReducer(state: NS.IReduxState['data'] = initial.data, action
         isChecked: true,
       };
     }
+    case 'USER:CHECK_APPROVED_SUCCESS':
+    case 'USER:SET_APPROVED_SUCCESS': {
+      return {
+        ...state,
+        isApproved: action.payload.isApproved,
+      };
+    }
     default: return state;
   }
 }

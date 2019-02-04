@@ -15,8 +15,6 @@ import * as actions from './../../../redux/actions';
 import * as selectors from './../../../redux/selectors';
 import ConfirmSignInModal from '../../components/ConfirmSignInModal/ConfirmSignInModal';
 
-import { provideStyles, StylesProps } from './ConnectToMetamask.style';
-
 interface IStateProps {
   signing: ICommunication;
 }
@@ -27,7 +25,7 @@ interface IState {
   isOpenedModal: boolean;
 }
 
-type IProps = IStateProps & IActionProps & ITranslateProps & GetProps<typeof Button> & StylesProps;
+type IProps = IStateProps & IActionProps & ITranslateProps & GetProps<typeof Button>;
 
 function mapState(state: IAppReduxState): IStateProps {
   return {
@@ -45,33 +43,16 @@ class SignInButton extends React.PureComponent<IProps, IState> {
   };
 
   public render() {
-    const { t, locale, signing, signIn, classes, ...restProps } = this.props;
+    const { t, locale, signing, signIn, children, ...restProps } = this.props;
     const { isOpenedModal } = this.state;
     return (
       <DrizzleContext.Consumer>
         {({ drizzleState }) => {
           const address = drizzleState.accounts[0];
           return (<>
-            <div className={classes.root}>
-              <div className={classes.header}>
-                Connect a wallet
-              </div>
-              <div className={classes.content}>
-                <div className={classes.description}>
-                  Metamask allows Web 3.0 applications to interact with Etherium blockchain and leaves you in full control over every transaction
-                  </div>
-                <Button
-                  className={classes.action}
-                  fullWidth
-                  variant="outlined"
-                  color="primary"
-                  size="small"
-                  onClick={this.onButtonClick}
-                >
-                  {t(tKeys.features.signIn.button.getKey(), { address: 'Metamask' })}
-                </Button>
-              </div>
-            </div>
+            <Button variant="outlined" color="primary" {...restProps} onClick={this.onButtonClick}>
+              {children}
+            </Button>
             <ConfirmSignInModal
               address={address}
               signing={signing}
@@ -104,6 +85,6 @@ class SignInButton extends React.PureComponent<IProps, IState> {
 export { SignInButton };
 export default (
   connect(mapState, mapDispatch)(
-    provideStyles(i18nConnect(SignInButton)),
+    i18nConnect(SignInButton),
   )
 );

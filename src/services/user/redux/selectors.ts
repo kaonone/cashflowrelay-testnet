@@ -19,4 +19,8 @@ export function selectIsChecked(state: IAppReduxState): boolean {
   return selectState(state).data.isChecked;
 }
 
+export function selectIsApproved(state: IAppReduxState): boolean {
+  return selectState(state).data.isApproved;
+}
+
 export const selectCommunication = makeCommunicationSelector(selectState);

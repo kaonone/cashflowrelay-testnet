@@ -26,18 +26,9 @@ const styles = ({ extra: theme }: Theme) => ({
     borderTop: `none`,
     borderRadius: '0 0 0.25rem 0.25rem',
     backgroundColor: theme.colors.white,
-  }),
-
-  description: rule({
-    marginBottom: theme.spacing.unit,
     fontSize: '0.625rem',
     color: theme.colors.tundora,
   }),
-
-  action: rule({
-    fontSize: '10px',
-  }),
-
 });
 
 export const provideStyles = withStyles(styles);

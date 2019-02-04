@@ -1,15 +1,14 @@
-import { put, takeEvery, select, call } from 'redux-saga/effects';
-import { SagaIterator } from 'redux-saga';
+import { put, takeEvery, call, take } from 'redux-saga/effects';
+import { SagaIterator, eventChannel } from 'redux-saga';
+import { DrizzleState } from 'drizzle';
+import { Store } from 'redux';
 
+import { actions as notificationActions } from 'services/notifications';
 import { IDependencies } from 'shared/types/app';
 import { SetTransactionType, TransactionRequestDataByType } from 'shared/types/models';
 import { mainContractName } from 'shared/constants';
-// import { actions as notificationActions } from 'services/notifications'
 
 import * as NS from '../../namespace';
-// import * as actions from '../actions';
-import * as selectors from '../selectors';
-import transitions from '@material-ui/core/styles/transitions';
 
 const sendType: NS.ISendTransaction['type'] = 'TRANSACTIONS:SEND_TRANSACTION';
 
@@ -21,23 +20,37 @@ function getSaga(deps: IDependencies) {
 
 function* sendSaga({ drizzle, Ox: { web3Wrapper } }: IDependencies, action: NS.ISendTransaction) {
   const { type, data } = action.payload;
-  const drizzleStore = drizzle.store.getState();
-  const account = drizzleStore.accounts[0];
+  const account = drizzle.store.getState().accounts[0];
   const contract = drizzle.contracts[mainContractName];
   const method = methodByType[type];
   const params = (getParamsByRequest[type] as ParamsConverter)(data, account);
   const stackId = contract.methods[method].cacheSend(...params, { from: account });
+
+  yield awaitStateChanging(drizzle.store, (state: DrizzleState) => Boolean(state.transactionStack[stackId]));
+  const drizzleStore = drizzle.store.getState();
   const txHash = drizzleStore.transactionStack[stackId];
-  const transactions = yield select(selectors.selectSentTransactions);
-  console.log('hash', txHash);
-  console.log(transitions);
+
   try {
+    yield put(notificationActions.pushNotification({ type: 'info', title: txHash }));
     yield call([web3Wrapper, 'awaitTransactionMinedAsync'], txHash);
-    // yield put(notificationActions.pushNotification({ type: 'positive', title: txHash }));
-    // yield put(actions.pushTransactionInfo({ stackId, request: action.payload }));
+    yield put(notificationActions.pushNotification({ type: 'positive', title: txHash }));
   } catch (error) {
+    yield put(notificationActions.pushNotification({ type: 'negative', title: txHash }));
     console.error(error);
   }
+}
+
+function awaitStateChanging<R, S extends Store<R>>(store: S, predicate: (state: R) => boolean) {
+  return call(function* gen() {
+    const channel = eventChannel<number>(cb => store.subscribe(() => cb(1)));
+    while (true) {
+      yield take(channel);
+      const state = store.getState();
+      if (predicate(state)) {
+        return;
+      }
+    }
+  });
 }
 
 const methodByType: Record<SetTransactionType, string> = {

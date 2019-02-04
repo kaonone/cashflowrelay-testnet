@@ -4,11 +4,28 @@ pragma solidity ^0.5.2;
 import "../math/SafeMath.sol";
 import "../introspection/IERC165.sol";
 
+/**
+ * @title C2FC Interface for Commitments to Future Cashflows
+ * @dev Base functions for get, create and balance for cashflows
+ */
 
 contract IC2FC is IERC165 {
 
+    //Adress for Token as Currency of Cashflows. Default: DAI
     address tokenAddress = 0xC4375B7De8af5a38a93548eb8453a498222C4fF2;
 
+    /**
+     * @title Event for Created Cashflows
+     * @param subscriber address, who create and subscribe for payment to cashflow
+     * @param name string name of Cashflow
+     * @param value uint256 maximum value for Cashflow
+     * @param commit uin256 unit for payment in period (default, month)
+     * @param interestRate uin256 size of interest above value
+     * @param duration uint256 period of Cashflow
+     * @param tokenId uint256 ID of the token (base token, for example, ERC721)
+     * @param created timestamp date created 
+     */
+     
     event CashflowCreated(
         address subscriber, 
         string name, 

@@ -7,9 +7,9 @@ export function pushNotification(info: NS.INotification): NS.IPushNotification {
   };
 }
 
-export function removeNotification(notificationId: string): NS.IRemoveNotification {
+export function hideNotification(notificationId: NS.notificationId): NS.IHideNotification {
   return {
-    type: 'NOTIFICATIONS:REMOVE_NOTIFICATION',
+    type: 'NOTIFICATIONS:HIDE_NOTIFICATION',
     payload: notificationId,
   };
 }

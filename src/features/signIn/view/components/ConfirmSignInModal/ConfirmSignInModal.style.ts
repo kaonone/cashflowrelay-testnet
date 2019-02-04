@@ -12,6 +12,9 @@ const styles = ({ extra: theme }: Theme) => ({
   address: rule({
     fontSize: '1.5rem',
     color: theme.palette.text.positive,
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
   }),
   actions: rule({
     display: 'flex',

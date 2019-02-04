@@ -3,6 +3,13 @@ import { initial } from '../initial';
 
 export function dataReducer(state: NS.IReduxState['data'] = initial.data, action: NS.Action): NS.IReduxState['data'] {
   switch (action.type) {
+    case 'USER:CHECK_IS_USER_SIGNED_FAIL':
+    case 'USER:CHECK_IS_USER_SIGNED_SUCCESS': {
+      return {
+        ...state,
+        isChecked: true,
+      };
+    }
     case 'USER:COMPLETE_AUTHENTICATION': {
       return {
         ...state,
@@ -11,7 +18,10 @@ export function dataReducer(state: NS.IReduxState['data'] = initial.data, action
       };
     }
     case 'USER:LOGOUT': {
-      return initial.data;
+      return {
+        ...initial.data,
+        isChecked: true,
+      };
     }
     default: return state;
   }

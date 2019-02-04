@@ -13,14 +13,13 @@ export function dataReducer(state: NS.IReduxState['data'] = initial.data, action
       };
     }
 
-    case 'NOTIFICATIONS:REMOVE_NOTIFICATION': {
+    case 'NOTIFICATIONS:HIDE_NOTIFICATION': {
       return {
         ...state,
-        notifications: state.notifications.filter(
-          notification => notification.id !== action.payload,
-      ),
+        hideNotifications: [...state.hideNotifications, action.payload],
       };
     }
+
     default: return state;
   }
 }

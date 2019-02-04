@@ -31,7 +31,7 @@ export interface IBlockChainToken {
   interestRate: string;
   lastPayment: string; // in seconds
   name: string; // token name
-  subscriber: string; // payer address
+  publisher: string; // payer address
   value: string; // full repayment amount
 }
 

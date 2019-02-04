@@ -9,3 +9,7 @@ export function selectState(state: IAppReduxState): NS.IReduxState {
 export function selectNotifications(state: IAppReduxState): NS.INotification[] {
   return selectState(state).data.notifications;
 }
+
+export function selectHideNotifications(state: IAppReduxState): NS.notificationId[] {
+  return selectState(state).data.hideNotifications;
+}

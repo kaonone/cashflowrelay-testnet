@@ -6,6 +6,7 @@ interface Window {
 }
 
 declare var __DISABLE_SSR__: boolean;
+declare var __NETWORK__: string;
 declare var __SERVER__: boolean;
 declare var __CLIENT__: boolean;
 declare var __LANG__: 'en' | 'he';

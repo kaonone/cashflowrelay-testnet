@@ -4,12 +4,11 @@ import { connect } from 'react-redux';
 import { DrizzleContext } from 'drizzle-react';
 import { GetProps } from '_helpers';
 
-import { ITranslateProps, i18nConnect, tKeys } from 'services/i18n';
+import { ITranslateProps, i18nConnect } from 'services/i18n';
 
 import { IAppReduxState } from 'shared/types/app';
 import { ICommunication } from 'shared/types/redux';
 import { Button } from 'shared/view/elements';
-import { shortenString } from 'shared/helpers/format';
 
 import * as actions from './../../../redux/actions';
 import * as selectors from './../../../redux/selectors';
@@ -43,7 +42,7 @@ class SignInButton extends React.PureComponent<IProps, IState> {
   };
 
   public render() {
-    const { t, locale, signing, signIn, ...restProps } = this.props;
+    const { t, locale, signing, signIn, children, ...restProps } = this.props;
     const { isOpenedModal } = this.state;
     return (
       <DrizzleContext.Consumer>
@@ -51,7 +50,7 @@ class SignInButton extends React.PureComponent<IProps, IState> {
           const address = drizzleState.accounts[0];
           return (<>
             <Button variant="outlined" color="primary" {...restProps} onClick={this.onButtonClick}>
-              {t(tKeys.features.signIn.button.getKey(), { address: shortenString(address, 12) })}
+              {children}
             </Button>
             <ConfirmSignInModal
               address={address}

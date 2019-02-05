@@ -6,16 +6,8 @@ const styles = ({ extra: theme }: Theme) => ({
     padding: theme.spacing.unit * 3,
     paddingTop: theme.spacing.unit * 1.5,
   }),
-  address: rule({
-    fontSize: '1.5rem',
-    fontWeight: 'bold',
-    color: theme.palette.text.positive,
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-  }),
 
-  paragraph: rule({
+  content: rule({
     fontSize: '0.625rem',
     color: theme.colors.tundora,
     marginTop: theme.spacing.unit * 2,
@@ -30,10 +22,6 @@ const styles = ({ extra: theme }: Theme) => ({
     width: 0,
     flexGrow: 1,
     marginRight: theme.spacing.unit * 2,
-  }),
-  preloader: rule({
-    display: 'inline-flex',
-    marginLeft: theme.spacing.unit,
   }),
 });
 

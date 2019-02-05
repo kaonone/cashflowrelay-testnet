@@ -11,6 +11,7 @@ interface IOwnProps {
   children?: React.ReactNode;
   size: 'small' | 'medium' | 'large' | 'xLarge';
   type?: 'default' | 'signTransaction';
+  variant?: 'primary' | 'secondary';
   isOpen: boolean;
   title?: string;
   titleAlign?: 'center' | 'left';
@@ -23,13 +24,16 @@ ReactModal.setAppElement('#root');
 
 class Modal extends React.Component<IProps> {
   public render() {
-    const { classes, children, isOpen, onClose, title } = this.props;
+    const { classes, children, isOpen, onClose, title, variant } = this.props;
 
     return (
       <ReactModal
         portalClassName={classes.portal}
         className={classes.modal && {
-          base: classes.modal,
+          base: cn(classes.modal, {
+            [classes.isPrimary]: !variant || variant === 'primary',
+            [classes.isSecondary]: variant === 'secondary',
+          }),
           afterOpen: classes.modalAfterOpen,
           beforeClose: classes.modalBeforeClose,
         }}
@@ -44,12 +48,12 @@ class Modal extends React.Component<IProps> {
       >
         {!!title && (
           <div className={classes.title}>
-            <CrossButton isHidden classes={classes} />
+            {variant === 'secondary' && <CrossButton isHidden classes={classes} />}
             {title}
-            <CrossButton classes={classes} onClick={onClose} />
+            {variant === 'secondary' && <CrossButton classes={classes} onClick={onClose} />}
           </div>
         )}
-        {!title && <CrossButton isAbsolute classes={classes} onClick={onClose} />}
+        {!title && variant === 'secondary' && <CrossButton isAbsolute classes={classes} onClick={onClose} />}
         {children}
       </ReactModal>
     );

@@ -29,6 +29,7 @@ const colors = {
   springWood: '#f1efe3',
   harp: '#e3f1e3',
   valencia: '#D63B3B',
+  electricViolet: '#9013FE',
 };
 
 export const theme = {

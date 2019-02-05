@@ -34,6 +34,14 @@ const styles = ({ extra: theme }: Theme) => ({
   accountStatus: rule({
     marginLeft: 'auto',
   }),
+
+  signInDescription: rule({
+    marginBottom: theme.spacing.unit,
+  }),
+
+  signButton: rule({
+    fontSize: '0.625rem',
+  }),
 });
 
 export const provideStyles = withStyles(styles);

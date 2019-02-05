@@ -1,16 +1,20 @@
-import { put, takeEvery, call, take } from 'redux-saga/effects';
-import { SagaIterator, eventChannel } from 'redux-saga';
+import { put, takeEvery, call } from 'redux-saga/effects';
+import { SagaIterator } from 'redux-saga';
 import { DrizzleState } from 'drizzle';
-import { Store } from 'redux';
 
 import { actions as notificationActions } from 'services/notifications';
 import { IDependencies } from 'shared/types/app';
-import { SetTransactionType, TransactionRequestDataByType } from 'shared/types/models';
+import { SetTransactionType, TransactionRequestDataByType, NotificationType } from 'shared/types/models';
 import { mainContractName } from 'shared/constants';
+import { awaitStateChanging } from 'shared/helpers/redux';
 
 import * as NS from '../../namespace';
 
 const sendType: NS.ISendTransaction['type'] = 'TRANSACTIONS:SEND_TRANSACTION';
+const notsByType: Record<SetTransactionType, NotificationType[]> = {
+  createCashFlow: ['createCashFlow', 'createCashFlowSuccess', 'createCashFlowFail'],
+  addMinter: ['addMinter', 'addMinterSuccess', 'addMinterFail'],
+};
 
 function getSaga(deps: IDependencies) {
   return function* saga(): SagaIterator {
@@ -29,28 +33,15 @@ function* sendSaga({ drizzle, Ox: { web3Wrapper } }: IDependencies, action: NS.I
   yield awaitStateChanging(drizzle.store, (state: DrizzleState) => Boolean(state.transactionStack[stackId]));
   const drizzleStore = drizzle.store.getState();
   const txHash = drizzleStore.transactionStack[stackId];
-
+  const [not, notSuccess, notFail] = notsByType[type];
   try {
-    yield put(notificationActions.pushNotification({ type: 'createCashFlow', payload: { txHash }, id: txHash }));
+    yield put(notificationActions.pushNotification(not, { txHash }));
     yield call([web3Wrapper, 'awaitTransactionSuccessAsync'], txHash);
-    yield put(notificationActions.pushNotification({ type: 'createCashFlowSuccess', payload: { txHash }, id: txHash }));
+    yield put(notificationActions.pushNotification(notSuccess, { txHash }));
   } catch (error) {
-    yield put(notificationActions.pushNotification({ type: 'createCashFlowFail', payload: { txHash }, id: txHash }));
+    yield put(notificationActions.pushNotification(notFail,  { txHash }));
     console.error(error);
   }
-}
-
-function awaitStateChanging<R, S extends Store<R>>(store: S, predicate: (state: R) => boolean) {
-  return call(function* gen() {
-    const channel = eventChannel<number>(cb => store.subscribe(() => cb(1)));
-    while (true) {
-      yield take(channel);
-      const state = store.getState();
-      if (predicate(state)) {
-        return;
-      }
-    }
-  });
 }
 
 const methodByType: Record<SetTransactionType, string> = {

@@ -10,8 +10,8 @@ import { Cross } from 'shared/view/elements/Icons';
 
 import { StylesProps, provideStyles } from './TopNotification.style';
 import { NotificationIcon } from '../../components/NotificationIcon/NotificationIcon';
-import { INotification, variantByType } from 'services/notifications/namespace';
 import { i18nConnect, ITranslateProps, tKeys } from 'services/i18n';
+import { INotification, variantByType } from 'shared/types/models';
 
 interface IOwnProps {
   notificationInfo: INotification;

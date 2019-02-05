@@ -2,8 +2,7 @@ import * as React from 'react';
 import CheckCircleOutlineRounded from '@material-ui/icons/CheckCircleOutlineRounded';
 import HighlightOffOutlined from '@material-ui/icons/HighlightOffOutlined';
 import InfoOutlined from '@material-ui/icons/InfoOutlined';
-
-import { NotificationVariant } from '../../../namespace';
+import { NotificationVariant } from 'shared/types/models';
 
 interface IProps {
   type: NotificationVariant;

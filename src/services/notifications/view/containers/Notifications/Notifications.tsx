@@ -7,7 +7,7 @@ import { IAppReduxState } from 'shared/types/app';
 import * as selectors from './../../../redux/selectors';
 import * as actions from './../../../redux/actions';
 import TopNotification from '../TopNotification/TopNotification';
-import { INotification, NotificationId } from '../../../namespace';
+import { INotification, NotificationId } from 'shared/types/models';
 
 interface IStateProps {
   notifications: INotification[];

@@ -7,9 +7,10 @@ import { withRouter, RouteComponentProps } from 'react-router';
 import { withDrizzle } from 'shared/helpers/react';
 import { actions as userActions, selectors as userSelectors } from 'services/user';
 import { IAppReduxState } from 'shared/types/app';
+import { i18nConnect, ITranslateProps, tKeys } from 'services/i18n';
+import { GlobalLoader } from 'shared/view/elements';
 
 import RetryModal from '../RetryModal/RetryModal';
-import { i18nConnect, ITranslateProps, tKeys } from 'services/i18n';
 
 interface IOwnProps {
   errorComp?: React.ReactNode;
@@ -70,16 +71,7 @@ class LoadingContainer extends React.Component<IProps> {
       return this.props.loadingComp;
     }
 
-    return (
-      <main className="container loading-screen">
-        <div className="pure-g">
-          <div className="pure-u-1-1">
-            <h1>⚙️</h1>
-            <p>Loading dapp...</p>
-          </div>
-        </div>
-      </main>
-    );
+    return <GlobalLoader />;
   }
 
   private isEmptyAccounts() {

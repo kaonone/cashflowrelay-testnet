@@ -6,7 +6,6 @@ import Header from '../Header/Header';
 
 import { StylesProps, provideStyles } from './BaseLayout.style';
 import { Notifications } from 'services/notifications';
-import Transactions from 'services/transactions/view/containers/Transactions/Transactions';
 
 interface IOwnProps {
   children: React.ReactNode;
@@ -23,8 +22,6 @@ class BaseLayout extends React.PureComponent<IProps> {
         headerContent={<Header />}
         {...rest}
       >
-        {/* <Transactions /> */}
-
         <Notifications />
         <div className={classes.content}>
           {children}

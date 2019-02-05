@@ -8,7 +8,7 @@ export function pushNotification(info: NS.INotification): NS.IPushNotification {
     payload: {
       ...info,
       id: uuid(),
-    }
+    },
   };
 }
 

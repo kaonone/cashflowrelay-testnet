@@ -13,6 +13,15 @@ export type NotificationPayloadByType = SubSet<Record<NotificationType, any>, {
   createCashFlow: { txHash: string },
   createCashFlowFail: { txHash: string },
   createCashFlowSuccess: { txHash: string },
+  sellCashflow: { txHash: string },
+  sellCashflowSuccess: { txHash: string },
+  sellCashflowFail: { txHash: string },
+  buyCashflow: { txHash: string }
+  buyCashflowSuccess: { txHash: string },
+  buyCashflowFail: { txHash: string },
+  userPayInstallment: { txHash: string },
+  userPayInstallmentSuccess: { txHash: string },
+  userPayInstallmentFail: { txHash: string },
 }>;
 
 export const variantByType: Record<NotificationType, NotificationVariant> = {
@@ -22,6 +31,15 @@ export const variantByType: Record<NotificationType, NotificationVariant> = {
   createCashFlow: 'info',
   createCashFlowFail: 'negative',
   createCashFlowSuccess: 'positive',
+  buyCashflow: 'info',
+  buyCashflowSuccess: 'positive',
+  buyCashflowFail: 'negative',
+  sellCashflow: 'info',
+  sellCashflowSuccess: 'positive',
+  sellCashflowFail: 'negative',
+  userPayInstallment: 'info',
+  userPayInstallmentSuccess: 'positive',
+  userPayInstallmentFail: 'negative',
 };
 
 export interface IReduxState {
@@ -34,7 +52,7 @@ export interface IReduxState {
 
 export type INotification = {
   [key in NotificationType]: {
-    id?: NotificationId;
+    id: NotificationId;
     type: key;
     payload: NotificationPayloadByType[key];
   }

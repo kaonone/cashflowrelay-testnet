@@ -1,18 +1,16 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import * as uuid from 'uuid';
 import { bind } from 'decko';
 
 import { IAppReduxState } from 'shared/types/app';
-import { Button } from 'shared/view/elements';
 
 import * as selectors from './../../../redux/selectors';
 import * as actions from './../../../redux/actions';
 import TopNotification from '../TopNotification/TopNotification';
-import { INotificationWithId, NotificationId } from '../../../namespace';
+import { INotification, NotificationId } from '../../../namespace';
 
 interface IStateProps {
-  notifications: INotificationWithId[];
+  notifications: INotification[];
   hideNotifications: NotificationId[];
   showingNotification: NotificationId;
 }
@@ -54,17 +52,14 @@ class Notifications extends React.Component<IProps> {
     const currentNotification = actualNotifications[0];
     const isShowNotification = actualNotifications.length > 0;
     return (
-      <>
-      <Button variant="contained" onClick={this.testClick}>Push notification</Button>
-      {isShowNotification && (
+      isShowNotification && (
         <TopNotification hideNotification={hideNotification} notificationInfo={currentNotification}/>
-      )}
-    </>
+      )
     );
   }
 
   @bind
-  private getActualNotifications(allNotifications: INotificationWithId[], hideNotifications: NotificationId[]) {
+  private getActualNotifications(allNotifications: INotification[], hideNotifications: NotificationId[]) {
     return allNotifications.filter(notification => !hideNotifications.includes(notification.id));
   }
 
@@ -73,18 +68,6 @@ class Notifications extends React.Component<IProps> {
     const {hideNotification, setShowingNotification} = this.props;
     hideNotification(id);
     setShowingNotification('');
-  }
-
-  @bind
-  private testClick() {
-    this.props.pushNotification(
-      {
-        type: 'positive',
-        title: uuid(),
-        description: 'Notification descriotion',
-      },
-
-    );
   }
 }
 

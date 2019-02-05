@@ -31,11 +31,11 @@ function* sendSaga({ drizzle, Ox: { web3Wrapper } }: IDependencies, action: NS.I
   const txHash = drizzleStore.transactionStack[stackId];
 
   try {
-    yield put(notificationActions.pushNotification({ type: 'createCashFlow', payload: { txHash } }));
+    yield put(notificationActions.pushNotification({ type: 'createCashFlow', payload: { txHash }, id: txHash }));
     yield call([web3Wrapper, 'awaitTransactionSuccessAsync'], txHash);
-    yield put(notificationActions.pushNotification({ type: 'createCashFlowSuccess', payload: { txHash } }));
+    yield put(notificationActions.pushNotification({ type: 'createCashFlowSuccess', payload: { txHash }, id: txHash }));
   } catch (error) {
-    yield put(notificationActions.pushNotification({ type: 'createCashFlowFail', payload: { txHash } }));
+    yield put(notificationActions.pushNotification({ type: 'createCashFlowFail', payload: { txHash }, id: txHash }));
     console.error(error);
   }
 }

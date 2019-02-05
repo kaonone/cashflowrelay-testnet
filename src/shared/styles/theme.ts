@@ -26,6 +26,7 @@ const colors = {
   salem: '#0EA33A',
   ripeLemon: '#f8e71c',
   blackCurrant: '#2E2639',
+  electricViolet: '#9013FE',
 };
 
 export const theme = {

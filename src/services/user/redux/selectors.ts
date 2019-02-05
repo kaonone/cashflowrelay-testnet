@@ -15,8 +15,30 @@ export function selectIsLogged(state: IAppReduxState): boolean {
   return selectState(state).data.isLogged;
 }
 
-export function selectIsChecked(state: IAppReduxState): boolean {
-  return selectState(state).data.isChecked;
+export function selectIsCheckedAuth(state: IAppReduxState): boolean {
+  return selectState(state).data.isCheckedAuth;
+}
+
+export function selectIsCheckedPermissions(state: IAppReduxState): boolean {
+  return selectState(state).data.isCheckedPermissions;
+}
+
+export function selectIsMinter(state: IAppReduxState): boolean {
+  return selectState(state).data.isMinter;
+}
+
+export function selectIsApproved(state: IAppReduxState): boolean {
+  return selectState(state).data.isApproved;
+}
+
+export function selectIsAllowance(state: IAppReduxState): boolean {
+  return selectState(state).data.isAllowance;
+}
+
+export function selectIsAllPermissionsGranted(state: IAppReduxState): boolean {
+  const { isMinter, isAllowance, isApproved } = selectState(state).data;
+
+  return isMinter && isAllowance && isApproved;
 }
 
 export const selectCommunication = makeCommunicationSelector(selectState);

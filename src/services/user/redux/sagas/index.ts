@@ -147,13 +147,13 @@ export function* setApproved(deps: IDependencies, action: NS.ISetApproved) {
     const drizzleState = drizzle.store.getState();
     const account = drizzleState.accounts[0];
 
-    const makerERC721ApprovalTxHash = yield call([contractWrappers.erc721Token, 'setProxyApprovalForAllAsync'],
+    const txHash = yield call([contractWrappers.erc721Token, 'setProxyApprovalForAllAsync'],
       networkConfig.c2fcContract,
       account,
       action.payload.isApproved,
     );
 
-    yield call([web3Wrapper, 'awaitTransactionSuccessAsync'], makerERC721ApprovalTxHash);
+    yield call([web3Wrapper, 'awaitTransactionSuccessAsync'], txHash);
 
     yield put(actions.setApprovedSuccess({ isApproved: action.payload.isApproved }));
   } catch (error) {

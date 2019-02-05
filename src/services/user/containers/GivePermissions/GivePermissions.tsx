@@ -10,7 +10,6 @@ import { Switch } from 'shared/view/elements';
 import { actions, selectors } from '../../redux';
 import { provideStyles, StylesProps } from './GivePermissions.style';
 
-
 const tKeys = tKeysAll.features.signIn;
 
 type ActionProps = typeof mapDispatch;

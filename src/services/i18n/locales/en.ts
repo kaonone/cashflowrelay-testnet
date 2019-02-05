@@ -71,7 +71,7 @@ export default {
       button: 'Connect to %{address}',
       logout: 'Log out',
       connectToWallet: 'Connect a wallet',
-      givePermission: 'give permission',
+      givePermission: 'Give permission',
       metamaskDescription: 'Metamask allows Web 3.0 applications to interact with Etherium blockchain and leaves you in full control over every transaction',
       confirmModal: {
         title: 'Confirm your address',

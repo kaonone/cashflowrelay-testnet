@@ -113,6 +113,7 @@ const styles = ({ extra: theme }: Theme) => ({
     },
 
     '$isSecondary &': {
+      // tslint:disable-next-line:max-line-length
       margin: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 4 - iconButtonPadding}px 0 ${theme.spacing.unit * 4}px`,
       justifyContent: 'space-between',
       fontSize: '1.25rem',

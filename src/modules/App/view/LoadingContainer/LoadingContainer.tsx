@@ -46,7 +46,6 @@ class LoadingContainer extends React.Component<IProps> {
   }
   public render() {
     const { drizzleState, initialized, isCheckedAuth, t } = this.props;
-
     if (drizzleState && drizzleState.web3.status === 'failed') {
       return (
         <RetryModal isOpen={true} onRetry={this.reloadPage}>

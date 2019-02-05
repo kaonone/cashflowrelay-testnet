@@ -10,6 +10,7 @@ import { reduxEntry as i18nRE } from 'services/i18n';
 import { reduxEntry as orderbookRE } from 'services/orderbook';
 import { reduxEntry as transactionsRE } from 'services/transactions';
 import { reduxEntry as userRE } from 'services/user';
+import { reduxEntry as notificationRE } from 'services/notifications';
 
 import { reduxEntry as sellCashFlowRE } from 'features/sellCashFlow';
 import { reduxEntry as signInRE } from 'features/signIn';
@@ -32,6 +33,7 @@ function configureApp(data?: IAppData): IAppData {
     adaptabilityRE,
     dataProviderRE,
     i18nRE,
+    notificationRE,
     orderbookRE,
     sellCashFlowRE,
     signInRE,

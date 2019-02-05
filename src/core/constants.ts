@@ -26,3 +26,4 @@ const networkConfigs: Record<string, INetworkConfig> = {
 };
 
 export const networkConfig = networkConfigs[__NETWORK__];
+export const relayerUrl = 'http://0xrelay.akropolis.io:3000/v2';

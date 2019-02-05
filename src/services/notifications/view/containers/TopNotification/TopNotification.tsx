@@ -40,8 +40,8 @@ class TopNotification extends React.PureComponent<IProps, {}> {
           >
             <CardHeader
               avatar={(<NotificationIcon type={variant} />)}
-              title={t(tKeys.services.notifications.title[type].getKey(), payload)}
-              subheader={t(tKeys.services.notifications.description[type].getKey(), payload)}
+              title={t(tKeys.services.notifications.title[type].getKey(), payload || {})}
+              subheader={t(tKeys.services.notifications.description[type].getKey(), payload || {})}
               classes={{ title: classes.title }}
               action={(
                 <IconButton onClick={this.hideNotification}>

@@ -17,8 +17,9 @@ import * as userNS from 'services/user/namespace';
 import * as notificationNS from 'services/notifications/namespace';
 import Api from 'services/api/Api';
 
-import * as signInNS from 'features/signIn/namespace';
+import * as buyCashFlowNS from 'features/buyCashFlow/namespace';
 import * as sellCashFlowNS from 'features/sellCashFlow/namespace';
+import * as signInNS from 'features/signIn/namespace';
 
 import { JSS, Theme } from 'shared/styles';
 import { IMultiInstanceState } from 'shared/helpers/redux';
@@ -83,6 +84,7 @@ export interface IAppReduxState {
   user: userNS.IReduxState;
   notifications: notificationNS.IReduxState;
   // features
+  buyCashFlow: buyCashFlowNS.IReduxState;
   sellCashFlow: sellCashFlowNS.IReduxState;
   signIn: signInNS.IReduxState;
 }

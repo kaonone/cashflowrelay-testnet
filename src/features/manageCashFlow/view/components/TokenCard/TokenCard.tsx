@@ -7,8 +7,9 @@ import { BigNumber } from '0x.js';
 import { ShowMainContractData } from 'services/transactions';
 import { i18nConnect, ITranslateProps, tKeys as tKeysAll } from 'services/i18n';
 import { SellButton } from 'features/sellCashFlow';
+import { BuyButton } from 'features/buyCashFlow';
 
-import { IToken, TokenType } from 'shared/types/models';
+import { IToken, TokenType, IOrder } from 'shared/types/models';
 import { ExpansionPanel, ExpansionPanelDetails, Button, DonutChart, ExpansionPanelSummary } from 'shared/view/elements';
 import { ContentCopy, CircleArrow } from 'shared/view/elements/Icons';
 import { toFixed } from 'shared/helpers/integer';
@@ -25,6 +26,7 @@ type MetricKey =
 interface IOwnProps {
   className?: string;
   tokenId: number;
+  order?: IOrder;
   type: TokenType;
   expanded: boolean;
   price?: BigNumber;
@@ -36,7 +38,7 @@ type IProps = IOwnProps & StylesProps & ITranslateProps;
 
 class TokenCard extends React.PureComponent<IProps> {
   public render() {
-    const { classes, className, type, expanded, t, theme, isNeedDisplay, tokenId, price } = this.props;
+    const { classes, className, type, expanded, t, theme, isNeedDisplay, tokenId, price, order } = this.props;
 
     return (
       <ShowMainContractData<'cashflowFor'> type="cashflowFor" request={{ tokenId }}>
@@ -96,7 +98,7 @@ class TokenCard extends React.PureComponent<IProps> {
                   ))}
                 </ExpansionPanelDetails>
                 <div className={classes.footer}>
-                  {this.renderActions()}
+                  {this.renderActions(token, order)}
                 </div>
               </ExpansionPanel>
             </div>
@@ -146,8 +148,8 @@ class TokenCard extends React.PureComponent<IProps> {
     );
   }
 
-  public renderActions() {
-    const { classes, t, type, tokenId } = this.props;
+  public renderActions(token: IToken, order?: IOrder) {
+    const { classes, t, type } = this.props;
     const onSaleNow: boolean = false; // TODO ds: check token on sale
     const isFullRepaid: boolean = false; // TODO ds: check full repaid
 
@@ -157,13 +159,9 @@ class TokenCard extends React.PureComponent<IProps> {
       </Button>
     );
     const sellButton = (
-      <ShowMainContractData<'cashflowFor'> type="cashflowFor" request={{ tokenId }}>
-        {({ data: cashflow }) => cashflow && (
-          <div className={classes.footerButton}>
-            <SellButton cashflow={cashflow} disabled={onSaleNow} />
-          </div>
-        )}
-      </ShowMainContractData>
+      <div className={classes.footerButton}>
+        <SellButton cashflow={token} disabled={onSaleNow} />
+      </div>
     );
 
     switch (type) {
@@ -185,10 +183,10 @@ class TokenCard extends React.PureComponent<IProps> {
           </>
         );
       case 'selling':
-        return (
-          <Button className={classes.footerButton} variant="contained" color="primary">
-            {t(tKeys.buyCashflow.getKey())}
-          </Button>
+        return !!order && (
+          <div className={classes.footerButton}>
+            <BuyButton cashflow={token} order={order} disabled={onSaleNow} />
+          </div>
         );
     }
   }

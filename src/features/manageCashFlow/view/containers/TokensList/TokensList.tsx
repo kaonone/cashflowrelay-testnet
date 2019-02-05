@@ -79,6 +79,7 @@ class TokensList extends React.PureComponent<IProps, IState> {
               onToggle={this.expandCard}
               expanded={order.tokenId.toNumber() === expandedTokenId}
               tokenId={order.tokenId.toNumber()}
+              order={order}
               type={type}
               isNeedDisplay={isNeedTokenByType[type]}
               price={order.price}

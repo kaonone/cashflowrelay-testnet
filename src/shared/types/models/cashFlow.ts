@@ -1,4 +1,4 @@
-import { Order, BigNumber } from '0x.js';
+import { SignedOrder, BigNumber } from '0x.js';
 import { PaginatedCollection } from '@0x/types';
 
 export type Instalments = Record<'paid' | 'due' | 'missed', number>;
@@ -40,7 +40,7 @@ export type TokenType = 'incoming' | 'obligations' | 'selling';
 
 export type ITokenStatus = 'pending' | 'saving' | 'awaiting' | 'sold';
 
-export type IOrder = Order & {
+export type IOrder = SignedOrder & {
   price: BigNumber;
   tokenId: BigNumber;
 };

@@ -12,7 +12,7 @@ import { RPCSubprovider, Web3ProviderEngine, ContractWrappers } from '0x.js';
 import { HttpClient } from '@0x/connect';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { MetamaskSubprovider } from '@0x/subproviders';
-import { networkConfig } from './constants';
+import { networkConfig, relayerUrl } from './constants';
 
 const contracts: IContract[] = [
   {
@@ -55,7 +55,7 @@ export default function configureDeps(_store: Store<IAppReduxState>): IDependenc
 
   const web3Wrapper = new Web3Wrapper(providerEngine);
   const contractWrappers = new ContractWrappers(providerEngine, { networkId: networkConfig.id });
-  const client0x = new HttpClient('http://0xrelay.akropolis.io:3000/v2');
+  const client0x = new HttpClient(relayerUrl);
 
   return {
     api,

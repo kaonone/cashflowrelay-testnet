@@ -9,6 +9,7 @@ import { reduxEntry as dataProviderRE } from 'services/dataProvider';
 import { reduxEntry as i18nRE } from 'services/i18n';
 import { reduxEntry as transactionsRE } from 'services/transactions';
 import { reduxEntry as userRE } from 'services/user';
+import { reduxEntry as notificationRE } from 'services/notifications';
 
 import { reduxEntry as signInRE } from 'features/signIn';
 
@@ -32,6 +33,7 @@ function configureApp(data?: IAppData): IAppData {
     i18nRE,
     transactionsRE,
     userRE,
+    notificationRE,
     signInRE,
   ];
 

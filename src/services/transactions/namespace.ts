@@ -2,9 +2,7 @@ import { IAction } from 'shared/types/redux';
 import { SetTransactionRequest } from 'shared/types/models';
 
 export interface IReduxState {
-  data: {
-    sentTransactions: ITransactionInfo[];
-  };
+  data: {};
 }
 
 export interface ITransactionInfo {

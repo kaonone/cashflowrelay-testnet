@@ -7,5 +7,3 @@ export function sendTransaction(request: SetTransactionRequest): NS.ISendTransac
     payload: request,
   };
 }
-
-export * from './data';

@@ -1,14 +1,20 @@
-import { put, takeEvery } from 'redux-saga/effects';
+import { put, takeEvery, call } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
+import { DrizzleState } from 'drizzle';
 
+import { actions as notificationActions } from 'services/notifications';
 import { IDependencies } from 'shared/types/app';
-import { SetTransactionType, TransactionRequestDataByType } from 'shared/types/models';
+import { SetTransactionType, TransactionRequestDataByType, NotificationType } from 'shared/types/models';
 import { mainContractName } from 'shared/constants';
+import { awaitStateChanging } from 'shared/helpers/redux';
 
 import * as NS from '../../namespace';
-import * as actions from '../actions';
 
 const sendType: NS.ISendTransaction['type'] = 'TRANSACTIONS:SEND_TRANSACTION';
+const notsByType: Record<SetTransactionType, NotificationType[]> = {
+  createCashFlow: ['createCashFlow', 'createCashFlowSuccess', 'createCashFlowFail'],
+  addMinter: ['addMinter', 'addMinterSuccess', 'addMinterFail'],
+};
 
 function getSaga(deps: IDependencies) {
   return function* saga(): SagaIterator {
@@ -16,17 +22,24 @@ function getSaga(deps: IDependencies) {
   };
 }
 
-function* sendSaga({ drizzle }: IDependencies, action: NS.ISendTransaction) {
+function* sendSaga({ drizzle, Ox: { web3Wrapper } }: IDependencies, action: NS.ISendTransaction) {
   const { type, data } = action.payload;
   const account = drizzle.store.getState().accounts[0];
   const contract = drizzle.contracts[mainContractName];
   const method = methodByType[type];
   const params = (getParamsByRequest[type] as ParamsConverter)(data, account);
+  const stackId = contract.methods[method].cacheSend(...params, { from: account });
 
+  yield awaitStateChanging(drizzle.store, (state: DrizzleState) => Boolean(state.transactionStack[stackId]));
+  const drizzleStore = drizzle.store.getState();
+  const txHash = drizzleStore.transactionStack[stackId];
+  const [not, notSuccess, notFail] = notsByType[type];
   try {
-    const stackId = contract.methods[method].cacheSend(...params, { from: account });
-    yield put(actions.pushTransactionInfo({ stackId, request: action.payload }));
+    yield put(notificationActions.pushNotification(not, { txHash }));
+    yield call([web3Wrapper, 'awaitTransactionSuccessAsync'], txHash);
+    yield put(notificationActions.pushNotification(notSuccess, { txHash }));
   } catch (error) {
+    yield put(notificationActions.pushNotification(notFail,  { txHash }));
     console.error(error);
   }
 }

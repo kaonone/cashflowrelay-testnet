@@ -1,6 +1,7 @@
 import { SagaIterator, Channel, eventChannel } from 'redux-saga';
 import { put, takeLatest, take, select, call } from 'redux-saga/effects';
 import { DrizzleState } from 'drizzle';
+import { awaitStateChanging } from 'shared/helpers/redux';
 import * as sigUtil from 'eth-sig-util';
 
 import { IDependencies } from 'shared/types/app';
@@ -127,12 +128,16 @@ async function getAllPermissions({ Ox: { contractWrappers }, drizzle }: IDepende
   ]);
 }
 
-export function* setMinterSaga({ drizzle }: IDependencies) {
-
+export function* setMinterSaga({ drizzle, Ox: { web3Wrapper } }: IDependencies) {
   try {
     const account = drizzle.store.getState().accounts[0];
     const contract = drizzle.contracts[mainContractName];
-    contract.methods.addMinter.cacheSend({ from: account });
+    const stackId = contract.methods.addMinter.cacheSend({ from: account });
+
+    yield awaitStateChanging(drizzle.store, (state: DrizzleState) => Boolean(state.transactionStack[stackId]));
+    const drizzleStore = drizzle.store.getState();
+    const txHash = drizzleStore.transactionStack[stackId];
+    yield call([web3Wrapper, 'awaitTransactionMinedAsync'], txHash);
     yield put(actions.setMinterSuccess());
   } catch (error) {
     const message = getErrorMsg(error);
@@ -152,9 +157,7 @@ export function* setApproved(deps: IDependencies, action: NS.ISetApproved) {
       account,
       action.payload.isApproved,
     );
-
     yield call([web3Wrapper, 'awaitTransactionSuccessAsync'], txHash);
-
     yield put(actions.setApprovedSuccess({ isApproved: action.payload.isApproved }));
   } catch (error) {
     const message = getErrorMsg(error);
@@ -168,7 +171,6 @@ export function* setAllowance(deps: IDependencies, action: NS.ISetAllowance) {
     const { drizzle } = deps;
     const drizzleState = drizzle.store.getState();
     const account = drizzleState.accounts[0];
-
     const method = action.payload.isAllowance ? 'setUnlimitedAllowanceAsync' : 'setAllowanceAsync';
     const params: Record<'setUnlimitedAllowanceAsync' | 'setAllowanceAsync', any> = {
       setUnlimitedAllowanceAsync: undefined,
@@ -181,10 +183,8 @@ export function* setAllowance(deps: IDependencies, action: NS.ISetAllowance) {
       networkConfig.c2fcContract,
       params[method],
     );
-
     yield call([web3Wrapper, 'awaitTransactionSuccessAsync'], txHash);
     yield put(actions.setAllowanceSuccess({ isAllowance: action.payload.isAllowance }));
-
   } catch (error) {
     const message = getErrorMsg(error);
     yield put(actions.setAllowanceFail(message));

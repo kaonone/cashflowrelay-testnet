@@ -9,12 +9,12 @@ import { Button } from 'shared/view/elements';
 import * as selectors from './../../../redux/selectors';
 import * as actions from './../../../redux/actions';
 import TopNotification from '../TopNotification/TopNotification';
-import { INotificationWithId, notificationId } from '../../../namespace';
+import { INotificationWithId, NotificationId } from '../../../namespace';
 
 interface IStateProps {
   notifications: INotificationWithId[];
-  hideNotifications: notificationId[];
-  showingNotification: notificationId;
+  hideNotifications: NotificationId[];
+  showingNotification: NotificationId;
 }
 
 type IActionProps = typeof mapDispatch;
@@ -64,7 +64,7 @@ class Notifications extends React.Component<IProps> {
   }
 
   @bind
-  private getActualNotifications(allNotifications: INotificationWithId[], hideNotifications: notificationId[]) {
+  private getActualNotifications(allNotifications: INotificationWithId[], hideNotifications: NotificationId[]) {
     return allNotifications.filter(notification => !hideNotifications.includes(notification.id));
   }
 

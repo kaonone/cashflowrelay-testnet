@@ -10,10 +10,10 @@ export function selectNotifications(state: IAppReduxState): NS.INotificationWith
   return selectState(state).data.notifications;
 }
 
-export function selectHideNotifications(state: IAppReduxState): NS.notificationId[] {
+export function selectHideNotifications(state: IAppReduxState): NS.NotificationId[] {
   return selectState(state).data.hideNotifications;
 }
 
-export function selectShowingNotification(state: IAppReduxState): NS.notificationId {
+export function selectShowingNotification(state: IAppReduxState): NS.NotificationId {
   return selectState(state).data.showingNotification;
 }

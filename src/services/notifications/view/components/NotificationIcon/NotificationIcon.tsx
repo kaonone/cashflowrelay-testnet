@@ -3,10 +3,10 @@ import CheckCircleOutlineRounded from '@material-ui/icons/CheckCircleOutlineRoun
 import HighlightOffOutlined from '@material-ui/icons/HighlightOffOutlined';
 import InfoOutlined from '@material-ui/icons/InfoOutlined';
 
-import { notificationType } from '../../../namespace';
+import { NotificationVariant } from '../../../namespace';
 
 interface IProps {
-  type: notificationType;
+  type: NotificationVariant;
 }
 
 class NotificationIcon extends React.Component<IProps> {

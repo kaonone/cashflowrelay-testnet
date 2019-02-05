@@ -120,5 +120,23 @@ export default {
       connectedToMetamask: 'Connected to Metamask',
       walletAddress: 'Wallet address',
     },
+    notifications: {
+      title: {
+        addMinter: '',
+        addMinterSuccess: '',
+        addMinterFail: '',
+        createCashFlow: 'pending %{txHash}',
+        createCashFlowSuccess: 'success %{txHash}',
+        createCashFlowFail: 'fail %{txHash}',
+      },
+      description: {
+        addMinter: '',
+        addMinterSuccess: '',
+        addMinterFail: '',
+        createCashFlow: '',
+        createCashFlowSuccess: '',
+        createCashFlowFail: '',
+      },
+    },
   },
 };

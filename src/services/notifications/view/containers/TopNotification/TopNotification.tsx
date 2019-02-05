@@ -10,18 +10,22 @@ import { Cross } from 'shared/view/elements/Icons';
 
 import { StylesProps, provideStyles } from './TopNotification.style';
 import { NotificationIcon } from '../../components/NotificationIcon/NotificationIcon';
-import { INotificationWithId } from 'services/notifications/namespace';
+import { INotification, variantByType } from 'services/notifications/namespace';
+import { i18nConnect, ITranslateProps, tKeys } from 'services/i18n';
 
 interface IOwnProps {
-  notificationInfo: INotificationWithId;
+  notificationInfo: INotification;
   hideNotification: (id: string) => void;
 }
 
-type IProps = IOwnProps & StylesProps;
+type IProps = IOwnProps & StylesProps & ITranslateProps;
 
 class TopNotification extends React.PureComponent<IProps, {}> {
   public render() {
-    const { classes, notificationInfo } = this.props;
+    const { t, classes } = this.props;
+    const { type, payload } = this.props.notificationInfo;
+
+    const variant = variantByType[type];
 
     return (
       <div className={classes.root}>
@@ -29,16 +33,16 @@ class TopNotification extends React.PureComponent<IProps, {}> {
           <Card
             className={
               cn(classes.notification, {
-                [classes.infoNotification]: notificationInfo.type === 'info',
-                [classes.positiveNotification]: notificationInfo.type === 'positive',
-                [classes.negativeNotification]: notificationInfo.type === 'negative',
+                [classes.infoNotification]: variant === 'info',
+                [classes.positiveNotification]: variant === 'positive',
+                [classes.negativeNotification]: variant === 'negative',
               })}
           >
             <CardHeader
-              avatar={(<NotificationIcon type={notificationInfo.type}/>)}
-              title={notificationInfo.title}
-              subheader={notificationInfo.description}
-              classes={{title: classes.title}}
+              avatar={(<NotificationIcon type={variant} />)}
+              title={t(tKeys.services.notifications.title[type].getKey(), payload)}
+              subheader={t(tKeys.services.notifications.description[type].getKey(), payload)}
+              classes={{ title: classes.title }}
               action={(
                 <IconButton onClick={this.hideNotification}>
                   <Cross />
@@ -59,4 +63,4 @@ class TopNotification extends React.PureComponent<IProps, {}> {
 }
 
 export { TopNotification };
-export default provideStyles(TopNotification);
+export default i18nConnect(provideStyles(TopNotification));

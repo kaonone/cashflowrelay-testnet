@@ -12,14 +12,14 @@ export function pushNotification(info: NS.INotification): NS.IPushNotification {
   };
 }
 
-export function hideNotification(notificationId: NS.notificationId): NS.IHideNotification {
+export function hideNotification(notificationId: NS.NotificationId): NS.IHideNotification {
   return {
     type: 'NOTIFICATIONS:HIDE_NOTIFICATION',
     payload: notificationId,
   };
 }
 
-export function setShowingNotification(notificationId: NS.notificationId): NS.ISetShowingNotification {
+export function setShowingNotification(notificationId: NS.NotificationId): NS.ISetShowingNotification {
   return {
     type: 'NOTIFICATIONS:SET_SHOWING_NOTIFICATION',
     payload: notificationId,

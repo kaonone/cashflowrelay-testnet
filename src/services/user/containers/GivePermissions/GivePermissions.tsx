@@ -18,7 +18,6 @@ interface IStateProps {
   isApproved: boolean;
   isAllowance: boolean;
   isMinter: boolean;
-  checkingPermissions: ICommunication;
   settingMinter: ICommunication;
   settingApproved: ICommunication;
   settingAllowance: ICommunication;
@@ -88,7 +87,6 @@ function mapState(state: IAppReduxState): IStateProps {
     isApproved: selectors.selectIsApproved(state),
     isAllowance: selectors.selectIsAllowance(state),
     isMinter: selectors.selectIsMinter(state),
-    checkingPermissions: selectors.selectCommunication(state, 'checkingPermissions'),
     settingMinter: selectors.selectCommunication(state, 'settingMinter'),
     settingApproved: selectors.selectCommunication(state, 'settingApproved'),
     settingAllowance: selectors.selectCommunication(state, 'settingAllowance'),
@@ -96,7 +94,6 @@ function mapState(state: IAppReduxState): IStateProps {
 }
 
 const mapDispatch = {
-  checkPermissions: actions.checkPermissions,
   setMinter: actions.setMinter,
   setApproved: actions.setApproved,
   setAllowance: actions.setAllowance,

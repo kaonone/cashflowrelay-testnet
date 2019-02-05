@@ -3,17 +3,18 @@ import { put, takeLatest, take, select, call } from 'redux-saga/effects';
 import { DrizzleState } from 'drizzle';
 import { awaitStateChanging } from 'shared/helpers/redux';
 import * as sigUtil from 'eth-sig-util';
+import { PromisedReturnType } from '_helpers';
+import { BigNumber } from '@0x/utils';
 
 import { IDependencies } from 'shared/types/app';
-
-import * as NS from '../../namespace';
-import * as actions from '../actions';
-import * as selectors from '../selectors';
 import { storageKeys } from 'services/storage';
 import { getErrorMsg } from 'shared/helpers';
 import { messageForSignature, mainContractName } from 'shared/constants';
 import { networkConfig } from 'core/constants';
-import { BigNumber } from '@0x/utils';
+
+import * as NS from '../../namespace';
+import * as actions from '../actions';
+import * as selectors from '../selectors';
 
 const completeAuthenticationType: NS.ICompleteAuthentication['type'] = 'USER:COMPLETE_AUTHENTICATION';
 const checkIsUserSignedType: NS.ICheckIsUserSigned['type'] = 'USER:CHECK_IS_USER_SIGNED';
@@ -100,7 +101,8 @@ export function* listenAccountChange({ drizzle }: IDependencies) {
 
 export function* checkPermissionsSaga(deps: IDependencies) {
   try {
-    const [isMinter, isApproved, allowance]: [boolean, boolean, BigNumber] = yield call(getAllPermissions, deps);
+    const [isMinter, isApproved, allowance]: PromisedReturnType<typeof getAllPermissions> =
+    yield call(getAllPermissions, deps);
 
     yield put(actions.checkPermissionsSuccess({
       isMinter,
@@ -113,7 +115,9 @@ export function* checkPermissionsSaga(deps: IDependencies) {
   }
 }
 
-async function getAllPermissions({ Ox: { contractWrappers }, drizzle }: IDependencies) {
+async function getAllPermissions(
+  { Ox: { contractWrappers }, drizzle }: IDependencies,
+): Promise<[boolean, boolean, BigNumber]> {
 
   const account = drizzle.store.getState().accounts[0];
   const contract = drizzle.contracts[mainContractName];
@@ -135,9 +139,9 @@ export function* setMinterSaga({ drizzle, Ox: { web3Wrapper } }: IDependencies) 
     const stackId = contract.methods.addMinter.cacheSend({ from: account });
 
     yield awaitStateChanging(drizzle.store, (state: DrizzleState) => Boolean(state.transactionStack[stackId]));
-    const drizzleStore = drizzle.store.getState();
-    const txHash = drizzleStore.transactionStack[stackId];
-    yield call([web3Wrapper, 'awaitTransactionMinedAsync'], txHash);
+    const drizzleState = drizzle.store.getState();
+    const txHash = drizzleState.transactionStack[stackId];
+    yield call([web3Wrapper, 'awaitTransactionSuccessAsync'], txHash);
     yield put(actions.setMinterSuccess());
   } catch (error) {
     const message = getErrorMsg(error);

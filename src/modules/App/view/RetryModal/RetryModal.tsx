@@ -10,16 +10,15 @@ const tKeys = allKeys.shared;
 
 interface IProps {
   isOpen: boolean;
-  onClose?(): void;
   onRetry(): void;
 }
 
 class RetryModal extends React.PureComponent<IProps & StylesProps & ITranslateProps> {
   public render() {
 
-    const { classes, isOpen, t, onRetry, onClose, children } = this.props;
+    const { classes, isOpen, t, onRetry, children } = this.props;
     return (
-      <Modal size="small" isOpen={isOpen} title={t(tKeys.noEthereumConnection.getKey())} onClose={onClose}>
+      <Modal size="small" isOpen={isOpen} title={t(tKeys.noEthereumConnection.getKey())}>
         <div className={classes.root}>
           <p className={classes.content}>
             {children}

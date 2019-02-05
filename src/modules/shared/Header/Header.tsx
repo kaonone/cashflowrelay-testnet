@@ -8,6 +8,7 @@ import { selectors, GivePermissions } from 'services/user';
 import { i18nConnect, ITranslateProps, tKeys } from 'services/i18n';
 import { SignInButton } from 'features/signIn';
 import { IAppReduxState } from 'shared/types/app';
+import { ICommunication } from 'shared/types/redux';
 
 import Logo from '../Logo/Logo';
 import Menu from './Menu/Menu';
@@ -19,6 +20,8 @@ const brandRedirectPath = routes.marketplace.getRoutePath();
 
 interface IStateProps {
   isLogged: boolean;
+  checkingPermissions: ICommunication;
+  isAllPermissionsGranted: boolean;
 }
 
 type IProps = IStateProps & StylesProps & RouteComponentProps & ITranslateProps;
@@ -26,12 +29,14 @@ type IProps = IStateProps & StylesProps & RouteComponentProps & ITranslateProps;
 function mapState(state: IAppReduxState): IStateProps {
   return {
     isLogged: selectors.selectIsLogged(state),
+    checkingPermissions: selectors.selectCommunication(state, 'checkingPermissions'),
+    isAllPermissionsGranted: selectors.selectIsAllPermissionsGranted(state),
   };
 }
 
 class Header extends React.PureComponent<IProps> {
   public render() {
-    const { classes, isLogged, t } = this.props;
+    const { classes, t, isLogged, isAllPermissionsGranted, checkingPermissions } = this.props;
     return (
       <div className={classes.root}>
         <div className={classes.content}>
@@ -43,10 +48,12 @@ class Header extends React.PureComponent<IProps> {
           </div>
           <div className={classes.accountStatus}>
             {isLogged ?
-              // <Profile />
-              <ExpandedContent title={'give permission'}>
-                <GivePermissions />
-              </ExpandedContent>
+              (isAllPermissionsGranted || checkingPermissions.isRequesting ?
+                <Profile />
+                :
+                <ExpandedContent title={'give permission'} withOverlay>
+                  <GivePermissions />
+                </ExpandedContent>)
               :
               <ExpandedContent title={"Connect a wallet"}>
                 <>
@@ -59,7 +66,6 @@ class Header extends React.PureComponent<IProps> {
                   </SignInButton>
                 </>
               </ExpandedContent>
-
             }
           </div>
         </div>

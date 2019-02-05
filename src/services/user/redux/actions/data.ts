@@ -12,25 +12,3 @@ export function logout(): NS.ILogout {
     type: 'USER:LOGOUT',
   };
 }
-
-
-
-export function checkIsMinter(): NS.ICheckISMinter {
-  return {
-    type: 'USER:CHECK_IS_MINTER',
-  };
-}
-
-export function checkIsAllowance(): NS.ICheckIsAllowance {
-  return {
-    type: 'USER:CHECK_IS_ALLOWANCE',
-  };
-}
-
-
-export function setIsAllowance(payload: NS.ISetAllowance['payload']): NS.ISetAllowance {
-  return {
-    type: 'USER:SET_ALLOWANCE',
-    payload,
-  };
-}

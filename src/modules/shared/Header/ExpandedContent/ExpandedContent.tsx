@@ -4,6 +4,7 @@ import { provideStyles, StylesProps } from './ExpandedContent.style';
 
 interface IOwnProps {
   title: string;
+  withOverlay?: boolean;
 }
 
 type IProps = StylesProps & IOwnProps;
@@ -11,9 +12,10 @@ type IProps = StylesProps & IOwnProps;
 class ExpandedContent extends React.PureComponent<IProps> {
 
   public render() {
-    const { classes, title, children } = this.props;
+    const { classes, title, children, withOverlay } = this.props;
     return (
       <div className={classes.root}>
+        {withOverlay && <div className={classes.overlay} />}
         <div className={classes.header}>
           {title}
         </div>

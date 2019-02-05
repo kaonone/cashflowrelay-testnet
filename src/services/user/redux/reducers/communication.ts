@@ -12,24 +12,24 @@ export const communicationReducer = combineReducers<NS.IReduxState['communicatio
       'USER:CHECK_IS_USER_SIGNED', 'USER:CHECK_IS_USER_SIGNED_SUCCESS', 'USER:CHECK_IS_USER_SIGNED_FAIL',
       initial.communication.checkingIsUserSigned,
     ),
-  checkingApproved:
-    makeCommunicationReducer<NS.ICheckApproved, NS.ICheckApprovedSuccess, NS.ICheckApprovedFail>(
-      'USER:CHECK_APPROVED', 'USER:CHECK_APPROVED_SUCCESS', 'USER:CHECK_APPROVED_FAIL',
-      initial.communication.checkingApproved,
-    ),
   settingApproved:
     makeCommunicationReducer<NS.ISetApproved, NS.ISetApprovedSuccess, NS.ISetApprovedFail>(
       'USER:SET_APPROVED', 'USER:SET_APPROVED_SUCCESS', 'USER:SET_APPROVED_FAIL',
       initial.communication.settingApproved,
     ),
-  checkingAllowance:
-    makeCommunicationReducer<NS.ICheckAllowance, NS.ICheckAllowanceSuccess, NS.ICheckAllowanceFail>(
-      'USER:CHECK_ALLOWANCE', 'USER:CHECK_ALLOWANCE_SUCCESS', 'USER:CHECK_ALLOWANCE_FAIL',
-      initial.communication.checkingAllowance,
-    ),
   settingAllowance:
-    makeCommunicationReducer<NS.ICheckAllowance, NS.ICheckAllowanceSuccess, NS.ICheckAllowanceFail>(
-      'USER:CHECK_ALLOWANCE', 'USER:CHECK_ALLOWANCE_SUCCESS', 'USER:CHECK_ALLOWANCE_FAIL',
+    makeCommunicationReducer<NS.ISetAllowance, NS.ISetAllowanceSuccess, NS.ISetAllowanceFail>(
+      'USER:SET_ALLOWANCE', 'USER:SET_ALLOWANCE_SUCCESS', 'USER:SET_ALLOWANCE_FAIL',
+      initial.communication.settingAllowance,
+    ),
+  checkingPermissions:
+    makeCommunicationReducer<NS.ICheckPermissions, NS.ICheckPermissionsSuccess, NS.ICheckPermissionsFail>(
+      'USER:CHECK_PERMISSIONS', 'USER:CHECK_PERMISSIONS_SUCCESS', 'USER:CHECK_PERMISSIONS_FAIL',
+      initial.communication.checkingPermissions,
+    ),
+  settingMinter:
+    makeCommunicationReducer<NS.ISetMinter, NS.ISetMinterSuccess, NS.ISetMinterFail>(
+      'USER:SET_MINTER', 'USER:SET_MINTER_SUCCESS', 'USER:SET_MINTER_FAIL',
       initial.communication.settingAllowance,
     ),
 } as ReducersMap<NS.IReduxState['communication']>);

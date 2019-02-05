@@ -10,6 +10,7 @@ const styles = ({ extra: theme }: Theme) => ({
   }),
 
   header: rule({
+    position: 'relative',
     padding: theme.spacing.unit,
     textAlign: 'center',
     background: theme.colors.electricViolet,
@@ -28,6 +29,16 @@ const styles = ({ extra: theme }: Theme) => ({
     backgroundColor: theme.colors.white,
     fontSize: '0.625rem',
     color: theme.colors.tundora,
+  }),
+
+  overlay: rule({
+    position: 'fixed',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: theme.colors.dustyGray,
+    opacity: 0.7,
   }),
 });
 

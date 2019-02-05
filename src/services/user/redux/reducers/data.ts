@@ -7,7 +7,7 @@ export function dataReducer(state: NS.IReduxState['data'] = initial.data, action
     case 'USER:CHECK_IS_USER_SIGNED_SUCCESS': {
       return {
         ...state,
-        isChecked: true,
+        isCheckedAuth: true,
       };
     }
     case 'USER:COMPLETE_AUTHENTICATION': {
@@ -20,14 +20,40 @@ export function dataReducer(state: NS.IReduxState['data'] = initial.data, action
     case 'USER:LOGOUT': {
       return {
         ...initial.data,
-        isChecked: true,
+        isCheckedAuth: true,
       };
     }
-    case 'USER:CHECK_APPROVED_SUCCESS':
+    case 'USER:CHECK_PERMISSIONS_SUCCESS': {
+      return {
+        ...state,
+        isMinter: action.payload.isMinter,
+        isApproved: action.payload.isApproved,
+        isAllowance: action.payload.isAllowance,
+        isCheckedPermissions: true,
+      };
+    }
+    case 'USER:CHECK_PERMISSIONS_FAIL': {
+      return {
+        ...state,
+        isCheckedPermissions: true,
+      };
+    }
     case 'USER:SET_APPROVED_SUCCESS': {
       return {
         ...state,
         isApproved: action.payload.isApproved,
+      };
+    }
+    case 'USER:SET_ALLOWANCE_SUCCESS': {
+      return {
+        ...state,
+        isAllowance: action.payload.isAllowance,
+      };
+    }
+    case 'USER:SET_MINTER_SUCCESS': {
+      return {
+        ...state,
+        isMinter: true,
       };
     }
     default: return state;

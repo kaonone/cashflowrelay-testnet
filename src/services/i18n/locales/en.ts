@@ -15,6 +15,10 @@ export default {
     pageNotFound: 'We can’t find this page',
     copiedAtClipboard: 'Copied at clipboard',
     cancel: 'Cancel',
+    retry: 'Retry',
+    noEthereumConnection: 'No connection to the Etherium network',
+    noEthereumAccounts: 'We can\'t find any Ethereum accounts! Please check and make sure Metamask or your browser are pointed at the correct network and your account is unlocked.',
+    needUseMetamask: 'This browser has no connection to the Ethereum network. Please use the Chrome/FireFox extension MetaMask, or dedicated Ethereum browsers Mist or Parity.',
   },
   components: {
     fund: {
@@ -66,6 +70,9 @@ export default {
     signIn: {
       button: 'Connect to %{address}',
       logout: 'Log out',
+      connectToWallet: 'Connect a wallet',
+      givePermission: 'give permission',
+      metamaskDescription: 'Metamask allows Web 3.0 applications to interact with Etherium blockchain and leaves you in full control over every transaction',
       confirmModal: {
         title: 'Confirm your address',
         beforeAddressDescription: 'You’re signing in with the following address:',
@@ -74,6 +81,12 @@ export default {
           cancel: 'Cancel',
           confirm: 'Confirm',
         },
+      },
+      permissions: {
+        title: 'Authorise Cashflow Relay to:',
+        createCashflows: 'Create cashflows',
+        sellCashflows: 'Sell cashflows',
+        payInstalments: 'Pay instalments from your wallet',
       },
     },
     createCashFlow: {

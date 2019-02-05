@@ -6,7 +6,11 @@ const styles = ({ extra: theme }: Theme) => ({
     position: 'relative',
     width: '14.375rem',
     border: `solid 0.0625rem ${theme.colors.tundora}`,
-    borderRadius: '0.25rem 0.25rem 0 0',
+    borderRadius: '0.25rem',
+
+    '&$isExpanded': {
+      borderRadius: '0.25rem 0.25rem 0 0',
+    },
   }),
 
   header: rule({
@@ -15,6 +19,11 @@ const styles = ({ extra: theme }: Theme) => ({
     textAlign: 'center',
     background: theme.colors.electricViolet,
     color: theme.colors.white,
+    borderRadius: '0.15rem',
+
+    '$isExpanded & ': {
+      borderRadius: '0.15rem 0.15rem 0 0',
+    },
   }),
 
   content: rule({
@@ -40,6 +49,8 @@ const styles = ({ extra: theme }: Theme) => ({
     backgroundColor: theme.colors.dustyGray,
     opacity: 0.7,
   }),
+
+  isExpanded: {},
 });
 
 export const provideStyles = withStyles(styles);

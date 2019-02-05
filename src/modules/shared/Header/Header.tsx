@@ -5,7 +5,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import routes from 'modules/routes';
 
 import { selectors, GivePermissions } from 'services/user';
-import { i18nConnect, ITranslateProps, tKeys } from 'services/i18n';
+import { i18nConnect, ITranslateProps, tKeys as tKeysAll } from 'services/i18n';
 import { SignInButton } from 'features/signIn';
 import { IAppReduxState } from 'shared/types/app';
 import { ICommunication } from 'shared/types/redux';
@@ -18,6 +18,7 @@ import ExpandedContent from './ExpandedContent/ExpandedContent';
 
 const brandRedirectPath = routes.marketplace.getRoutePath();
 
+const tKeys = tKeysAll.features.signIn;
 interface IStateProps {
   isLogged: boolean;
   checkingPermissions: ICommunication;
@@ -37,6 +38,7 @@ function mapState(state: IAppReduxState): IStateProps {
 class Header extends React.PureComponent<IProps> {
   public render() {
     const { classes, t, isLogged, isAllPermissionsGranted, checkingPermissions } = this.props;
+    const needGivePermissions = !isAllPermissionsGranted && !checkingPermissions.isRequesting;
     return (
       <div className={classes.root}>
         <div className={classes.content}>
@@ -47,22 +49,20 @@ class Header extends React.PureComponent<IProps> {
             <Menu isLogged={isLogged} />
           </div>
           <div className={classes.accountStatus}>
-            {isLogged ?
-              (isAllPermissionsGranted || checkingPermissions.isRequesting ?
-                <Profile />
-                :
-                <ExpandedContent title={'give permission'} withOverlay>
-                  <GivePermissions />
-                </ExpandedContent>)
-              :
-              <ExpandedContent title={"Connect a wallet"}>
+            {isLogged && !needGivePermissions && <Profile />}
+            {isLogged && needGivePermissions &&
+              <ExpandedContent title={t(tKeys.givePermission.getKey())} expanded withOverlay>
+                <GivePermissions />
+              </ExpandedContent>
+            }
+            {!isLogged &&
+              <ExpandedContent title={t(tKeys.connectToWallet.getKey())}>
                 <>
                   <div className={classes.signInDescription}>
-                    Metamask allows Web 3.0 applications to interact with Etherium blockchain and
-                  leaves you in full control over every transaction
+                    {t(tKeys.metamaskDescription.getKey())}
                   </div>
                   <SignInButton fullWidth size="small" className={classes.signButton}>
-                    {t(tKeys.features.signIn.button.getKey(), { address: 'Metamask' })}
+                    {t(tKeys.button.getKey(), { address: 'Metamask' })}
                   </SignInButton>
                 </>
               </ExpandedContent>

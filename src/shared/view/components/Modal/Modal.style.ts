@@ -42,12 +42,15 @@ const styles = ({ extra: theme }: Theme) => ({
     alignItems: 'stretch',
     justifyContent: 'center',
     flexDirection: 'column',
-    overflow: 'hidden',
-    backgroundColor: theme.colors.mercury,
+    backgroundColor: theme.colors.white,
     outline: 'none',
     opacity: 0,
-    border: `solid 1px ${theme.colors.tundora}`,
-    borderRadius: '4px',
+    overflow: 'hidden',
+
+    '&$isPrimary': {
+      border: `solid 1px ${theme.colors.tundora}`,
+      borderRadius: '0.25rem',
+    },
 
     [theme.breakpoints.up('sm')]: rule({
       flexGrow: 0,
@@ -98,13 +101,23 @@ const styles = ({ extra: theme }: Theme) => ({
     display: 'flex',
     alignItems: 'center',
     textAlign: 'center',
-    justifyContent: 'center',
-    padding: `${theme.spacing.unit}px`,
-    fontSize: '12px',
-    fontWeight: 600,
     fontFamily: theme.typography.primaryFont,
-    backgroundColor: theme.colors.electricViolet,
-    color: theme.colors.white,
+
+    '$isPrimary &': {
+      justifyContent: 'center',
+      padding: `${theme.spacing.unit}px`,
+      fontSize: '0.75rem',
+      fontWeight: 600,
+      backgroundColor: theme.colors.electricViolet,
+      color: theme.colors.white,
+    },
+
+    '$isSecondary &': {
+      margin: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 4 - iconButtonPadding}px 0 ${theme.spacing.unit * 4}px`,
+      justifyContent: 'space-between',
+      fontSize: '1.25rem',
+      fontWeight: 'bold',
+    },
   }),
 
   cross: rule({
@@ -129,6 +142,9 @@ const styles = ({ extra: theme }: Theme) => ({
       left: 'none',
     }, 'center'),
   },
+
+  isPrimary: {},
+  isSecondary: {},
 
   '@keyframes modal-disappear-animation': rule({
     from: {

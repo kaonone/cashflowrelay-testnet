@@ -8,6 +8,9 @@ import { withDrizzle } from 'shared/helpers/react';
 import { actions as userActions, selectors as userSelectors } from 'services/user';
 import { IAppReduxState } from 'shared/types/app';
 
+import RetryModal from '../RetryModal/RetryModal';
+import { i18nConnect, ITranslateProps, tKeys } from 'services/i18n';
+
 interface IOwnProps {
   errorComp?: React.ReactNode;
   loadingComp?: React.ReactNode;
@@ -22,10 +25,9 @@ interface IStateProps {
 
 type ActionProps = typeof mapDispatch;
 
-type IProps = IOwnProps & ActionProps & IStateProps & InjectDrizzleProps & RouteComponentProps;
+type IProps = IOwnProps & ActionProps & IStateProps & InjectDrizzleProps & RouteComponentProps & ITranslateProps;
 
 class LoadingContainer extends React.Component<IProps> {
-
   public componentDidUpdate(prevProps: IProps) {
     const {
       initialized, drizzle, drizzleState, isLogged,
@@ -42,42 +44,21 @@ class LoadingContainer extends React.Component<IProps> {
     }
   }
   public render() {
-    const { drizzleState, initialized, isCheckedAuth } = this.props;
+    const { drizzleState, initialized, isCheckedAuth, t } = this.props;
 
     if (drizzleState && drizzleState.web3.status === 'failed') {
-      if (this.props.errorComp) {
-        return this.props.errorComp;
-      }
-
       return (
-        <main className="container loading-screen">
-          <div className="pure-g">
-            <div className="pure-u-1-1">
-              <h1>⚠️</h1>
-              <p>{[
-                'This browser has no connection to the Ethereum network.',
-                'Please use the Chrome/FireFox extension MetaMask,',
-                'or dedicated Ethereum browsers Mist or Parity.',
-              ].join(' ')}</p>
-            </div>
-          </div>
-        </main>
+        <RetryModal isOpen={true} onRetry={this.reloadPage}>
+          {t(tKeys.shared.needUseMetamask.getKey())}
+        </RetryModal>
       );
     }
 
     if (this.isEmptyAccounts()) {
       return (
-        <main className="container loading-screen">
-          <div className="pure-g">
-            <div className="pure-u-1-1">
-              <h1>🦊</h1>
-              <p>{[
-                'We can\'t find any Ethereum accounts! Please check and make sure Metamask or your browser',
-                'are pointed at the correct network and your account is unlocked.',
-              ].join(' ')}</p>
-            </div>
-          </div>
-        </main>
+        <RetryModal isOpen={true} onRetry={this.reloadPage}>
+          {t(tKeys.shared.noEthereumAccounts.getKey())}
+        </RetryModal>
       );
     }
 
@@ -107,6 +88,11 @@ class LoadingContainer extends React.Component<IProps> {
       drizzleState.web3.status === 'initialized' &&
       Object.keys(drizzleState.accounts).length === 0;
   }
+
+  private reloadPage() {
+    location.reload();
+  }
+
 }
 
 function mapState(state: IAppReduxState): IStateProps {
@@ -121,4 +107,10 @@ const mapDispatch = {
   checkUserPermissions: userActions.checkPermissions,
 };
 
-export default withDrizzle(withRouter(connect(mapState, mapDispatch)(LoadingContainer)));
+export default withDrizzle(
+  withRouter(
+    i18nConnect(
+      connect(mapState, mapDispatch)(LoadingContainer),
+    ),
+  ),
+);

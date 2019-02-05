@@ -4,12 +4,11 @@ import { connect } from 'react-redux';
 import { DrizzleContext } from 'drizzle-react';
 import { GetProps } from '_helpers';
 
-import { ITranslateProps, i18nConnect, tKeys } from 'services/i18n';
+import { ITranslateProps, i18nConnect } from 'services/i18n';
 
 import { IAppReduxState } from 'shared/types/app';
 import { ICommunication } from 'shared/types/redux';
 import { Button } from 'shared/view/elements';
-import { shortenString } from 'shared/helpers/format';
 
 import * as actions from './../../../redux/actions';
 import * as selectors from './../../../redux/selectors';

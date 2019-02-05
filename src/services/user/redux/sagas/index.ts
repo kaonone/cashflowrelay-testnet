@@ -1,5 +1,5 @@
 import { SagaIterator, Channel, eventChannel } from 'redux-saga';
-import { put, takeLatest, take, select, call, all } from 'redux-saga/effects';
+import { put, takeLatest, take, select, call } from 'redux-saga/effects';
 import { DrizzleState } from 'drizzle';
 import * as sigUtil from 'eth-sig-util';
 
@@ -132,7 +132,7 @@ export function* setMinterSaga({ drizzle }: IDependencies) {
   try {
     const account = drizzle.store.getState().accounts[0];
     const contract = drizzle.contracts[mainContractName];
-    const stackId = contract.methods['addMinter'].cacheSend({ from: account });
+    contract.methods.addMinter.cacheSend({ from: account });
     yield put(actions.setMinterSuccess());
   } catch (error) {
     const message = getErrorMsg(error);

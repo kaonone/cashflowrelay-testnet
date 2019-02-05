@@ -7,11 +7,12 @@ const styles = ({ extra: theme }: Theme) => ({
   }),
 
   title: rule({
-
+    padding: '0 0.25rem 0.75rem',
+    borderBottom: `solid 1px ${theme.colors.tundora}`,
   }),
 
   content: rule({
-
+    paddingLeft: '0.25rem',
   }),
 
   permission: rule({

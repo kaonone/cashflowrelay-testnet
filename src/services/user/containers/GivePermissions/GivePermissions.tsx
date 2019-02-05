@@ -2,13 +2,16 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bind } from 'decko';
 
-import { provideStyles, StylesProps } from './GivePermissions.style';
 import { IAppReduxState } from 'shared/types/app';
 import { ICommunication } from 'shared/types/redux';
+import { i18nConnect, ITranslateProps, tKeys as tKeysAll } from 'services/i18n';
+import { Switch } from 'shared/view/elements';
 
 import { actions, selectors } from '../../redux';
+import { provideStyles, StylesProps } from './GivePermissions.style';
 
-import Switch from '@material-ui/core/Switch'; /// 12313123123123
+
+const tKeys = tKeysAll.features.signIn;
 
 type ActionProps = typeof mapDispatch;
 
@@ -22,22 +25,21 @@ interface IStateProps {
   settingAllowance: ICommunication;
 }
 
-type IProps = ActionProps & IStateProps & StylesProps;
+type IProps = ActionProps & IStateProps & StylesProps & ITranslateProps;
 
 class GivePermissions extends React.PureComponent<IProps> {
   public render() {
     const {
-      classes,
-      isMinter, setMinter, settingMinter, checkingPermissions,
+      classes, t,
+      isMinter, setMinter, settingMinter,
       isApproved, settingApproved,
       isAllowance, settingAllowance } = this.props;
-    // добавить сюда прелодер !!!
     return (
       <div className={classes.root}>
-        <div className={classes.title}>Authorise Cashflow Relay to:</div>
+        <div className={classes.title}>{t(tKeys.permissions.title.getKey())}</div>
         <div className={classes.content}>
           <div className={classes.permission}>
-            <div className={classes.permissionTitle}>Create cashflows</div>
+            <div className={classes.permissionTitle}>{t(tKeys.permissions.createCashflows.getKey())}</div>
             <Switch
               color="primary"
               onChange={setMinter}
@@ -46,7 +48,7 @@ class GivePermissions extends React.PureComponent<IProps> {
             />
           </div>
           <div className={classes.permission}>
-            <div className={classes.permissionTitle}>Sell cashflows</div>
+            <div className={classes.permissionTitle}>{t(tKeys.permissions.sellCashflows.getKey())}</div>
             <Switch
               color="primary"
               disabled={settingApproved.isRequesting}
@@ -55,7 +57,7 @@ class GivePermissions extends React.PureComponent<IProps> {
             />
           </div>
           <div className={classes.permission}>
-            <div className={classes.permissionTitle}>Pay instalments from your wallet</div>
+            <div className={classes.permissionTitle}>{t(tKeys.permissions.payInstalments.getKey())}</div>
             <Switch
               color="primary"
               disabled={settingAllowance.isRequesting}
@@ -102,5 +104,7 @@ const mapDispatch = {
 };
 
 export default connect(mapState, mapDispatch)(
-  provideStyles(GivePermissions),
+  i18nConnect(
+    provideStyles(GivePermissions),
+  ),
 );

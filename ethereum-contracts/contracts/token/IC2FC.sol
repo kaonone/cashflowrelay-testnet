@@ -15,7 +15,7 @@ contract IC2FC is IERC165 {
     address tokenAddress = 0xC4375B7De8af5a38a93548eb8453a498222C4fF2;
 
     /**
-     * @title Event for Created Cashflows
+     * @dev Event for Created Cashflows
      * @param subscriber address, who create and subscribe for payment to cashflow
      * @param name string name of Cashflow
      * @param value uint256 maximum value for Cashflow

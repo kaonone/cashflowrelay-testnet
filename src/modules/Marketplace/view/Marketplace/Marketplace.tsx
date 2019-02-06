@@ -21,7 +21,7 @@ class Marketplace extends React.PureComponent<IProps> {
     return (
       <BaseLayout>
         {orders.records.length === 0 && ordersLoading.isRequesting && <CircleProgressBar size={40} />}
-        <TokensList type="selling" orders={orders} />
+        <TokensList type="selling" orders={orders}/>
       </BaseLayout>
     );
   }

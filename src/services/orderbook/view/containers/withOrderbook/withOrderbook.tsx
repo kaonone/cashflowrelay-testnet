@@ -40,7 +40,7 @@ function withOrderbook<TProps extends InjectOrderbookProps>(
     }
 
     public render() {
-      const { loading, orders, load, ...rest } = this.props;
+      const { loading, orders, hideOrders, load, ...rest } = this.props;
       return (
         <WrappedComponent {...rest as TProps} orders={orders} ordersLoading={loading} loadMore={this.loadMore} />
       );

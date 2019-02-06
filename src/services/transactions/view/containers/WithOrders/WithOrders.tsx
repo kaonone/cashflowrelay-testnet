@@ -7,6 +7,7 @@ import { withDrizzle, InjectDrizzleProps } from 'shared/helpers/react';
 import { mainContractName } from 'shared/constants';
 import { BigNumber } from '0x.js';
 import { OneDAI } from 'shared/helpers/model';
+import checkDrizzleResponse from 'shared/helpers/CheckDrizzleResponse';
 
 interface IChildrenProps {
   orders: IPaymentOrder[];
@@ -35,13 +36,13 @@ class WithOrders extends React.PureComponent<IProps, IState> {
     const keyForOrderIds = contract.methods.getOrdersList.cacheCall(tokenId.toString());
     this.setState({ keyForOrderIds });
   }
-  public componentDidUpdate(_pProps: IProps, pState: IState) {
+  public componentDidUpdate() {
     const { drizzleState } = this.props;
     const contract = drizzleState.contracts[mainContractName];
     const orderIdsResponse = contract.getOrdersList[this.state.keyForOrderIds];
-    const orderIds = orderIdsResponse && orderIdsResponse.value !== undefined && orderIdsResponse.value || [];
+    const orderIds = checkDrizzleResponse<string[], []>(orderIdsResponse, []);
 
-    if (pState.orderIds.length !== orderIds.length) {
+    if (this.state.orderIds.length !== orderIds.length) {
       this.setState({ orderIds });
       this.updateOrders(orderIds);
     }
@@ -52,14 +53,13 @@ class WithOrders extends React.PureComponent<IProps, IState> {
     const contract = drizzleState.contracts[mainContractName];
     const orders = this.state.keysForOrders.map(({ key, id }) => {
       const orderResponse = contract.getByOrderId[key];
-      const order = orderResponse &&
-        orderResponse.value !== undefined && orderResponse.value as IBlockChainPaymentOrder || null;
+      const order = checkDrizzleResponse<IBlockChainPaymentOrder, null>(orderResponse, null);
       return order ? convertOrderResponse(order, id) : null;
     });
-
     const ordersLoading = orders.some(order => !order);
+
     return typeof children === 'function' ?
-      children({ orders: ordersLoading ? [] : orders as IPaymentOrder[], ordersLoading }) : '';
+      children({ orders: orders.filter(order => order) as IPaymentOrder[], ordersLoading }) : '';
   }
 
   public updateOrders(orderIds: string[]) {
@@ -75,11 +75,11 @@ class WithOrders extends React.PureComponent<IProps, IState> {
 
 function convertOrderResponse(order: IBlockChainPaymentOrder, id: string): IPaymentOrder {
   return {
-    id: new BigNumber(id),
+    id: Number(id),
     subscriber: order.subscriber,
-    pendingDatePayment: Number(order.pendingDatePayment),
+    pendingDatePayment: Number(order.pendingDatePayment) * 1000,
     datePayment: Number(order.datePayment),
-    amount: (new BigNumber(order.amount)).div(OneDAI).toNumber(),
+    amount: (new BigNumber(order.amount)).div(OneDAI),
     isPayed: order.isPayed,
     isDeleted: order.isDeleted,
   };

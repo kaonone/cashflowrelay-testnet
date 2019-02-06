@@ -93,7 +93,7 @@ contract IC2FC is IERC165 {
      * @return uint256[] array of IDs
      */
 
-    function  idsOfSubcribedCashflowsFor(address _subscriber) public view returns 
+    function  idsOfSubscribedCashflowsFor(address _subscriber) public view returns 
     (
         uint256[] memory tokenIds
         );

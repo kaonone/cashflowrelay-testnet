@@ -160,12 +160,12 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
     }
 
 
-    function  idsOfSubscribedCashflowsFor(address _owner) public view returns 
+    function  idsOfSubscribedCashflowsFor(address _subscriber) public view returns 
     (
         uint256[] memory tokenIds
     )
     {
-        return _subscribedTokens[_owner];
+        return _subscribedTokens[_subscriber];
     }
 
     /*

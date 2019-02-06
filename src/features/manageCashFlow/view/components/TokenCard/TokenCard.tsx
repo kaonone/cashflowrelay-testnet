@@ -121,6 +121,16 @@ class TokenCard extends React.PureComponent<IProps> {
                       <CircleArrow />
                     </div>
                   ))}
+
+                  <WithOrders tokenId={token.id}>
+                    {(data) => {
+                      console.log(data)
+                      return (
+                        <div />
+
+                      );
+                    }}
+                  </WithOrders>
                 </ExpansionPanelDetails>
                 <div className={classes.footer}>
                   {this.renderActions(token, order)}
@@ -189,21 +199,21 @@ class TokenCard extends React.PureComponent<IProps> {
       </div>
     );
 
-    const payButton = (
-      <WithOrders tokenId={token.id}>
-        {(data) => {
-          return (
-            <div className={classes.footerButton}>
-              <PayButton
-                type={data.orderId ? 'current' : 'advance'}
-                tokenId={token.id}
-                tokenAmount={token.instalmentSize.toNumber()}
-                orderId={data.orderId}
-              />
-            </div>
-          );
-        }}
-      </WithOrders>);
+    // const payButton = (
+    //   <WithOrders tokenId={token.id}>
+    //     {(data) => {
+    //       return (
+    //         <div className={classes.footerButton}>
+    //           <PayButton
+    //             type={data.orderId ? 'current' : 'advance'}
+    //             tokenId={token.id}
+    //             tokenAmount={token.instalmentSize.toNumber()}
+    //             orderId={data.orderId}
+    //           />
+    //         </div>
+    //       );
+    //     }}
+    //   </WithOrders>);
 
     switch (type) {
       case 'incoming':
@@ -216,7 +226,7 @@ class TokenCard extends React.PureComponent<IProps> {
       case 'obligations':
         return (
           <>
-            {payButton}
+            {/* {payButton} */}
             {sellButton}
             {!onSaleNow && isFullRepaid && withdrawButton}
           </>

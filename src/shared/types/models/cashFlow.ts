@@ -48,6 +48,7 @@ export type IOrder = SignedOrder & {
 export type IOrderList = PaginatedCollection<IOrder>;
 
 export interface IPaymentOrder {
+  id: BigNumber;
   subscriber: string;
   pendingDatePayment: number;
   datePayment: number;

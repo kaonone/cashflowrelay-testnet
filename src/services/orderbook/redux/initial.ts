@@ -19,5 +19,6 @@ export const initial: NS.IReduxState = {
       records: [],
       total: 0,
     },
+    hideOrders: [],
   },
 };

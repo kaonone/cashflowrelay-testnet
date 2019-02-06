@@ -9,6 +9,13 @@ export function dataReducer(state: NS.IReduxState['data'] = initial.data, action
         orders: action.payload,
       };
     }
+
+    case 'ORDERBOOK:HIDE_ORDER': {
+      return {
+        ...state,
+        hideOrders: [...state.hideOrders, action.payload],
+      };
+    }
     default: return state;
   }
 }

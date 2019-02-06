@@ -8,6 +8,7 @@ import * as ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import * as FaviconsWebpackPlugin from 'favicons-webpack-plugin';
 import * as CircularDependencyPlugin from 'circular-dependency-plugin';
 import * as ReactJssHmrPlugin from 'react-jss-hmr/webpack';
+import * as FileManagerWebpackPlugin from 'filemanager-webpack-plugin';
 
 import * as threadLoader from 'thread-loader';
 import * as postcssSCSS from 'postcss-scss';
@@ -68,6 +69,16 @@ export const getCommonPlugins: (type: BuildType) => webpack.Plugin[] = (type) =>
       chunksSortMode: sortChunks,
     })
   ) : [])
+  .concat(forGhPages ? new FileManagerWebpackPlugin({
+    onEnd: {
+      copy: [
+        {
+          source: `src/assets/ghPageRoot/**`,
+          destination: `build`,
+        },
+      ],
+    },
+  }) : [])
   .concat(isWatchMode && !withoutTypeChecking ? (
     new ForkTsCheckerWebpackPlugin({
       checkSyntacticErrors: true,

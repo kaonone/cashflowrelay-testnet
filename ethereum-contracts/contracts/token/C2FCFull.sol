@@ -370,7 +370,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         address _owner = ownerOf(tokenId);
         uint256 _a = IERC20(tokenAddress).allowance(_o.subscriber, address(this));
 
-        if (_o.amount >= _a) {
+        if (_o.amount <= _a) {
             IERC20(tokenAddress).transferFrom(_o.subscriber, address(this), _o.amount); 
             _o.isPayed = true;
             emit ExecuteOrder(tokenId, _o.subscriber, _owner, tokenAddress, _o.amount, block.timestamp);

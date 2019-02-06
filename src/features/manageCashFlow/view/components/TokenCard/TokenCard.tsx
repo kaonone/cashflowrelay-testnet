@@ -17,6 +17,7 @@ import { formatNumber } from 'shared/helpers/format';
 
 import Header from './Header/Header';
 import { StylesProps, provideStyles } from './TokenCard.style';
+import { PayButton } from 'features/payInstalment';
 
 const tKeys = tKeysAll.features.manageCashFlows;
 
@@ -26,6 +27,7 @@ type MetricKey =
 interface IOwnProps {
   className?: string;
   tokenId: number;
+  account: string | null;
   order?: IOrder;
   type: TokenType;
   expanded: boolean;
@@ -38,7 +40,7 @@ type IProps = IOwnProps & StylesProps & ITranslateProps;
 
 class TokenCard extends React.PureComponent<IProps> {
   public render() {
-    const { classes, className, type, expanded, t, theme, isNeedDisplay, tokenId, price, order } = this.props;
+    const { classes, className, type, expanded, t, theme, isNeedDisplay, tokenId, price, order, account } = this.props;
 
     return (
       <ShowMainContractData<'cashflowFor'> type="cashflowFor" request={{ tokenId }}>
@@ -98,7 +100,7 @@ class TokenCard extends React.PureComponent<IProps> {
                   ))}
                 </ExpansionPanelDetails>
                 <div className={classes.footer}>
-                  {this.renderActions(token, order)}
+                  {this.renderActions(token, account, order)}
                 </div>
               </ExpansionPanel>
             </div>
@@ -148,47 +150,56 @@ class TokenCard extends React.PureComponent<IProps> {
     );
   }
 
-  public renderActions(token: IToken, order?: IOrder) {
+  public renderActions(token: IToken, account: string | null, order?: IOrder) {
     const { classes, t, type } = this.props;
     const onSaleNow: boolean = false; // TODO ds: check token on sale
     const isFullRepaid: boolean = false; // TODO ds: check full repaid
 
-    const withdrawButton = (
-      <Button className={classes.footerButton} variant="contained" color="primary">
-        {t(tKeys.withdrawDai.getKey())}
-      </Button>
-    );
-    const sellButton = (
-      <div className={classes.footerButton}>
-        <SellButton cashflow={token} disabled={onSaleNow} />
-      </div>
-    );
+    return (
+      <ShowMainContractData<'ownerOf'> type="ownerOf" request={{ tokenId: token.id }}>
+        {({ data: owner }) => {
+          if (!owner || !account) { return null; }
 
-    switch (type) {
-      case 'incoming':
-        return (
-          <>
-            {sellButton}
-            {!onSaleNow && withdrawButton}
-          </>
-        );
-      case 'obligations':
-        return (
-          <>
-            <Button className={classes.footerButton} variant="contained" color="primary" >
-              {t(tKeys.payInstalment.getKey())}
+          const isMyToken = owner.toLowerCase() === account.toLowerCase();
+
+          const withdrawButton = isMyToken && !onSaleNow && (
+            <Button className={classes.footerButton} variant="contained" color="primary">
+              {t(tKeys.withdrawDai.getKey())}
             </Button>
-            {sellButton}
-            {!onSaleNow && isFullRepaid && withdrawButton}
-          </>
-        );
-      case 'selling':
-        return !!order && (
-          <div className={classes.footerButton}>
-            <BuyButton cashflow={token} order={order} disabled={onSaleNow} />
-          </div>
-        );
-    }
+          );
+          const sellButton = isMyToken && (
+            <div className={classes.footerButton}>
+              <SellButton cashflow={token} disabled={onSaleNow} />
+            </div>
+          );
+          const payInstallmentButton = !isFullRepaid && (
+            <div className={classes.footerButton}>
+              <PayButton token={token} variant={isMyToken ? 'outlined' : 'contained'} />
+            </div>
+          );
+          const buyButton = !!order && !isMyToken && (
+            <div className={classes.footerButton}>
+              <BuyButton cashflow={token} order={order} />
+            </div>
+          );
+
+          const renderByType: Record<TokenType, () => React.ReactNode> = {
+            incoming: () => (<>
+              {sellButton}
+              {withdrawButton}
+            </>),
+            obligations: () => (<>
+              {payInstallmentButton}
+              {sellButton}
+              {isFullRepaid && withdrawButton}
+            </>),
+            selling: () => <>{buyButton}</>,
+          };
+
+          return renderByType[type]();
+        }}
+      </ShowMainContractData>
+    );
   }
 }
 

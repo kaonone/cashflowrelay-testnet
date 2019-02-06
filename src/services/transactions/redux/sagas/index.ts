@@ -14,6 +14,9 @@ const sendType: NS.ISendTransaction['type'] = 'TRANSACTIONS:SEND_TRANSACTION';
 const notsByType: Record<SetTransactionType, NotificationType[]> = {
   createCashFlow: ['createCashFlow', 'createCashFlowSuccess', 'createCashFlowFail'],
   addMinter: ['addMinter', 'addMinterSuccess', 'addMinterFail'],
+  createOrder: ['addMinter', 'addMinterSuccess', 'addMinterFail'],
+  executeOrder: ['userPayInstallment', 'userPayInstallmentSuccess', 'userPayInstallmentFail'],
+  executePayment: ['userPayInstallment', 'userPayInstallmentSuccess', 'userPayInstallmentFail'],
 };
 
 function getSaga(deps: IDependencies) {
@@ -39,7 +42,7 @@ function* sendSaga({ drizzle, Ox: { web3Wrapper } }: IDependencies, action: NS.I
     yield call([web3Wrapper, 'awaitTransactionSuccessAsync'], txHash);
     yield put(notificationActions.pushNotification(notSuccess, { txHash }));
   } catch (error) {
-    yield put(notificationActions.pushNotification(notFail,  { txHash }));
+    yield put(notificationActions.pushNotification(notFail, { txHash }));
     console.error(error);
   }
 }
@@ -47,6 +50,9 @@ function* sendSaga({ drizzle, Ox: { web3Wrapper } }: IDependencies, action: NS.I
 const methodByType: Record<SetTransactionType, string> = {
   addMinter: 'addMinter',
   createCashFlow: 'createCashFlow',
+  createOrder: 'createOrder',
+  executeOrder: 'executeOrder',
+  executePayment: 'executePayment',
 };
 
 type ParamsConverter<T extends SetTransactionType = SetTransactionType> =
@@ -60,6 +66,18 @@ const getParamsByRequest: { [key in SetTransactionType]: ParamsConverter<key> } 
     data.commit.toFixed(0),
     data.interestRate.toFixed(0),
     data.duration.toFixed(0),
+  ],
+  createOrder: (data) => [
+    data.tokenId.toFixed(0),
+    data.amount.toFixed(0),
+  ],
+  executeOrder: (data) => [
+    data.tokenId.toFixed(0),
+    data.orderId.toFixed(0),
+  ],
+  executePayment: (data) => [
+    data.tokenId.toFixed(0),
+    data.amount.toFixed(0),
   ],
 };
 

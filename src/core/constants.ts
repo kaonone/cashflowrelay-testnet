@@ -14,7 +14,7 @@ const networkConfigs: Record<string, INetworkConfig> = {
     id: 42,
     rpcUrl: 'https://kovan.infura.io/',
     daiContract: '0xC4375B7De8af5a38a93548eb8453a498222C4fF2',
-    c2fcContract: '0xB8ab98fEEc4E821EB298ab47e6A286B8F94872de',
+    c2fcContract: '0xb272fA8bD66fbD310165d322Febd5e275081f886',
     OxContracts: getContractAddressesForNetworkOrThrow(42),
   },
   '1': {
@@ -27,5 +27,5 @@ const networkConfigs: Record<string, INetworkConfig> = {
 };
 
 export const NETWORK_CONFIG = networkConfigs[getEnvParams().network];
-export const RELAYER_URL = 'http://0xrelay.akropolis.io:3000/v2';
+export const RELAYER_URL = 'https://api.cashflowrelay.com/v2';
 export const ROUTES_PREFIX = '';

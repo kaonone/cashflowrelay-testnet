@@ -46,3 +46,22 @@ export type IOrder = SignedOrder & {
 };
 
 export type IOrderList = PaginatedCollection<IOrder>;
+
+export interface IPaymentOrder {
+  id: number;
+  subscriber: string;
+  pendingDatePayment: number; // in milliseconds
+  datePayment: number; // in milliseconds
+  amount: BigNumber;
+  isPayed: boolean;
+  isDeleted: boolean;
+}
+
+export interface IBlockChainPaymentOrder {
+  subscriber: string;
+  pendingDatePayment: string;
+  datePayment: string;
+  amount: string;
+  isPayed: boolean;
+  isDeleted: boolean;
+}

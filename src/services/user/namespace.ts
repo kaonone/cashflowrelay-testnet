@@ -6,7 +6,9 @@ export interface IReduxState {
     checkingPermissions: ICommunication,
     settingMinter: ICommunication,
     settingApproved: ICommunication,
-    settingAllowance: ICommunication,
+    settingPayingAllowance: ICommunication,
+    settingBuyingAllowance: ICommunication,
+
   };
   data: {
     confirmedAddress: string | null;
@@ -15,14 +17,16 @@ export interface IReduxState {
     isCheckedPermissions: boolean;
     isMinter: boolean;
     isApproved: boolean;
-    isAllowance: boolean;
+    isPayingAllowance: boolean;
+    isBuyingAllowance: boolean,
   };
 }
 
 interface IPermissions {
   isMinter: boolean;
   isApproved: boolean;
-  isAllowance: boolean;
+  isPayingAllowance: boolean;
+  isBuyingAllowance: boolean;
 }
 
 export type ICompleteAuthentication = IAction<'USER:COMPLETE_AUTHENTICATION', { address: string }>;
@@ -37,17 +41,21 @@ export type ICheckPermissions = IPlainAction<'USER:CHECK_PERMISSIONS'>;
 export type ICheckPermissionsSuccess = IAction<'USER:CHECK_PERMISSIONS_SUCCESS', IPermissions>;
 export type ICheckPermissionsFail = IPlainFailAction<'USER:CHECK_PERMISSIONS_FAIL'>;
 
+export type ISetMinter = IPlainAction<'USER:SET_MINTER'>;
+export type ISetMinterSuccess = IPlainAction<'USER:SET_MINTER_SUCCESS'>;
+export type ISetMinterFail = IPlainFailAction<'USER:SET_MINTER_FAIL'>;
+
 export type ISetApproved = IAction<'USER:SET_APPROVED', { isApproved: boolean }>;
 export type ISetApprovedSuccess = IAction<'USER:SET_APPROVED_SUCCESS', { isApproved: boolean }>;
 export type ISetApprovedFail = IPlainFailAction<'USER:SET_APPROVED_FAIL'>;
 
-export type ISetAllowance = IAction<'USER:SET_ALLOWANCE', { isAllowance: boolean }>;
-export type ISetAllowanceSuccess = IAction<'USER:SET_ALLOWANCE_SUCCESS', { isAllowance: boolean }>;
-export type ISetAllowanceFail = IPlainFailAction<'USER:SET_ALLOWANCE_FAIL'>;
+export type ISetPayingAllowance = IAction<'USER:SET_PAYING_ALLOWANCE', { isPayingAllowance: boolean }>;
+export type ISetPayingAllowanceSuccess = IAction<'USER:SET_PAYING_ALLOWANCE_SUCCESS', { isPayingAllowance: boolean }>;
+export type ISetPayingAllowanceFail = IPlainFailAction<'USER:SET_PAYING_ALLOWANCE_FAIL'>;
 
-export type ISetMinter = IPlainAction<'USER:SET_MINTER'>;
-export type ISetMinterSuccess = IPlainAction<'USER:SET_MINTER_SUCCESS'>;
-export type ISetMinterFail = IPlainFailAction<'USER:SET_MINTER_FAIL'>;
+export type ISetBuyingAllowance = IAction<'USER:SET_BUYING_ALLOWANCE', { isBuyingAllowance: boolean }>;
+export type ISetBuyingAllowanceSuccess = IAction<'USER:SET_BUYING_ALLOWANCE_SUCCESS', { isBuyingAllowance: boolean }>;
+export type ISetBuyingAllowanceFail = IPlainFailAction<'USER:SET_BUYING_ALLOWANCE_FAIL'>;
 
 export type Action =
   ICompleteAuthentication |
@@ -55,4 +63,5 @@ export type Action =
   | ICheckPermissions | ICheckPermissionsSuccess | ICheckPermissionsFail
   | ISetMinter | ISetMinterSuccess | ISetMinterFail
   | ISetApproved | ISetApprovedSuccess | ISetApprovedFail
-  | ISetAllowance | ISetAllowanceSuccess | ISetAllowanceFail;
+  | ISetPayingAllowance | ISetPayingAllowanceSuccess | ISetPayingAllowanceFail
+  | ISetBuyingAllowance | ISetBuyingAllowanceSuccess | ISetBuyingAllowanceFail;

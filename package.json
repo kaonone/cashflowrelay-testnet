@@ -1,6 +1,6 @@
 {
   "name": "C2FCExchanger",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "C2FC Exchanger",
   "scripts": {
     "postinstall": "npm --prefix ./ethereum-contracts i",

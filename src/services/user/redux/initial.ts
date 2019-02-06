@@ -6,17 +6,19 @@ export const initial: NS.IReduxState = {
   communication: {
     checkingIsUserSigned: initialCommunicationField,
     checkingPermissions: initialCommunicationField,
-    settingApproved: initialCommunicationField,
-    settingAllowance: initialCommunicationField,
     settingMinter: initialCommunicationField,
+    settingApproved: initialCommunicationField,
+    settingPayingAllowance: initialCommunicationField,
+    settingBuyingAllowance: initialCommunicationField,
   },
   data: {
     confirmedAddress: null,
     isLogged: false,
     isCheckedAuth: false,
     isCheckedPermissions: false,
-    isApproved: false,
-    isAllowance: false,
     isMinter: false,
+    isApproved: false,
+    isPayingAllowance: false,
+    isBuyingAllowance: false,
   },
 };

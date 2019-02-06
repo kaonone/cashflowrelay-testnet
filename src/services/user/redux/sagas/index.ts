@@ -23,9 +23,9 @@ const logoutType: NS.ILogout['type'] = 'USER:LOGOUT';
 const checkPermissionsType: NS.ICheckPermissions['type'] = 'USER:CHECK_PERMISSIONS';
 
 const setMinterType: NS.ISetMinter['type'] = 'USER:SET_MINTER';
-
 const setApprovedType: NS.ISetApproved['type'] = 'USER:SET_APPROVED';
-const setAllowanceType: NS.ISetAllowance['type'] = 'USER:SET_ALLOWANCE';
+const setPayingAllowanceType: NS.ISetPayingAllowance['type'] = 'USER:SET_PAYING_ALLOWANCE';
+const setBuyingAllowanceType: NS.ISetBuyingAllowance['type'] = 'USER:SET_BUYING_ALLOWANCE';
 
 export function getSaga(deps: IDependencies) {
   return function* saga(): SagaIterator {
@@ -33,9 +33,10 @@ export function getSaga(deps: IDependencies) {
     yield takeLatest(checkIsUserSignedType, checkIsUserSigned, deps);
     yield takeLatest(logoutType, logoutSaga, deps);
     yield takeLatest(checkPermissionsType, checkPermissionsSaga, deps);
-    yield takeLatest(setApprovedType, setApproved, deps);
-    yield takeLatest(setAllowanceType, setAllowance, deps);
     yield takeLatest(setMinterType, setMinterSaga, deps);
+    yield takeLatest(setApprovedType, setApproved, deps);
+    yield takeLatest(setPayingAllowanceType, setPayingAllowance, deps);
+    yield takeLatest(setBuyingAllowanceType, setBuyingAllowance, deps);
   };
 }
 
@@ -101,13 +102,14 @@ export function* listenAccountChange({ drizzle }: IDependencies) {
 
 export function* checkPermissionsSaga(deps: IDependencies) {
   try {
-    const [isMinter, isApproved, allowance]: PromisedReturnType<typeof getAllPermissions> =
-    yield call(getAllPermissions, deps);
+    const [isMinter, isApproved, payingAllowance, buyingAllowance]: PromisedReturnType<typeof getAllPermissions> =
+      yield call(getAllPermissions, deps);
 
     yield put(actions.checkPermissionsSuccess({
       isMinter,
       isApproved,
-      isAllowance: allowance.toNumber() > 0,
+      isPayingAllowance: payingAllowance.toNumber() > 0,
+      isBuyingAllowance: buyingAllowance.toNumber() > 0,
     }));
   } catch (error) {
     const message = getErrorMsg(error);
@@ -117,18 +119,20 @@ export function* checkPermissionsSaga(deps: IDependencies) {
 
 async function getAllPermissions(
   { Ox: { contractWrappers }, drizzle }: IDependencies,
-): Promise<[boolean, boolean, BigNumber]> {
+): Promise<[boolean, boolean, BigNumber, BigNumber]> {
 
   const account = drizzle.store.getState().accounts[0];
   const contract = drizzle.contracts[mainContractName];
 
   // minter
   // approved
-  // allowance
+  // payingAllowance
+  // buyingAllowance
   return Promise.all([
     (contract.methods as any).isMinter(account).call(),
     contractWrappers.erc721Token.isProxyApprovedForAllAsync(networkConfig.c2fcContract, account),
     contractWrappers.erc20Token.getAllowanceAsync(networkConfig.daiContract, account, networkConfig.c2fcContract),
+    contractWrappers.erc20Token.getProxyAllowanceAsync(networkConfig.daiContract, account),
   ]);
 }
 
@@ -169,13 +173,13 @@ export function* setApproved(deps: IDependencies, action: NS.ISetApproved) {
   }
 }
 
-export function* setAllowance(deps: IDependencies, action: NS.ISetAllowance) {
+export function* setPayingAllowance(deps: IDependencies, action: NS.ISetPayingAllowance) {
   try {
     const { contractWrappers, web3Wrapper } = deps.Ox;
     const { drizzle } = deps;
     const drizzleState = drizzle.store.getState();
     const account = drizzleState.accounts[0];
-    const method = action.payload.isAllowance ? 'setUnlimitedAllowanceAsync' : 'setAllowanceAsync';
+    const method = action.payload.isPayingAllowance ? 'setUnlimitedAllowanceAsync' : 'setAllowanceAsync';
     const params: Record<'setUnlimitedAllowanceAsync' | 'setAllowanceAsync', any> = {
       setUnlimitedAllowanceAsync: undefined,
       setAllowanceAsync: new BigNumber(0),
@@ -188,9 +192,34 @@ export function* setAllowance(deps: IDependencies, action: NS.ISetAllowance) {
       params[method],
     );
     yield call([web3Wrapper, 'awaitTransactionSuccessAsync'], txHash);
-    yield put(actions.setAllowanceSuccess({ isAllowance: action.payload.isAllowance }));
+    yield put(actions.setPayingAllowanceSuccess({ isPayingAllowance: action.payload.isPayingAllowance }));
   } catch (error) {
     const message = getErrorMsg(error);
-    yield put(actions.setAllowanceFail(message));
+    yield put(actions.setPayingAllowanceFail(message));
+  }
+}
+
+export function* setBuyingAllowance(deps: IDependencies, action: NS.ISetBuyingAllowance) {
+  try {
+    const { contractWrappers, web3Wrapper } = deps.Ox;
+    const { drizzle } = deps;
+    const drizzleState = drizzle.store.getState();
+    const account = drizzleState.accounts[0];
+    const method = action.payload.isBuyingAllowance ? 'setUnlimitedProxyAllowanceAsync' : 'setProxyAllowanceAsync';
+    const params: Record<'setUnlimitedProxyAllowanceAsync' | 'setProxyAllowanceAsync', any> = {
+      setUnlimitedProxyAllowanceAsync: undefined,
+      setProxyAllowanceAsync: new BigNumber(0),
+    };
+
+    const txHash = yield call([contractWrappers.erc20Token, method],
+      networkConfig.daiContract,
+      account,
+      params[method],
+    );
+    yield call([web3Wrapper, 'awaitTransactionSuccessAsync'], txHash);
+    yield put(actions.setBuyingAllowanceSuccess({ isBuyingAllowance: action.payload.isBuyingAllowance }));
+  } catch (error) {
+    const message = getErrorMsg(error);
+    yield put(actions.setBuyingAllowanceFail(message));
   }
 }

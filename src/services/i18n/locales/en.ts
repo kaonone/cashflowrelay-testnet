@@ -87,6 +87,7 @@ export default {
         createCashflows: 'Create cashflows',
         sellCashflows: 'Sell cashflows',
         payInstalments: 'Pay instalments from your wallet',
+        buyCashflows: 'Buy cashflows',
       },
     },
     createCashFlow: {

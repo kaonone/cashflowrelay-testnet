@@ -28,7 +28,8 @@ export function dataReducer(state: NS.IReduxState['data'] = initial.data, action
         ...state,
         isMinter: action.payload.isMinter,
         isApproved: action.payload.isApproved,
-        isAllowance: action.payload.isAllowance,
+        isPayingAllowance: action.payload.isPayingAllowance,
+        isBuyingAllowance: action.payload.isBuyingAllowance,
         isCheckedPermissions: true,
       };
     }
@@ -38,22 +39,28 @@ export function dataReducer(state: NS.IReduxState['data'] = initial.data, action
         isCheckedPermissions: true,
       };
     }
+    case 'USER:SET_MINTER_SUCCESS': {
+      return {
+        ...state,
+        isMinter: true,
+      };
+    }
     case 'USER:SET_APPROVED_SUCCESS': {
       return {
         ...state,
         isApproved: action.payload.isApproved,
       };
     }
-    case 'USER:SET_ALLOWANCE_SUCCESS': {
+    case 'USER:SET_PAYING_ALLOWANCE_SUCCESS': {
       return {
         ...state,
-        isAllowance: action.payload.isAllowance,
+        isPayingAllowance: action.payload.isPayingAllowance,
       };
     }
-    case 'USER:SET_MINTER_SUCCESS': {
+    case 'USER:SET_BUYING_ALLOWANCE_SUCCESS': {
       return {
         ...state,
-        isMinter: true,
+        isBuyingAllowance: action.payload.isBuyingAllowance,
       };
     }
     default: return state;

@@ -26,5 +26,5 @@ export function selectHideOrders(state: IAppReduxState) {
 }
 
 function getFilteredOrders(orders: IOrderList['records'], hideOrders: NS.TokenId[]) {
-  return orders.filter(order => !hideOrders.includes(order.tokenId));
+  return orders.filter(order => !hideOrders.some(hideOrderId => order.tokenId.equals(hideOrderId)));
 }

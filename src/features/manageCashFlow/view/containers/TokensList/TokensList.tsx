@@ -72,9 +72,9 @@ class TokensList extends React.PureComponent<IProps, IState> {
               isNeedDisplay={isNeedTokenByType[type]}
             />
           ))}
-          {orders && orders.records.map(order => (
+          {orders && orders.records.map((order, index) => (
             <TokenCard
-              key={order.tokenId.toNumber()}
+              key={index}
               className={classes.tokenCard}
               onToggle={this.expandCard}
               expanded={order.tokenId.toNumber() === expandedTokenId}

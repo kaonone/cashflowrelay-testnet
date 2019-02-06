@@ -1,4 +1,5 @@
 import { getContractAddressesForNetworkOrThrow, ContractAddresses } from '@0x/contract-addresses';
+import getEnvParams from './getEnvParams';
 
 interface INetworkConfig {
   id: number;
@@ -25,5 +26,7 @@ const networkConfigs: Record<string, INetworkConfig> = {
   },
 };
 
-export const networkConfig = networkConfigs[__NETWORK__];
-export const relayerUrl = 'http://0xrelay.akropolis.io:3000/v2';
+export const NETWORK_CONFIG = networkConfigs[getEnvParams().network];
+export const RELAYER_URL = 'http://0xrelay.akropolis.io:3000/v2';
+export const GITHUB_PACKAGE_NAME = 'cashflowrelay';
+export const ROUTES_PREFIX = getEnvParams().forGhPages ? '/' + GITHUB_PACKAGE_NAME : '';

@@ -3,7 +3,7 @@ import { SagaIterator } from 'redux-saga';
 import { Order, BigNumber, assetDataUtils, generatePseudoRandomSalt, signatureUtils, orderHashUtils } from '0x.js';
 import { OrderConfigRequest } from '@0x/connect';
 import { Web3Wrapper } from '@0x/web3-wrapper';
-import { networkConfig } from 'core/constants';
+import { NETWORK_CONFIG } from 'core/constants';
 
 import { actions as orderbookActions } from 'services/orderbook';
 
@@ -44,8 +44,8 @@ async function submitOrderToOrderBook(deps: IDependencies, token: IToken, price:
 
   const account = drizzleState.accounts[0].toLowerCase();
 
-  const makerAssetData = assetDataUtils.encodeERC721AssetData(networkConfig.c2fcContract, new BigNumber(token.id));
-  const takerAssetData = assetDataUtils.encodeERC20AssetData(networkConfig.daiContract);
+  const makerAssetData = assetDataUtils.encodeERC721AssetData(NETWORK_CONFIG.c2fcContract, new BigNumber(token.id));
+  const takerAssetData = assetDataUtils.encodeERC20AssetData(NETWORK_CONFIG.daiContract);
 
   const tokenOrders = await client.getOrdersAsync({ makerAssetData });
   if (tokenOrders.total > 0) {
@@ -53,7 +53,7 @@ async function submitOrderToOrderBook(deps: IDependencies, token: IToken, price:
    }
 
   const orderConfigRequest: OrderConfigRequest = {
-    exchangeAddress: networkConfig.OxContracts.exchange,
+    exchangeAddress: NETWORK_CONFIG.OxContracts.exchange,
     makerAddress: account,
     takerAddress: NULL_ADDRESS,
     expirationTimeSeconds: DEFAULT_ORDER_EXPIRATION_DURATION.plus(Date.now() / 1000).ceil(),

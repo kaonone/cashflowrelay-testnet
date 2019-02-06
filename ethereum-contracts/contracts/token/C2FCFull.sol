@@ -46,6 +46,10 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
     //Count of Executed Orders
     mapping(uint256 => uint256)  private _executedOrdersCount;
 
+
+    // Mapping from owner to list of owned token IDs
+    mapping(address => uint256[]) public _subscribedTokens;
+
     //all orders
     uint256[] _allOrders;
 
@@ -153,6 +157,15 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
     )
     {
         return _ownedTokens[_owner];
+    }
+
+
+    function  idsOfSubscribedCashflowsFor(address _subscriber) public view returns 
+    (
+        uint256[] memory tokenIds
+    )
+    {
+        return _subscribedTokens[_subscriber];
     }
 
     /*
@@ -302,6 +315,8 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
 
         _cashflowsIds[_tokenId] = Cashflow(msg.sender, name, value, commit, interestRate, duration, 0, block.timestamp, 0);
 
+        _subscribedTokens[msg.sender].push(_tokenId);
+
         emit CashflowCreated(msg.sender, name, value, commit, interestRate, duration, _tokenId, block.timestamp);
 
         return true;
@@ -355,7 +370,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         address _owner = ownerOf(tokenId);
         uint256 _a = IERC20(tokenAddress).allowance(_o.subscriber, address(this));
 
-        if (_o.amount >= _a) {
+        if (_o.amount <= _a) {
             IERC20(tokenAddress).transferFrom(_o.subscriber, address(this), _o.amount); 
             _o.isPayed = true;
             emit ExecuteOrder(tokenId, _o.subscriber, _owner, tokenAddress, _o.amount, block.timestamp);

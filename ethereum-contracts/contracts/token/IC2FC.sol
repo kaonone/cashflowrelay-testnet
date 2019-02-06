@@ -86,6 +86,18 @@ contract IC2FC is IERC165 {
         uint256[] memory tokenIds
         );
 
+
+    /**
+     * @dev Function get list of token for subscribe address (who payment)
+     * @param _subscriber address of user
+     * @return uint256[] array of IDs
+     */
+
+    function  idsOfSubscribedCashflowsFor(address _subscriber) public view returns 
+    (
+        uint256[] memory tokenIds
+        );
+
     /**
      * @dev @dev Function for create Cashflow
      * @param name string name of Cashflow

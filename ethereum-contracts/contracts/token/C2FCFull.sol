@@ -46,6 +46,10 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
     //Count of Executed Orders
     mapping(uint256 => uint256)  private _executedOrdersCount;
 
+
+    // Mapping from owner to list of owned token IDs
+    mapping(address => uint256[]) public _subscribedTokens;
+
     //all orders
     uint256[] _allOrders;
 
@@ -153,6 +157,15 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
     )
     {
         return _ownedTokens[_owner];
+    }
+
+
+    function  idsOfSubscribedCashflowsFor(address _owner) public view returns 
+    (
+        uint256[] memory tokenIds
+    )
+    {
+        return _subscribedTokens[_owner];
     }
 
     /*
@@ -301,6 +314,8 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         require(mint(msg.sender, _tokenId), "Doesnt' mint");
 
         _cashflowsIds[_tokenId] = Cashflow(msg.sender, name, value, commit, interestRate, duration, 0, block.timestamp, 0);
+
+        _subscribedTokens[msg.sender].push(_tokenId);
 
         emit CashflowCreated(msg.sender, name, value, commit, interestRate, duration, _tokenId, block.timestamp);
 

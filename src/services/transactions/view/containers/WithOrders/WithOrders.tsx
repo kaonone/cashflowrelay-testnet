@@ -1,11 +1,9 @@
 import * as React from 'react';
+import { BigNumber } from '0x.js';
 
-import {
-  IPaymentOrder, IBlockChainPaymentOrder,
-} from 'shared/types/models';
+import { IPaymentOrder, IBlockChainPaymentOrder } from 'shared/types/models';
 import { withDrizzle, InjectDrizzleProps } from 'shared/helpers/react';
 import { mainContractName } from 'shared/constants';
-import { BigNumber } from '0x.js';
 import { OneDAI } from 'shared/helpers/model';
 import checkDrizzleResponse from 'shared/helpers/CheckDrizzleResponse';
 
@@ -16,7 +14,7 @@ interface IChildrenProps {
 
 interface IOwnProps {
   tokenId: number;
-  children?(props: IChildrenProps): React.ReactNode;
+  children(props: IChildrenProps): React.ReactNode;
 }
 
 type IProps = IOwnProps & InjectDrizzleProps;
@@ -56,7 +54,10 @@ class WithOrders extends React.PureComponent<IProps, IState> {
       const order = checkDrizzleResponse<IBlockChainPaymentOrder, null>(orderResponse, null);
       return order ? convertOrderResponse(order, id) : null;
     });
-    const ordersLoading = orders.some(order => !order);
+
+    const orderIdsResponse = contract.getOrdersList[this.state.keyForOrderIds];
+    const orderIds = checkDrizzleResponse<string[], null>(orderIdsResponse, null);
+    const ordersLoading = !orderIds || orders.some(order => !order);
 
     return typeof children === 'function' ?
       children({ orders: orders.filter(order => order) as IPaymentOrder[], ordersLoading }) : '';
@@ -78,7 +79,7 @@ function convertOrderResponse(order: IBlockChainPaymentOrder, id: string): IPaym
     id: Number(id),
     subscriber: order.subscriber,
     pendingDatePayment: Number(order.pendingDatePayment) * 1000,
-    datePayment: Number(order.datePayment),
+    datePayment: Number(order.datePayment) * 1000,
     amount: (new BigNumber(order.amount)).div(OneDAI),
     isPayed: order.isPayed,
     isDeleted: order.isDeleted,

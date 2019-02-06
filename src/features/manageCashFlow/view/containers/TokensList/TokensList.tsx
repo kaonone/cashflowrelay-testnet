@@ -1,9 +1,12 @@
 import * as React from 'react';
 import { bind } from 'decko';
 import * as cn from 'classnames';
+import { connect } from 'react-redux';
 
-import { TokenType, IToken, IOrderList } from 'shared/types/models';
 import { i18nConnect, ITranslateProps, tKeys as tKeysAll } from 'services/i18n';
+import { selectors as userSelectors } from 'services/user';
+import { TokenType, IToken, IOrderList } from 'shared/types/models';
+import { IAppReduxState } from 'shared/types/app';
 import { AngleArrow } from 'shared/view/elements/Icons';
 
 import { StylesProps, provideStyles } from './TokensList.style';
@@ -27,11 +30,21 @@ interface IOwnProps {
   orders?: IOrderList;
 }
 
+interface IStateProps {
+  account: string | null;
+}
+
+function mapState(state: IAppReduxState): IStateProps {
+  return {
+    account: userSelectors.selectConfirmedAddress(state),
+  };
+}
+
 interface IState {
   expandedTokenId: number | null;
 }
 
-type IProps = IOwnProps & ITranslateProps & StylesProps;
+type IProps = IStateProps & IOwnProps & ITranslateProps & StylesProps;
 
 const isNeedTokenByType: Record<TokenType, (token: IToken) => boolean> = {
   selling: () => true,
@@ -42,7 +55,7 @@ const isNeedTokenByType: Record<TokenType, (token: IToken) => boolean> = {
 class TokensList extends React.PureComponent<IProps, IState> {
   public state: IState = { expandedTokenId: null };
   public render() {
-    const { classes, t, type, tokenIds, orders } = this.props;
+    const { classes, t, type, tokenIds, orders, account } = this.props;
     const { expandedTokenId } = this.state;
 
     const headerTitles = type === 'selling' ? sellingTitles : cashFlowTitles;
@@ -64,6 +77,7 @@ class TokensList extends React.PureComponent<IProps, IState> {
           {tokenIds && tokenIds.map(tokenId => (
             <TokenCard
               key={tokenId}
+              account={account}
               className={classes.tokenCard}
               onToggle={this.expandCard}
               expanded={tokenId === expandedTokenId}
@@ -75,6 +89,7 @@ class TokensList extends React.PureComponent<IProps, IState> {
           {orders && orders.records.map((order, index) => (
             <TokenCard
               key={order.tokenId.toString() + index}
+              account={account}
               className={classes.tokenCard}
               onToggle={this.expandCard}
               expanded={order.tokenId.toNumber() === expandedTokenId}
@@ -97,4 +112,10 @@ class TokensList extends React.PureComponent<IProps, IState> {
   }
 }
 
-export default i18nConnect(provideStyles(TokensList));
+export default (
+  connect(mapState)(
+    i18nConnect(
+      provideStyles(TokensList),
+    ),
+  )
+);

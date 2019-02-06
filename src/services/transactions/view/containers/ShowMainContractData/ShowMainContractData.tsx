@@ -29,15 +29,14 @@ class ShowMainContractData extends React.PureComponent<IProps, IState> {
   public state: IState = { dataKey: '' };
 
   public componentDidMount() {
-    const { drizzle, drizzleState, type, request } = this.props;
-    const contract = drizzle.contracts[mainContractName];
-    const account = drizzleState.accounts[0];
+    this.updateData();
+  }
 
-    const params = (getParamsByRequest[type] as ParamsConverter)(request, account);
-
-    const dataKey = contract.methods[type].cacheCall(...params);
-
-    this.setState({ dataKey });
+  public componentDidUpdate(prevProps: IProps) {
+    const { type } = this.props;
+    if (prevProps.type !== type) {
+      this.updateData();
+    }
   }
 
   public render() {
@@ -50,6 +49,18 @@ class ShowMainContractData extends React.PureComponent<IProps, IState> {
     const data = response && (convertResponseByType[type] as ResponseConverter)(response, request, account);
     return typeof children === 'function' ? children({ data }) : response.toString();
   }
+
+  private updateData() {
+    const { drizzle, drizzleState, type, request } = this.props;
+    const contract = drizzle.contracts[mainContractName];
+    const account = drizzleState.accounts[0];
+
+    const params = (getParamsByRequest[type] as ParamsConverter)(request, account);
+
+    const dataKey = contract.methods[type].cacheCall(...params);
+
+    this.setState({ dataKey });
+  }
 }
 
 type ParamsConverter<T extends GetContractTransactionType = GetContractTransactionType> =
@@ -60,6 +71,7 @@ const getParamsByRequest: { [key in GetContractTransactionType]: ParamsConverter
   ownerOf: (data) => [data.tokenId.toString()],
   cashflowFor: (data) => [data.tokenId.toString()],
   idsOfCashflowsFor: (data, account) => [data.address || account],
+  idsOfSubscribedCashflowsFor: (data, account) => [data.address || account],
 };
 
 type ResponseConverter<T extends GetContractTransactionType = GetContractTransactionType> =
@@ -91,7 +103,7 @@ const convertResponseByType: { [key in GetContractTransactionType]: ResponseConv
       name: response.name,
       payer: response.publisher,
 
-      isCreatedByMe: response.publisher === account,
+      isCreatedByMe: response.publisher.toLowerCase() === account.toLowerCase(),
       instalmentCount,
       periodDuration,
       firstInstalmentDate: createdAt + periodDuration,
@@ -99,6 +111,7 @@ const convertResponseByType: { [key in GetContractTransactionType]: ResponseConv
     };
   },
   idsOfCashflowsFor: response => response.map(Number),
+  idsOfSubscribedCashflowsFor: response => response.map(Number),
 };
 
 const Container = withDrizzle(ShowMainContractData);

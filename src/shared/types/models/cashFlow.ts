@@ -50,8 +50,8 @@ export type IOrderList = PaginatedCollection<IOrder>;
 export interface IPaymentOrder {
   id: number;
   subscriber: string;
-  pendingDatePayment: number;
-  datePayment: number;
+  pendingDatePayment: number; // in milliseconds
+  datePayment: number; // in milliseconds
   amount: BigNumber;
   isPayed: boolean;
   isDeleted: boolean;

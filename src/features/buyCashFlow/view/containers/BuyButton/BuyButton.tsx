@@ -3,6 +3,7 @@ import { bind } from 'decko';
 import { connect } from 'react-redux';
 
 import { ITranslateProps, i18nConnect } from 'services/i18n';
+import { selectors as userSelectors } from 'services/user';
 import { IAppReduxState } from 'shared/types/app';
 import { IToken, IOrder } from 'shared/types/models';
 import { ICommunication } from 'shared/types/redux';
@@ -22,6 +23,7 @@ interface IOwnProps {
 
 interface IStateProps {
   buying: ICommunication;
+  isLogged: boolean;
 }
 
 type IActionProps = typeof mapDispatch;
@@ -35,6 +37,7 @@ type IProps = IStateProps & IActionProps & IOwnProps & StylesProps & ITranslateP
 function mapState(state: IAppReduxState): IStateProps {
   return {
     buying: selectors.selectCommunication(state, 'buying'),
+    isLogged: userSelectors.selectIsLogged(state),
   };
 }
 
@@ -54,12 +57,14 @@ class BuyButton extends React.PureComponent<IProps, IState> {
   }
 
   public render() {
-    const { order, cashflow, disabled, buying, classes } = this.props;
+    const { order, cashflow, isLogged, buying, classes } = this.props;
     const { isOpenBuyModal } = this.state;
-    const isMyToken = cashflow.isCreatedByMe;
+
+    const disabled = this.props.disabled || !isLogged;
+
     return (
       <>
-        <Button variant="contained" color="primary" onClick={this.openModal} disabled={disabled || isMyToken}>
+        <Button variant="contained" color="primary" onClick={this.openModal} disabled={disabled}>
           Buy cashflow
         </Button>
         <DrawerModal

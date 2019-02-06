@@ -7,7 +7,8 @@ export interface ITransaction {
 }
 
 export type SetTransactionType = 'addMinter' | 'createCashFlow' | 'executeOrder' | 'executePayment' | 'createOrder';
-export type GetContractTransactionType = 'isMinter' | 'ownerOf' | 'idsOfCashflowsFor' | 'cashflowFor';
+export type GetContractTransactionType =
+  'isMinter' | 'ownerOf' | 'idsOfCashflowsFor' | 'cashflowFor' | 'idsOfSubscribedCashflowsFor';
 export type GetPaymentOrderTransactionType = 'getOrdersList' | 'getByOrderId';
 export type TransactionType = SetTransactionType | GetContractTransactionType | GetPaymentOrderTransactionType;
 
@@ -22,13 +23,15 @@ export type TransactionRequestDataByType = SubsetMapStrict<Record<TransactionTyp
     duration: number; // in seconds
   };
   executeOrder: { tokenId: number, orderId: number };
-  executePayment: { tokenId: number, tokenAmount: number };
-  createOrder: { tokenId: number, tokenAmount: number };
+  executePayment: { tokenId: number, amount: BigNumber };
+  createOrder: { tokenId: number, amount: BigNumber };
   // get
   isMinter: { address?: string };
   ownerOf: { tokenId: number };
   idsOfCashflowsFor: { address?: string };
+  idsOfSubscribedCashflowsFor: { address?: string };
   cashflowFor: { tokenId: number };
+  // get payment order
   getOrdersList: { tokenIds: number };
   getByOrderId: { tokenId: number, orderId: number };
 }>;
@@ -37,6 +40,7 @@ export type ContractTransactionResponseDataByType = SubsetMapStrict<Record<GetCo
   isMinter: boolean;
   ownerOf: string; // address
   idsOfCashflowsFor: string[];
+  idsOfSubscribedCashflowsFor: string[];
   cashflowFor: IBlockChainToken;
 }>;
 
@@ -44,6 +48,7 @@ export type ContractTransactionDataByType = SubsetMapStrict<Record<GetContractTr
   isMinter: boolean;
   ownerOf: string; // address
   idsOfCashflowsFor: number[];
+  idsOfSubscribedCashflowsFor: number[];
   cashflowFor: IToken;
 }>;
 

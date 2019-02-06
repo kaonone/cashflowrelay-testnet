@@ -15,8 +15,8 @@ const notsByType: Record<SetTransactionType, NotificationType[]> = {
   createCashFlow: ['createCashFlow', 'createCashFlowSuccess', 'createCashFlowFail'],
   addMinter: ['addMinter', 'addMinterSuccess', 'addMinterFail'],
   createOrder: ['addMinter', 'addMinterSuccess', 'addMinterFail'],
-  executeOrder: ['addMinter', 'addMinterSuccess', 'addMinterFail'],
-  executePayment: ['addMinter', 'addMinterSuccess', 'addMinterFail'],
+  executeOrder: ['userPayInstallment', 'userPayInstallmentSuccess', 'userPayInstallmentFail'],
+  executePayment: ['userPayInstallment', 'userPayInstallmentSuccess', 'userPayInstallmentFail'],
 };
 
 function getSaga(deps: IDependencies) {
@@ -69,7 +69,7 @@ const getParamsByRequest: { [key in SetTransactionType]: ParamsConverter<key> } 
   ],
   createOrder: (data) => [
     data.tokenId.toFixed(0),
-    data.tokenAmount.toFixed(0),
+    data.amount.toFixed(0),
   ],
   executeOrder: (data) => [
     data.tokenId.toFixed(0),
@@ -77,7 +77,7 @@ const getParamsByRequest: { [key in SetTransactionType]: ParamsConverter<key> } 
   ],
   executePayment: (data) => [
     data.tokenId.toFixed(0),
-    data.tokenAmount.toFixed(0),
+    data.amount.toFixed(0),
   ],
 };
 

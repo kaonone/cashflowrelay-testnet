@@ -3,9 +3,8 @@ import { bind } from 'decko';
 import * as moment from 'moment';
 import cn from 'classnames';
 import { BigNumber } from '0x.js';
-import { Web3Wrapper } from '@0x/web3-wrapper';
 
-import { ShowMainContractData, WithOrders, SendTransactionButton } from 'services/transactions';
+import { ShowMainContractData } from 'services/transactions';
 import { i18nConnect, ITranslateProps, tKeys as tKeysAll } from 'services/i18n';
 import { SellButton } from 'features/sellCashFlow';
 import { BuyButton } from 'features/buyCashFlow';
@@ -19,7 +18,6 @@ import { formatNumber } from 'shared/helpers/format';
 import Header from './Header/Header';
 import { StylesProps, provideStyles } from './TokenCard.style';
 import { PayButton } from 'features/payInstalment';
-import { DECIMAL } from 'shared/constants';
 
 const tKeys = tKeysAll.features.manageCashFlows;
 
@@ -29,6 +27,7 @@ type MetricKey =
 interface IOwnProps {
   className?: string;
   tokenId: number;
+  account: string | null;
   order?: IOrder;
   type: TokenType;
   expanded: boolean;
@@ -41,7 +40,7 @@ type IProps = IOwnProps & StylesProps & ITranslateProps;
 
 class TokenCard extends React.PureComponent<IProps> {
   public render() {
-    const { classes, className, type, expanded, t, theme, isNeedDisplay, tokenId, price, order } = this.props;
+    const { classes, className, type, expanded, t, theme, isNeedDisplay, tokenId, price, order, account } = this.props;
 
     return (
       <ShowMainContractData<'cashflowFor'> type="cashflowFor" request={{ tokenId }}>
@@ -93,47 +92,15 @@ class TokenCard extends React.PureComponent<IProps> {
                       />
                     </div>
                   </div>
-                  <SendTransactionButton<'createOrder'>
-                    variant="outlined"
-                    type="createOrder"
-                    data={{ tokenId, tokenAmount: Web3Wrapper.toBaseUnitAmount(new BigNumber(1), DECIMAL) }}
-                  >
-                    createOrder
-                  </SendTransactionButton>
-                  <SendTransactionButton<'executePayment'>
-                    variant="outlined"
-                    type="executePayment"
-                    data={{ tokenId, tokenAmount: Web3Wrapper.toBaseUnitAmount(new BigNumber(1), DECIMAL) }}
-                  >
-                    executePayment
-                  </SendTransactionButton>
-
-                  <SendTransactionButton<'executeOrder'>
-                    variant="outlined"
-                    type="executeOrder"
-                    data={{ tokenId, orderId: 1 }}
-                  >
-                    executeOrder
-                  </SendTransactionButton>
                   {['Repayment history', 'Withdrawal history'].map(stub => (
                     <div key={stub} className={classes.stubSection}>
                       <span>{stub}</span>
                       <CircleArrow />
                     </div>
                   ))}
-
-                  <WithOrders tokenId={token.id}>
-                    {(data) => {
-                      console.log(data)
-                      return (
-                        <div />
-
-                      );
-                    }}
-                  </WithOrders>
                 </ExpansionPanelDetails>
                 <div className={classes.footer}>
-                  {this.renderActions(token, order)}
+                  {this.renderActions(token, account, order)}
                 </div>
               </ExpansionPanel>
             </div>
@@ -183,61 +150,56 @@ class TokenCard extends React.PureComponent<IProps> {
     );
   }
 
-  public renderActions(token: IToken, order?: IOrder) {
+  public renderActions(token: IToken, account: string | null, order?: IOrder) {
     const { classes, t, type } = this.props;
     const onSaleNow: boolean = false; // TODO ds: check token on sale
     const isFullRepaid: boolean = false; // TODO ds: check full repaid
 
-    const withdrawButton = (
-      <Button className={classes.footerButton} variant="contained" color="primary">
-        {t(tKeys.withdrawDai.getKey())}
-      </Button>
-    );
-    const sellButton = (
-      <div className={classes.footerButton}>
-        <SellButton cashflow={token} disabled={onSaleNow} />
-      </div>
-    );
+    return (
+      <ShowMainContractData<'ownerOf'> type="ownerOf" request={{ tokenId: token.id }}>
+        {({ data: owner }) => {
+          if (!owner || !account) { return null; }
 
-    // const payButton = (
-    //   <WithOrders tokenId={token.id}>
-    //     {(data) => {
-    //       return (
-    //         <div className={classes.footerButton}>
-    //           <PayButton
-    //             type={data.orderId ? 'current' : 'advance'}
-    //             tokenId={token.id}
-    //             tokenAmount={token.instalmentSize.toNumber()}
-    //             orderId={data.orderId}
-    //           />
-    //         </div>
-    //       );
-    //     }}
-    //   </WithOrders>);
+          const isMyToken = owner.toLowerCase() === account.toLowerCase();
 
-    switch (type) {
-      case 'incoming':
-        return (
-          <>
-            {sellButton}
-            {!onSaleNow && withdrawButton}
-          </>
-        );
-      case 'obligations':
-        return (
-          <>
-            {/* {payButton} */}
-            {sellButton}
-            {!onSaleNow && isFullRepaid && withdrawButton}
-          </>
-        );
-      case 'selling':
-        return !!order && (
-          <div className={classes.footerButton}>
-            <BuyButton cashflow={token} order={order} disabled={onSaleNow} />
-          </div>
-        );
-    }
+          const withdrawButton = isMyToken && !onSaleNow && (
+            <Button className={classes.footerButton} variant="contained" color="primary">
+              {t(tKeys.withdrawDai.getKey())}
+            </Button>
+          );
+          const sellButton = isMyToken && (
+            <div className={classes.footerButton}>
+              <SellButton cashflow={token} disabled={onSaleNow} />
+            </div>
+          );
+          const payInstallmentButton = !isFullRepaid && (
+            <div className={classes.footerButton}>
+              <PayButton token={token} variant={isMyToken ? 'outlined' : 'contained'} />
+            </div>
+          );
+          const buyButton = !!order && !isMyToken && (
+            <div className={classes.footerButton}>
+              <BuyButton cashflow={token} order={order} />
+            </div>
+          );
+
+          const renderByType: Record<TokenType, () => React.ReactNode> = {
+            incoming: () => (<>
+              {sellButton}
+              {withdrawButton}
+            </>),
+            obligations: () => (<>
+              {payInstallmentButton}
+              {sellButton}
+              {isFullRepaid && withdrawButton}
+            </>),
+            selling: () => <>{buyButton}</>,
+          };
+
+          return renderByType[type]();
+        }}
+      </ShowMainContractData>
+    );
   }
 }
 

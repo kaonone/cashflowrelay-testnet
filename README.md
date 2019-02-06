@@ -1,5 +1,7 @@
 # C2FC 0xchanger
 
+[Demo Page](https://akropolisio.github.io/cashflowrelay/)
+
 ## For frontend (in root folder)
 ### Install all dependencies
 - ```npm i``` install frontend and contracts dependencies

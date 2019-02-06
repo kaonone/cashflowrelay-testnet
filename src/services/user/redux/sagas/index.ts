@@ -10,7 +10,7 @@ import { IDependencies } from 'shared/types/app';
 import { storageKeys } from 'services/storage';
 import { getErrorMsg } from 'shared/helpers';
 import { messageForSignature, mainContractName } from 'shared/constants';
-import { networkConfig } from 'core/constants';
+import { NETWORK_CONFIG } from 'core/constants';
 
 import * as NS from '../../namespace';
 import * as actions from '../actions';
@@ -129,9 +129,9 @@ async function getAllPermissions(
   // buyingAllowance
   return Promise.all([
     (contract.methods as any).isMinter(account).call(),
-    contractWrappers.erc721Token.isProxyApprovedForAllAsync(networkConfig.c2fcContract, account),
-    contractWrappers.erc20Token.getAllowanceAsync(networkConfig.daiContract, account, networkConfig.c2fcContract),
-    contractWrappers.erc20Token.getProxyAllowanceAsync(networkConfig.daiContract, account),
+    contractWrappers.erc721Token.isProxyApprovedForAllAsync(NETWORK_CONFIG.c2fcContract, account),
+    contractWrappers.erc20Token.getAllowanceAsync(NETWORK_CONFIG.daiContract, account, NETWORK_CONFIG.c2fcContract),
+    contractWrappers.erc20Token.getProxyAllowanceAsync(NETWORK_CONFIG.daiContract, account),
   ]);
 }
 
@@ -160,7 +160,7 @@ export function* setApproved(deps: IDependencies, action: NS.ISetApproved) {
     const account = drizzleState.accounts[0];
 
     const txHash = yield call([contractWrappers.erc721Token, 'setProxyApprovalForAllAsync'],
-      networkConfig.c2fcContract,
+      NETWORK_CONFIG.c2fcContract,
       account,
       action.payload.isApproved,
     );
@@ -185,9 +185,9 @@ export function* setPayingAllowance(deps: IDependencies, action: NS.ISetPayingAl
     };
 
     const txHash = yield call([contractWrappers.erc20Token, method],
-      networkConfig.daiContract,
+      NETWORK_CONFIG.daiContract,
       account,
-      networkConfig.c2fcContract,
+      NETWORK_CONFIG.c2fcContract,
       params[method],
     );
     yield call([web3Wrapper, 'awaitTransactionSuccessAsync'], txHash);
@@ -211,7 +211,7 @@ export function* setBuyingAllowance(deps: IDependencies, action: NS.ISetBuyingAl
     };
 
     const txHash = yield call([contractWrappers.erc20Token, method],
-      networkConfig.daiContract,
+      NETWORK_CONFIG.daiContract,
       account,
       params[method],
     );

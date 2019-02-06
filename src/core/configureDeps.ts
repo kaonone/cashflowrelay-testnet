@@ -12,7 +12,7 @@ import { RPCSubprovider, Web3ProviderEngine, ContractWrappers } from '0x.js';
 import { HttpClient } from '@0x/connect';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 import { MetamaskSubprovider } from '@0x/subproviders';
-import { networkConfig, relayerUrl } from './constants';
+import { NETWORK_CONFIG, RELAYER_URL } from './constants';
 
 const contracts: IContract[] = [
   {
@@ -32,7 +32,7 @@ const contracts: IContract[] = [
     networks: {
       ...C2FCFull.networks,
       '42': {
-        address: '0xB8ab98fEEc4E821EB298ab47e6A286B8F94872de',
+        address: NETWORK_CONFIG.c2fcContract,
       },
     },
   } as IContract,
@@ -50,12 +50,12 @@ export default function configureDeps(_store: Store<IAppReduxState>): IDependenc
   if ((window as any).web3 && (window as any).web3.currentProvider) {
     providerEngine.addProvider(new MetamaskSubprovider((window as any).web3.currentProvider));
   }
-  providerEngine.addProvider(new RPCSubprovider(networkConfig.rpcUrl));
+  providerEngine.addProvider(new RPCSubprovider(NETWORK_CONFIG.rpcUrl));
   providerEngine.start();
 
   const web3Wrapper = new Web3Wrapper(providerEngine);
-  const contractWrappers = new ContractWrappers(providerEngine, { networkId: networkConfig.id });
-  const client0x = new HttpClient(relayerUrl);
+  const contractWrappers = new ContractWrappers(providerEngine, { networkId: NETWORK_CONFIG.id });
+  const client0x = new HttpClient(RELAYER_URL);
 
   return {
     api,

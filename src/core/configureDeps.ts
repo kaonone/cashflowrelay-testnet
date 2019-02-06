@@ -32,7 +32,7 @@ const contracts: IContract[] = [
     networks: {
       ...C2FCFull.networks,
       '42': {
-        address: '0xB8ab98fEEc4E821EB298ab47e6A286B8F94872de',
+        address: NETWORK_CONFIG.c2fcContract,
       },
     },
   } as IContract,

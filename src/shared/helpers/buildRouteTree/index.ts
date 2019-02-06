@@ -12,7 +12,7 @@ export default function buildRouteTree<T extends IRawRouteTree>(rawTree: T): Tre
   const resultTree = (function loop(tree: IRawRouteTree, path: IPathItem[] = []): RouteTree<T> {
     const prefix: IPathItem[] = ROUTES_PREFIX ? [{
       isParam: false,
-      value: ROUTES_PREFIX.replace('/', ''),
+      value: ROUTES_PREFIX!.replace('/', ''),
     }] : [];
 
     return Object

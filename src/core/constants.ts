@@ -28,5 +28,4 @@ const networkConfigs: Record<string, INetworkConfig> = {
 
 export const NETWORK_CONFIG = networkConfigs[getEnvParams().network];
 export const RELAYER_URL = 'http://0xrelay.akropolis.io:3000/v2';
-export const GITHUB_PACKAGE_NAME = 'cashflowrelay';
-export const ROUTES_PREFIX = getEnvParams().forGhPages ? '/' + GITHUB_PACKAGE_NAME : '';
+export const ROUTES_PREFIX = '';

@@ -6,7 +6,8 @@ export interface ITransaction {
   txid: string;
 }
 
-export type SetTransactionType = 'addMinter' | 'createCashFlow' | 'executeOrder' | 'executePayment' | 'createOrder';
+export type SetTransactionType =
+  'addMinter' | 'createCashFlow' | 'executeOrder' | 'executePayment' | 'createOrder' | 'withdrawPayments';
 export type GetContractTransactionType =
   'isMinter' | 'ownerOf' | 'idsOfCashflowsFor' | 'cashflowFor' | 'idsOfSubscribedCashflowsFor';
 export type GetPaymentOrderTransactionType = 'getOrdersList' | 'getByOrderId';
@@ -25,6 +26,7 @@ export type TransactionRequestDataByType = SubsetMapStrict<Record<TransactionTyp
   executeOrder: { tokenId: number, orderId: number };
   executePayment: { tokenId: number, amount: BigNumber };
   createOrder: { tokenId: number, amount: BigNumber };
+  withdrawPayments: { tokenId: number, amount: BigNumber };
   // get
   isMinter: { address?: string };
   ownerOf: { tokenId: number };

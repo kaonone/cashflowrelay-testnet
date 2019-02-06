@@ -15,12 +15,14 @@ const tKeys = tKeysAll.features.signIn;
 type ActionProps = typeof mapDispatch;
 
 interface IStateProps {
-  isApproved: boolean;
-  isAllowance: boolean;
   isMinter: boolean;
+  isApproved: boolean;
+  isPayingAllowance: boolean;
+  isBuyingAllowance: boolean;
   settingMinter: ICommunication;
   settingApproved: ICommunication;
-  settingAllowance: ICommunication;
+  settingPayingAllowance: ICommunication;
+  settingBuyingAllowance: ICommunication;
 }
 
 type IProps = ActionProps & IStateProps & StylesProps & ITranslateProps;
@@ -31,7 +33,7 @@ class GivePermissions extends React.PureComponent<IProps> {
       classes, t,
       isMinter, setMinter, settingMinter,
       isApproved, settingApproved,
-      isAllowance, settingAllowance } = this.props;
+      isPayingAllowance, settingPayingAllowance, isBuyingAllowance, settingBuyingAllowance } = this.props;
     return (
       <div className={classes.root}>
         <div className={classes.title}>{t(tKeys.permissions.title.getKey())}</div>
@@ -58,9 +60,18 @@ class GivePermissions extends React.PureComponent<IProps> {
             <div className={classes.permissionTitle}>{t(tKeys.permissions.payInstalments.getKey())}</div>
             <Switch
               color="primary"
-              disabled={settingAllowance.isRequesting}
-              checked={isAllowance}
-              onChange={this.toggleAllowance}
+              disabled={settingPayingAllowance.isRequesting}
+              checked={isPayingAllowance}
+              onChange={this.togglePayingAllowance}
+            />
+          </div>
+          <div className={classes.permission}>
+            <div className={classes.permissionTitle}>{t(tKeys.permissions.buyCashflows.getKey())}</div>
+            <Switch
+              color="primary"
+              disabled={settingBuyingAllowance.isRequesting}
+              checked={isBuyingAllowance}
+              onChange={this.toggleBuyingAllowance}
             />
           </div>
 
@@ -76,27 +87,36 @@ class GivePermissions extends React.PureComponent<IProps> {
   }
 
   @bind
-  public toggleAllowance() {
-    const { isAllowance, setAllowance } = this.props;
-    setAllowance({ isAllowance: !isAllowance });
+  public togglePayingAllowance() {
+    const { isPayingAllowance, setPayingAllowance } = this.props;
+    setPayingAllowance({ isPayingAllowance: !isPayingAllowance });
+  }
+
+  @bind
+  public toggleBuyingAllowance() {
+    const { isBuyingAllowance, setBuyingAllowance } = this.props;
+    setBuyingAllowance({ isBuyingAllowance: !isBuyingAllowance });
   }
 }
 
 function mapState(state: IAppReduxState): IStateProps {
   return {
-    isApproved: selectors.selectIsApproved(state),
-    isAllowance: selectors.selectIsAllowance(state),
     isMinter: selectors.selectIsMinter(state),
+    isApproved: selectors.selectIsApproved(state),
+    isPayingAllowance: selectors.selectIsPayingAllowance(state),
+    isBuyingAllowance: selectors.selectIsBuyingAllowance(state),
     settingMinter: selectors.selectCommunication(state, 'settingMinter'),
     settingApproved: selectors.selectCommunication(state, 'settingApproved'),
-    settingAllowance: selectors.selectCommunication(state, 'settingAllowance'),
+    settingPayingAllowance: selectors.selectCommunication(state, 'settingPayingAllowance'),
+    settingBuyingAllowance: selectors.selectCommunication(state, 'settingBuyingAllowance'),
   };
 }
 
 const mapDispatch = {
   setMinter: actions.setMinter,
   setApproved: actions.setApproved,
-  setAllowance: actions.setAllowance,
+  setPayingAllowance: actions.setPayingAllowance,
+  setBuyingAllowance: actions.setBuyingAllowance,
 };
 
 export default connect(mapState, mapDispatch)(

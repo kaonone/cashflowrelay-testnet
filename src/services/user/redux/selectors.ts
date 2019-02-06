@@ -31,14 +31,18 @@ export function selectIsApproved(state: IAppReduxState): boolean {
   return selectState(state).data.isApproved;
 }
 
-export function selectIsAllowance(state: IAppReduxState): boolean {
-  return selectState(state).data.isAllowance;
+export function selectIsPayingAllowance(state: IAppReduxState): boolean {
+  return selectState(state).data.isPayingAllowance;
+}
+
+export function selectIsBuyingAllowance(state: IAppReduxState): boolean {
+  return selectState(state).data.isBuyingAllowance;
 }
 
 export function selectIsAllPermissionsGranted(state: IAppReduxState): boolean {
-  const { isMinter, isAllowance, isApproved } = selectState(state).data;
+  const { isMinter, isPayingAllowance, isApproved, isBuyingAllowance } = selectState(state).data;
 
-  return isMinter && isAllowance && isApproved;
+  return isMinter && isPayingAllowance && isApproved && isBuyingAllowance;
 }
 
 export const selectCommunication = makeCommunicationSelector(selectState);

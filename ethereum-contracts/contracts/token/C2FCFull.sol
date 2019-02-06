@@ -238,8 +238,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
     //get orders list
     function getOrdersList(
         uint256 tokenId //tokenId
-    ) public
-        returns (
+    ) public view returns (
             uint256[] memory tokenIds
         ) 
     {

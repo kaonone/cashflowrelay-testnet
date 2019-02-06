@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as cn from 'classnames';
 import * as moment from 'moment';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '0x.js';
 
 import { i18nConnect, ITranslateProps, tKeys as tKeysAll } from 'services/i18n';
 
@@ -17,6 +17,7 @@ interface IOwnProps {
   token: IToken;
   type: TokenType;
   expanded: boolean;
+  price?: BigNumber;
 }
 
 type IProps = IOwnProps & StylesProps & ITranslateProps;
@@ -24,24 +25,23 @@ type IProps = IOwnProps & StylesProps & ITranslateProps;
 class Header extends React.PureComponent<IProps> {
   public render() {
     const {
-      classes, type, t, expanded,
+      classes, type, t, expanded, price,
       token: {
-        interestRate, createdAt, periodDuration, lastInstalmentDate, instalmentSize, name, balance },
+        interestRate, createdAt, periodDuration, lastInstalmentDate, instalmentSize, name, balance,
+      },
     } = this.props;
 
     const nextInstalmentDate = moment.min(
       moment(lastInstalmentDate),
-      moment(Math.ceil((Date.now() - createdAt) / periodDuration) * periodDuration),
+      moment(createdAt + Math.floor((Date.now() - createdAt) / periodDuration) * periodDuration),
     );
 
-    const dueAmount = new BigNumber(100); // TODO ds: calculate from orders
     const paidInstallments = 2; // TODO ds: calculate from orders
     const dueInstallments = 2; // TODO ds: calculate from orders
     const missedInstallments = 2; // TODO ds: calculate from orders
     const rating = 3; // TODO ds: calculate from orders
     const payerRating = 75; // TODO ds: calculate from orders
 
-    const price = new BigNumber(1000); // TODO ds: get price from relayer
     const status: ITokenStatus = 'pending' as ITokenStatus; // TODO ds: calculate status
 
     return (
@@ -70,6 +70,7 @@ class Header extends React.PureComponent<IProps> {
             {(() => {
               switch (type) {
                 case 'incoming':
+                case 'obligations':
                   return `${formatNumber(balance.toNumber(), 2)} DAI`;
                 case 'selling':
                   return `+${formatNumber(instalmentSize.toNumber(), 2)} DAI`;
@@ -84,7 +85,8 @@ class Header extends React.PureComponent<IProps> {
 
         </div>
         <div className={classes.amount}>
-          {`${formatNumber((type === 'selling' ? price : dueAmount).toNumber(), 2)} DAI`}
+          {type === 'selling' && price && `${formatNumber(price.toNumber(), 2)} DAI`}
+          {type !== 'selling' && `${formatNumber(instalmentSize.toNumber(), 2)} DAI`}
         </div>
         <CircleArrow className={cn(classes.expandIcon, { [classes.isRotated]: expanded })} />
       </div>

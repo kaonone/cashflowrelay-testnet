@@ -2,7 +2,7 @@ import * as React from 'react';
 import { bind } from 'decko';
 import * as cn from 'classnames';
 
-import { TokenType, IToken } from 'shared/types/models';
+import { TokenType, IToken, IOrderList } from 'shared/types/models';
 import { i18nConnect, ITranslateProps, tKeys as tKeysAll } from 'services/i18n';
 import { AngleArrow } from 'shared/view/elements/Icons';
 
@@ -23,7 +23,8 @@ const sellingTitles = titlesKeys.concat(['instalmentSize', 'nextInstalment', 'pr
 
 interface IOwnProps {
   type: TokenType;
-  tokenIds: number[];
+  tokenIds?: number[];
+  orders?: IOrderList;
 }
 
 interface IState {
@@ -41,7 +42,7 @@ const isNeedTokenByType: Record<TokenType, (token: IToken) => boolean> = {
 class TokensList extends React.PureComponent<IProps, IState> {
   public state: IState = { expandedTokenId: null };
   public render() {
-    const { classes, t, type, tokenIds } = this.props;
+    const { classes, t, type, tokenIds, orders } = this.props;
     const { expandedTokenId } = this.state;
 
     const headerTitles = type === 'selling' ? sellingTitles : cashFlowTitles;
@@ -60,7 +61,7 @@ class TokensList extends React.PureComponent<IProps, IState> {
           <div className={classes.stubCell} />
         </div>
         <div className={classes.tokens}>
-          {tokenIds.map(tokenId => (
+          {tokenIds && tokenIds.map(tokenId => (
             <TokenCard
               key={tokenId}
               className={classes.tokenCard}
@@ -69,6 +70,19 @@ class TokensList extends React.PureComponent<IProps, IState> {
               tokenId={tokenId}
               type={type}
               isNeedDisplay={isNeedTokenByType[type]}
+            />
+          ))}
+          {orders && orders.records.map(order => (
+            <TokenCard
+              key={order.tokenId.toNumber()}
+              className={classes.tokenCard}
+              onToggle={this.expandCard}
+              expanded={order.tokenId.toNumber() === expandedTokenId}
+              tokenId={order.tokenId.toNumber()}
+              order={order}
+              type={type}
+              isNeedDisplay={isNeedTokenByType[type]}
+              price={order.price}
             />
           ))}
         </div>

@@ -1,5 +1,5 @@
 import { SubsetMapStrict } from '_helpers';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '0x.js';
 import { IBlockChainToken, IToken } from './cashFlow';
 
 export interface ITransaction {

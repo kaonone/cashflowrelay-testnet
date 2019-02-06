@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '0x.js';
 import { IToken } from 'shared/types/models';
 
 // tslint:disable:max-line-length

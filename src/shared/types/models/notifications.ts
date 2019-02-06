@@ -17,7 +17,7 @@ export type NotificationPayloadByType = SubSet<Record<NotificationType, any>, {
   sellCashflowFail: { txHash: string },
   buyCashflow: { txHash: string }
   buyCashflowSuccess: { txHash: string },
-  buyCashflowFail: { txHash: string },
+  buyCashflowFail: null,
   userPayInstallment: { txHash: string },
   userPayInstallmentSuccess: { txHash: string },
   userPayInstallmentFail: { txHash: string },

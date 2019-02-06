@@ -11,8 +11,8 @@ import { LocalStorage } from 'services/storage';
 import { RPCSubprovider, Web3ProviderEngine, ContractWrappers } from '0x.js';
 import { HttpClient } from '@0x/connect';
 import { Web3Wrapper } from '@0x/web3-wrapper';
-import { networkConfig } from './constants';
-import { SignerSubprovider } from '@0x/subproviders';
+import { MetamaskSubprovider } from '@0x/subproviders';
+import { networkConfig, relayerUrl } from './constants';
 
 const contracts: IContract[] = [
   {
@@ -48,20 +48,21 @@ export default function configureDeps(_store: Store<IAppReduxState>): IDependenc
 
   const providerEngine = new Web3ProviderEngine();
   if ((window as any).web3 && (window as any).web3.currentProvider) {
-    providerEngine.addProvider(new SignerSubprovider((window as any).web3.currentProvider));
+    providerEngine.addProvider(new MetamaskSubprovider((window as any).web3.currentProvider));
   }
   providerEngine.addProvider(new RPCSubprovider(networkConfig.rpcUrl));
   providerEngine.start();
 
   const web3Wrapper = new Web3Wrapper(providerEngine);
   const contractWrappers = new ContractWrappers(providerEngine, { networkId: networkConfig.id });
-  const client0x = new HttpClient('http://0xrelay.akropolis.io:3000/v2');
+  const client0x = new HttpClient(relayerUrl);
 
   return {
     api,
     drizzle,
     storage,
     Ox: {
+      providerEngine,
       client: client0x,
       contractWrappers,
       web3Wrapper,

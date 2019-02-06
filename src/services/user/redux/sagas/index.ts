@@ -104,7 +104,6 @@ export function* checkPermissionsSaga(deps: IDependencies) {
   try {
     const [isMinter, isApproved, payingAllowance, buyingAllowance]: PromisedReturnType<typeof getAllPermissions> =
       yield call(getAllPermissions, deps);
-
     yield put(actions.checkPermissionsSuccess({
       isMinter,
       isApproved,

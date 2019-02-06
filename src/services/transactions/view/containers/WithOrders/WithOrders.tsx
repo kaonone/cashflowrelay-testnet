@@ -1,9 +1,8 @@
 import * as React from 'react';
-import BigNumber from 'bignumber.js';
 
 import {
   GetPaymentOrderTransactionType, TransactionRequestDataByType,
-  PaymentOrderTransactionResponseDataByType, PaymentOrderTransactionDataByType,
+  PaymentOrderTransactionResponseDataByType, PaymentOrderTransactionDataByType, IPaymentOrder,
 } from 'shared/types/models';
 import { withDrizzle, InjectDrizzleProps } from 'shared/helpers/react';
 import { OneDAI } from 'shared/helpers/model';
@@ -22,59 +21,81 @@ type IProps = IOwnProps<GetPaymentOrderTransactionType> & InjectDrizzleProps;
 
 interface IState {
   orderIdsKey: string;
+  orderIds: string[];
+  orderKeys: string[];
+  orders: IPaymentOrder[];
 }
 
 class WithOrders extends React.PureComponent<IProps, IState> {
-  public state: IState = { orderIdsKey: '' };
+  public state: IState = { orderIds: [], orderIdsKey: '', orderKeys: [], orders: [] };
 
   public componentDidMount() {
-    const { drizzle, drizzleState, tokenId } = this.props;
+    const { drizzle, tokenId } = this.props;
     const contract = drizzle.contracts[mainContractName];
-    debugger;
-    // const dataKey = contract.methods.getOrdersList.cacheCall();
-    debugger;
-    const dataKey1 = contract.methods.executePayment.cacheSend([tokenId.toString(), '10000000']);
-    debugger;
-    const dataKey2 = contract.methods.createOrder.cacheSend([tokenId.toString(), '10000000']);
-    debugger;
-    this.setState({ orderIdsKey: dataKey });
+    const orderIdsKey = contract.methods.getOrdersList.cacheCall(tokenId.toString());
+    // const orderKey = contract.methods.getByOrderId.cacheCall(tokenId.toString(), '2');
+    this.setState({ orderIdsKey });
   }
-  public componentDidUpdate() {
-    // const { drizzleState } = this.props;
-    // const contract = drizzleState.contracts[mainContractName];
-    // const fullResponse = contract.getOrdersList[this.state.orderIdsKey];
-    // const orderIds = fullResponse && fullResponse.value !== undefined && fullResponse.value || null;
+  public componentDidUpdate(_pProps: IProps, pState: IState) {
+    const { drizzleState } = this.props;
+    const contract = drizzleState.contracts[mainContractName];
+    const fullResponse = contract.getOrdersList[this.state.orderIdsKey];
+    const orderIds = fullResponse && fullResponse.value !== undefined && fullResponse.value || [];
 
-    // if(this.state.)
+    if (pState.orderIds.length !== pState.orderIds.length) {
+      this.setState({ orderIds });
+
+
+    }
   }
 
   public render() {
     const { drizzleState, children } = this.props;
     const contract = drizzleState.contracts[mainContractName];
-    debugger;
-    if (contract.getOrdersList) {
-      const fullResponse = contract.getOrdersList[this.state.orderIdsKey];
-      const response = fullResponse && fullResponse.value !== undefined && fullResponse.value || null;
-      debugger;
-    }
+
+    // if (contract.getOrdersList) {
+    //   const fullResponse = contract.getOrdersList[this.state.orderIdsKey];
+    //   const response = fullResponse && fullResponse.value !== undefined && fullResponse.value || null;
+    //   console.log('orderIds', response);
+    // }
+
+    // if (contract.getByOrderId) {
+    //   const fullResponse = contract.getByOrderId[this.state.orderKey];
+    //   const response = fullResponse && fullResponse.value !== undefined && fullResponse.value || null;
+    //   console.log('getByOrderId', response);
+    // }
 
     // const data = response && (convertResponseByType[type] as ResponseConverter)(response, request);
 
-    return children({ data: 'response' });
+    return typeof children === 'function' ? children({ data: this.state.orders }) : '';
+  }
+
+  public getOrders(orderIds: string[]) {
+    const { drizzleState } = this.props;
+    const contract = drizzleState.contracts[mainContractName];
+
+    const orders = orderIds.map(id => {
+      const fullResponse = contract.getByOrderId[id];
+      const response = fullResponse && fullResponse.value !== undefined && fullResponse.value || null;
+
+      return response;
+    });
+
+    return orders;
   }
 }
 
-type ParamsConverter<T extends GetPaymentOrderTransactionType = GetPaymentOrderTransactionType> =
-  (request: TransactionRequestDataByType[T], account: string) => string[];
+// type ParamsConverter<T extends GetPaymentOrderTransactionType = GetPaymentOrderTransactionType> =
+//   (request: TransactionRequestDataByType[T], account: string) => string[];
 
-type ResponseConverter<T extends GetPaymentOrderTransactionType = GetPaymentOrderTransactionType> =
-  (response: PaymentOrderTransactionResponseDataByType[T], request: TransactionRequestDataByType[T]) =>
-    PaymentOrderTransactionDataByType[T];
+// type ResponseConverter<T extends GetPaymentOrderTransactionType = GetPaymentOrderTransactionType> =
+//   (response: PaymentOrderTransactionResponseDataByType[T], request: TransactionRequestDataByType[T]) =>
+//     PaymentOrderTransactionDataByType[T];
 
-const convertResponseByType: { [key in GetPaymentOrderTransactionType]: ResponseConverter<key> } = {
-  getOrdersList: response => response.map(Number),
-  getByOrderId: (response) => response,
-};
+// const convertResponseByType: { [key in GetPaymentOrderTransactionType]: ResponseConverter<key> } = {
+//   getOrdersList: response => response.map(Number),
+//   getByOrderId: (response) => response as any,
+// };
 
 const Container = withDrizzle(WithOrders);
 

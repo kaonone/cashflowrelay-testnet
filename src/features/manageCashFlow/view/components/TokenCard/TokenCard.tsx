@@ -3,8 +3,9 @@ import { bind } from 'decko';
 import * as moment from 'moment';
 import cn from 'classnames';
 import { BigNumber } from '0x.js';
+import { Web3Wrapper } from '@0x/web3-wrapper';
 
-import { ShowMainContractData, WithOrders } from 'services/transactions';
+import { ShowMainContractData, WithOrders, SendTransactionButton } from 'services/transactions';
 import { i18nConnect, ITranslateProps, tKeys as tKeysAll } from 'services/i18n';
 import { SellButton } from 'features/sellCashFlow';
 import { BuyButton } from 'features/buyCashFlow';
@@ -18,6 +19,7 @@ import { formatNumber } from 'shared/helpers/format';
 import Header from './Header/Header';
 import { StylesProps, provideStyles } from './TokenCard.style';
 import { PayButton } from 'features/payInstalment';
+import { DECIMAL } from 'shared/constants';
 
 const tKeys = tKeysAll.features.manageCashFlows;
 
@@ -91,11 +93,28 @@ class TokenCard extends React.PureComponent<IProps> {
                       />
                     </div>
                   </div>
-                  <WithOrders tokenId={token.id}>
-                    {(data) => {
-                      return <div />;
-                    }}
-                  </WithOrders>);
+                  <SendTransactionButton<'createOrder'>
+                    variant="outlined"
+                    type="createOrder"
+                    data={{ tokenId, tokenAmount: Web3Wrapper.toBaseUnitAmount(new BigNumber(1), DECIMAL) }}
+                  >
+                    createOrder
+                  </SendTransactionButton>
+                  <SendTransactionButton<'executePayment'>
+                    variant="outlined"
+                    type="executePayment"
+                    data={{ tokenId, tokenAmount: Web3Wrapper.toBaseUnitAmount(new BigNumber(1), DECIMAL) }}
+                  >
+                    executePayment
+                  </SendTransactionButton>
+
+                  <SendTransactionButton<'executeOrder'>
+                    variant="outlined"
+                    type="executeOrder"
+                    data={{ tokenId, orderId: 1 }}
+                  >
+                    executeOrder
+                  </SendTransactionButton>
                   {['Repayment history', 'Withdrawal history'].map(stub => (
                     <div key={stub} className={classes.stubSection}>
                       <span>{stub}</span>

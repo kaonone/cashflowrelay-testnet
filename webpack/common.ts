@@ -15,12 +15,13 @@ import * as autoprefixer from 'autoprefixer';
 import * as stylelint from 'stylelint';
 import * as doiuse from 'doiuse';
 
+import { ROUTES_PREFIX } from '../src/core/constants';
 import getEnvParams from '../src/core/getEnvParams';
 import { LANGUAGES } from '../src/services/i18n/constants';
 
 export type BuildType = 'dev' | 'prod' | 'server';
 
-const { chunkHash, withAnalyze, chunkName, withHot, withoutTypeChecking, isWatchMode } = getEnvParams();
+const { chunkHash, withAnalyze, chunkName, withHot, withoutTypeChecking, isWatchMode, forGhPages } = getEnvParams();
 
 const workerPool = {
   workers: require('os').cpus().length - 1,
@@ -48,9 +49,9 @@ export const getCommonPlugins: (type: BuildType) => webpack.Plugin[] = (type) =>
   new webpack.DefinePlugin({
     '__HOST__': JSON.stringify('http://localhost:3000'),
     '__LANG__': JSON.stringify(process.env.LANG || 'en'),
-    '__NETWORK__': JSON.stringify(process.env.NETWORK || '42'),
     '__CLIENT__': true,
     '__SERVER__': false,
+    ...getEnvForDefinePlugin(),
   }),
   new FaviconsWebpackPlugin(path.resolve(__dirname, '..', 'src', 'assets', 'favicon.png')),
   new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, new RegExp(LANGUAGES.join('|'))),
@@ -59,6 +60,14 @@ export const getCommonPlugins: (type: BuildType) => webpack.Plugin[] = (type) =>
     failOnError: true,
   }),
 ]
+  // http://www.backalleycoder.com/2016/05/13/sghpa-the-single-page-app-hack-for-github-pages/
+  .concat(forGhPages ? (
+    new HtmlWebpackPlugin({
+      filename: '404.html',
+      template: 'assets/index.html',
+      chunksSortMode: sortChunks,
+    })
+  ) : [])
   .concat(isWatchMode && !withoutTypeChecking ? (
     new ForkTsCheckerWebpackPlugin({
       checkSyntacticErrors: true,
@@ -83,6 +92,18 @@ function sortChunks(a: webpack.compilation.Chunk, b: webpack.compilation.Chunk) 
     // webpack typings for Chunk are not correct wait for type updates for webpack.compilation.Chunk
     item => (b as any).names[0].includes(item)) - order.findIndex(item => (a as any).names[0].includes(item),
     );
+}
+
+function getEnvForDefinePlugin() {
+  const allowed = [
+    'NODE_ENV', 'WATCH_MODE', 'BUNDLE_ANALYZE_MODE', 'WITHOUT_TYPES_CHECKING', 'FOR_GH_PAGES', 'NETWORK',
+  ];
+  return Object.entries(process.env).reduce(
+    (acc, [name, value]) => allowed.includes(name)
+      ? ({ ...acc, [`process.env.${name}`]: JSON.stringify(value) })
+      : acc,
+    {},
+  );
 }
 
 export const getCommonRules: (type: BuildType) => webpack.Rule[] = (type) => [
@@ -189,7 +210,7 @@ export const commonConfig: webpack.Configuration = {
   target: 'web',
   context: path.resolve(__dirname, '..', 'src'),
   output: {
-    publicPath: '/',
+    publicPath: ROUTES_PREFIX + '/',
     path: path.resolve(__dirname, '..', 'build'),
     filename: `js/[name]-[${chunkHash}].bundle.js`,
     chunkFilename: `js/[${chunkName}]-[${chunkHash}].bundle.js`,

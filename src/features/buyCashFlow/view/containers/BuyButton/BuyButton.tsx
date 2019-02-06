@@ -56,10 +56,12 @@ class BuyButton extends React.PureComponent<IProps, IState> {
   public render() {
     const { order, cashflow, disabled, buying, classes } = this.props;
     const { isOpenBuyModal } = this.state;
-
+    const isMyToken = cashflow.isCreatedByMe;
     return (
       <>
-        <Button variant="contained" color="primary" onClick={this.openModal} disabled={disabled}>Buy cashflow</Button>
+        <Button variant="contained" color="primary" onClick={this.openModal} disabled={disabled || isMyToken}>
+          Buy cashflow
+        </Button>
         <DrawerModal
           open={isOpenBuyModal}
           title={cashflow.name}

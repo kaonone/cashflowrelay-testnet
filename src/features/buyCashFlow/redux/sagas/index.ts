@@ -23,6 +23,7 @@ export function* buySaga(deps: IDependencies, action: NS.IBuy) {
     yield call(buyOrder, deps, action.payload);
     yield put(actions.buySuccess());
     yield put(orderbookActions.loadOrders({}));
+    yield put(orderbookActions.hideOrder(action.payload.tokenId));
   } catch (error) {
     const message = getErrorMsg(error);
     yield put(actions.buyFail(message));

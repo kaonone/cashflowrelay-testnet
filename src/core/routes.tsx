@@ -9,11 +9,11 @@ import { IModule } from 'shared/types/app';
 
 function getRoutes(modules: IModule[]): React.ReactElement<RouteComponentProps<any>> {
   return (
-    <Route path="/">
+    <Route path={routes.root()}>
       <App>
         <Switch>
           {modules.map(module => module.getRoutes ? module.getRoutes() : null)}
-          <Redirect exact from="/" to={routes.marketplace.getRedirectPath()} />
+          <Redirect exact from={routes.root()} to={routes.marketplace.getRedirectPath()} />
           <Route component={PageNotFound} />
         </Switch>
       </App>

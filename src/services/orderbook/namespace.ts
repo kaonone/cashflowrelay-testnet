@@ -1,5 +1,9 @@
+import { BigNumber } from '0x.js';
+
 import { ICommunication, IAction, IPlainFailAction } from 'shared/types/redux';
 import { IOrderList } from 'shared/types/models';
+
+export type TokenId = BigNumber;
 
 export interface IReduxState {
   communication: {
@@ -9,11 +13,13 @@ export interface IReduxState {
   data: {
     myOrders: IOrderList;
     orders: IOrderList;
+    hideOrders: TokenId[];
   };
 }
 
 export interface InjectOrderbookProps {
   orders: IOrderList;
+  hideOrders: TokenId[];
   ordersLoading: ICommunication;
   loadMore(): void;
 }
@@ -26,5 +32,13 @@ export type ILoadOrders = IAction<'ORDERBOOK:LOAD_ORDERS', { page?: number; perP
 export type ILoadOrdersSuccess = IAction<'ORDERBOOK:LOAD_ORDERS_SUCCESS', IOrderList>;
 export type ILoadOrdersFail = IPlainFailAction<'ORDERBOOK:LOAD_ORDERS_FAIL'>;
 
+export type IHideOrder = IAction<'ORDERBOOK:HIDE_ORDER', TokenId>;
+
 export type Action =
-  | ILoadOrders | ILoadOrdersSuccess | ILoadOrdersFail | ILoadMyOrders | ILoadMyOrdersSuccess | ILoadMyOrdersFail;
+  | ILoadOrders
+  | ILoadOrdersSuccess
+  | ILoadOrdersFail
+  | ILoadMyOrders
+  | ILoadMyOrdersSuccess
+  | ILoadMyOrdersFail
+  | IHideOrder;

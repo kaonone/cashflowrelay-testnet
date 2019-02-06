@@ -286,8 +286,13 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         uint256 tokenId, 
         uint256 amount
     ) public onlyPublisher(tokenId) returns (bool success)  {
+
+        Cashflow storage _c = _cashflowsIds[tokenId];
+        require(_cashflowsIds[tokenId].balance>=amount, "Balance is less than amount");
+
         address _owner = ownerOf(tokenId);
         IERC20(tokenAddress).transfer(_owner, amount);
+        _c.balance = _c.balance.sub(amount);
         emit WithDrawPayment(tokenId, amount, _owner, block.timestamp);
 
         return true;
@@ -367,11 +372,13 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         returns (bool success)
     {
         Order storage _o = _ordersIds[tokenId][orderId];
+        Cashflow storage _c = _cashflowsIds[tokenId];
         address _owner = ownerOf(tokenId);
         uint256 _a = IERC20(tokenAddress).allowance(_o.subscriber, address(this));
 
         if (_o.amount <= _a) {
             IERC20(tokenAddress).transferFrom(_o.subscriber, address(this), _o.amount); 
+            _c.balance = _c.balance.add(_o.amount);
             _o.isPayed = true;
             emit ExecuteOrder(tokenId, _o.subscriber, _owner, tokenAddress, _o.amount, block.timestamp);
             return true;

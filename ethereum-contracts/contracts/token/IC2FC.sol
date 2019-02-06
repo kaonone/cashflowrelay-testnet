@@ -5,7 +5,7 @@ import "../math/SafeMath.sol";
 import "../introspection/IERC165.sol";
 
 /**
- * @title C2FC Interface for Commitments to Future Cashflows
+ * @title C2FC Interface for Commitments to Future Cashflows (C2FC)
  * @dev Base functions for get, create and balance for cashflows
  */
 

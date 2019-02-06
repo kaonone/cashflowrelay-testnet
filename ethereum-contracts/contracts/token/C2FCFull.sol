@@ -282,7 +282,9 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
 
 
 
-    //internal functions
+    /**
+      * internal functions
+    */
 
     //create order
     function _createCashFlow(
@@ -342,7 +344,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         }  
     }
 
-
+    
     function _executeOrder(
         uint256 tokenId, //tokenId
         uint256 orderId //orderId

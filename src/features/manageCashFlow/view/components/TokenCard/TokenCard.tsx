@@ -4,7 +4,7 @@ import * as moment from 'moment';
 import cn from 'classnames';
 import { BigNumber } from '0x.js';
 
-import { ShowMainContractData } from 'services/transactions';
+import { ShowMainContractData, WithOrders } from 'services/transactions';
 import { i18nConnect, ITranslateProps, tKeys as tKeysAll } from 'services/i18n';
 import { SellButton } from 'features/sellCashFlow';
 import { BuyButton } from 'features/buyCashFlow';
@@ -17,6 +17,7 @@ import { formatNumber } from 'shared/helpers/format';
 
 import Header from './Header/Header';
 import { StylesProps, provideStyles } from './TokenCard.style';
+import { PayButton } from 'features/payInstalment';
 
 const tKeys = tKeysAll.features.manageCashFlows;
 
@@ -90,6 +91,11 @@ class TokenCard extends React.PureComponent<IProps> {
                       />
                     </div>
                   </div>
+                  <WithOrders tokenId={token.id}>
+                    {(data) => {
+                      return <div />;
+                    }}
+                  </WithOrders>);
                   {['Repayment history', 'Withdrawal history'].map(stub => (
                     <div key={stub} className={classes.stubSection}>
                       <span>{stub}</span>
@@ -164,6 +170,22 @@ class TokenCard extends React.PureComponent<IProps> {
       </div>
     );
 
+    const payButton = (
+      <WithOrders tokenId={token.id}>
+        {(data) => {
+          return (
+            <div className={classes.footerButton}>
+              <PayButton
+                type={data.orderId ? 'current' : 'advance'}
+                tokenId={token.id}
+                tokenAmount={token.instalmentSize.toNumber()}
+                orderId={data.orderId}
+              />
+            </div>
+          );
+        }}
+      </WithOrders>);
+
     switch (type) {
       case 'incoming':
         return (
@@ -175,9 +197,7 @@ class TokenCard extends React.PureComponent<IProps> {
       case 'obligations':
         return (
           <>
-            <Button className={classes.footerButton} variant="contained" color="primary" >
-              {t(tKeys.payInstalment.getKey())}
-            </Button>
+            {payButton}
             {sellButton}
             {!onSaleNow && isFullRepaid && withdrawButton}
           </>

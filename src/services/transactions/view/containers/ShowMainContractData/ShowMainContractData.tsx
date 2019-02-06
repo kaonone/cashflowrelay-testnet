@@ -2,23 +2,24 @@ import * as React from 'react';
 import { BigNumber } from '0x.js';
 
 import {
-  GetTransactionType, TransactionRequestDataByType, TransactionResponseDataByType, TransactionDataByType,
+  GetContractTransactionType, TransactionRequestDataByType,
+  ContractTransactionResponseDataByType, ContractTransactionDataByType,
 } from 'shared/types/models';
 import { withDrizzle, InjectDrizzleProps } from 'shared/helpers/react';
 import { OneDAI } from 'shared/helpers/model';
 import { mainContractName } from 'shared/constants';
 
-interface IChildrenProps<T extends GetTransactionType> {
-  data: TransactionDataByType[T] | null;
+interface IChildrenProps<T extends GetContractTransactionType> {
+  data: ContractTransactionDataByType[T] | null;
 }
 
-interface IOwnProps<T extends GetTransactionType> {
+interface IOwnProps<T extends GetContractTransactionType> {
   type: T;
   request: TransactionRequestDataByType[T];
   children?(props: IChildrenProps<T>): React.ReactNode;
 }
 
-type IProps = IOwnProps<GetTransactionType> & InjectDrizzleProps;
+type IProps = IOwnProps<GetContractTransactionType> & InjectDrizzleProps;
 
 interface IState {
   dataKey: string;
@@ -51,21 +52,21 @@ class ShowMainContractData extends React.PureComponent<IProps, IState> {
   }
 }
 
-type ParamsConverter<T extends GetTransactionType = GetTransactionType> =
+type ParamsConverter<T extends GetContractTransactionType = GetContractTransactionType> =
   (request: TransactionRequestDataByType[T], account: string) => string[];
 
-const getParamsByRequest: { [key in GetTransactionType]: ParamsConverter<key> } = {
+const getParamsByRequest: { [key in GetContractTransactionType]: ParamsConverter<key> } = {
   isMinter: (data, account) => [data.address || account],
   ownerOf: (data) => [data.tokenId.toString()],
   cashflowFor: (data) => [data.tokenId.toString()],
   idsOfCashflowsFor: (data, account) => [data.address || account],
 };
 
-type ResponseConverter<T extends GetTransactionType = GetTransactionType> =
-  (response: TransactionResponseDataByType[T], request: TransactionRequestDataByType[T], account: string) =>
-    TransactionDataByType[T];
+type ResponseConverter<T extends GetContractTransactionType = GetContractTransactionType> =
+  (response: ContractTransactionResponseDataByType[T], request: TransactionRequestDataByType[T], account: string) =>
+    ContractTransactionDataByType[T];
 
-const convertResponseByType: { [key in GetTransactionType]: ResponseConverter<key> } = {
+const convertResponseByType: { [key in GetContractTransactionType]: ResponseConverter<key> } = {
   isMinter: response => response,
   ownerOf: response => response,
   // TODO ds: add memoize
@@ -102,7 +103,7 @@ const convertResponseByType: { [key in GetTransactionType]: ResponseConverter<ke
 
 const Container = withDrizzle(ShowMainContractData);
 
-function ShowMainContractDataGeneric<T extends GetTransactionType>(props: IOwnProps<T>) {
+function ShowMainContractDataGeneric<T extends GetContractTransactionType>(props: IOwnProps<T>) {
   return <Container {...props} />;
 }
 

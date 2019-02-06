@@ -21,6 +21,9 @@ export type NotificationPayloadByType = SubSet<Record<NotificationType, any>, {
   userPayInstallment: { txHash: string },
   userPayInstallmentSuccess: { txHash: string },
   userPayInstallmentFail: { txHash: string },
+  withdrawCashFlow: { txHash: string },
+  withdrawCashFlowSuccess: { txHash: string },
+  withdrawCashFlowFail: { txHash: string },
 }>;
 
 export const variantByType: Record<NotificationType, NotificationVariant> = {
@@ -39,6 +42,9 @@ export const variantByType: Record<NotificationType, NotificationVariant> = {
   userPayInstallment: 'info',
   userPayInstallmentSuccess: 'positive',
   userPayInstallmentFail: 'negative',
+  withdrawCashFlow: 'info',
+  withdrawCashFlowSuccess: 'positive',
+  withdrawCashFlowFail: 'negative',
 };
 export type INotification = {
   [key in NotificationType]: {

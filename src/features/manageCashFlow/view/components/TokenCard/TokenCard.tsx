@@ -8,16 +8,17 @@ import { ShowMainContractData } from 'services/transactions';
 import { i18nConnect, ITranslateProps, tKeys as tKeysAll } from 'services/i18n';
 import { SellButton } from 'features/sellCashFlow';
 import { BuyButton } from 'features/buyCashFlow';
+import { PayButton } from 'features/payInstalment';
+import { WithdrawButton } from 'features/withdrawCashFlow';
 
 import { IToken, TokenType, IOrder } from 'shared/types/models';
-import { ExpansionPanel, ExpansionPanelDetails, Button, DonutChart, ExpansionPanelSummary } from 'shared/view/elements';
+import { ExpansionPanel, ExpansionPanelDetails, DonutChart, ExpansionPanelSummary } from 'shared/view/elements';
 import { ContentCopy, CircleArrow } from 'shared/view/elements/Icons';
 import { toFixed } from 'shared/helpers/integer';
 import { formatNumber } from 'shared/helpers/format';
 
 import Header from './Header/Header';
 import { StylesProps, provideStyles } from './TokenCard.style';
-import { PayButton } from 'features/payInstalment';
 
 const tKeys = tKeysAll.features.manageCashFlows;
 
@@ -151,7 +152,7 @@ class TokenCard extends React.PureComponent<IProps> {
   }
 
   public renderActions(token: IToken, account: string | null, order?: IOrder) {
-    const { classes, t, type } = this.props;
+    const { classes, type } = this.props;
     const onSaleNow: boolean = false; // TODO ds: check token on sale
     const isFullRepaid: boolean = false; // TODO ds: check full repaid
 
@@ -163,9 +164,9 @@ class TokenCard extends React.PureComponent<IProps> {
           const isMyToken = owner.toLowerCase() === account.toLowerCase();
 
           const withdrawButton = isMyToken && !onSaleNow && (
-            <Button className={classes.footerButton} variant="contained" color="primary">
-              {t(tKeys.withdrawDai.getKey())}
-            </Button>
+            <div className={classes.footerButton}>
+              <WithdrawButton token={token} />
+            </div>
           );
           const sellButton = isMyToken && (
             <div className={classes.footerButton}>

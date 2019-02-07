@@ -14,11 +14,13 @@ import { Button, CircleProgressBar } from 'shared/view/elements';
 import * as actions from './../../../redux/actions';
 import * as selectors from './../../../redux/selectors';
 import { StylesProps, provideStyles } from './BuyButton.style';
+import { isSucceededByState } from 'shared/helpers/redux';
 
 interface IOwnProps {
   order: IOrder;
   cashflow: IToken;
   disabled?: boolean;
+  onSuccess?(): void;
 }
 
 interface IStateProps {
@@ -53,6 +55,9 @@ class BuyButton extends React.PureComponent<IProps, IState> {
   public componentDidUpdate(prevProps: IProps) {
     if (prevProps.buying.isRequesting && !this.props.buying.isRequesting) {
       this.closeModal();
+    }
+    if (isSucceededByState(prevProps.buying, this.props.buying)) {
+      this.props.onSuccess && this.props.onSuccess();
     }
   }
 

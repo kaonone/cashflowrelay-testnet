@@ -1,4 +1,8 @@
 import * as React from 'react';
+import { bind } from 'decko';
+import { withRouter, RouteComponentProps } from 'react-router';
+
+import routes from 'modules/routes';
 
 import { ShowMainContractData } from 'services/transactions';
 import { SellButton } from 'features/sellCashFlow';
@@ -19,7 +23,7 @@ interface IProps {
   paymentOrdersLoading: boolean;
 }
 
-class Actions extends React.PureComponent<IProps, {}> {
+class Actions extends React.PureComponent<IProps & RouteComponentProps, {}> {
   public render() {
     const { type, account, buttonClass, marketOrder, token, paymentOrdersLoading, paymentOrders } = this.props;
     return (
@@ -50,7 +54,7 @@ class Actions extends React.PureComponent<IProps, {}> {
           );
           const buyButton = !!marketOrder && !isMyToken && (
             <div className={buttonClass}>
-              <BuyButton cashflow={token} order={marketOrder} />
+              <BuyButton cashflow={token} order={marketOrder} onSuccess={this.onBuyToken} />
             </div>
           );
 
@@ -72,6 +76,11 @@ class Actions extends React.PureComponent<IProps, {}> {
       </ShowMainContractData>
     );
   }
+
+  @bind
+  private onBuyToken() {
+    this.props.history.push(routes.cashFlows.type.getRedirectPath({ type: 'incoming' }));
+  }
 }
 
-export default Actions;
+export default withRouter(Actions);

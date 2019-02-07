@@ -6,7 +6,6 @@ import { DrizzleStore, DrizzleState } from 'drizzle';
 export function awaitDrizzleTransactionSuccess(store: DrizzleStore, txHash: string) {
   return awaitStateChanging(store, (state: DrizzleState) => {
     const transaction = state.transactions[txHash];
-
     if (transaction.status === 'pending') {
       return false;
     } else if (transaction.status === 'success') {

@@ -17,14 +17,14 @@ class CreateCashFlow extends React.PureComponent<IProps> {
     return (
       <BaseLayout>
         <div className={classes.root}>
-          <CreateCashFlowForm onSuccess={this.onSuccess} />
+          <CreateCashFlowForm onCreate={this.onCreate} />
         </div>
       </BaseLayout>
     );
   }
 
   @bind
-  private onSuccess() {
+  private onCreate() {
     this.props.history.push(routes.cashFlows.type.getRedirectPath({ type: 'obligations' }));
   }
 }

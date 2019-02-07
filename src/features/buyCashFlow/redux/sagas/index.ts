@@ -6,7 +6,6 @@ import { actions as orderbookActions } from 'services/orderbook';
 import { IDependencies } from 'shared/types/app';
 import { IOrder } from 'shared/types/models';
 import { getErrorMsg } from 'shared/helpers';
-import { awaitDrizzleTransactionSuccess } from 'shared/helpers/redux';
 
 import * as NS from '../../namespace';
 import * as actions from '../actions';
@@ -33,14 +32,14 @@ export function* buySaga(deps: IDependencies, action: NS.IBuy) {
 
 function* buyOrder(deps: IDependencies, order: IOrder) {
   const { drizzle } = deps;
-  const { contractWrappers } = deps.Ox;
+  const { contractWrappers, web3Wrapper } = deps.Ox;
   const drizzleState = drizzle.store.getState();
   const account = drizzleState.accounts[0].toLowerCase();
 
   try {
     const txHash = yield contractWrappers.exchange.marketBuyOrdersAsync([order], order.takerAssetAmount, account);
     yield put(notsActions.pushNotification('buyCashflow', { txHash }));
-    yield awaitDrizzleTransactionSuccess(drizzle.store, txHash);
+    yield web3Wrapper.awaitTransactionSuccessAsync(txHash);
     yield put(notsActions.pushNotification('buyCashflowSuccess', { txHash }));
   } catch (error) {
     yield put(notsActions.pushNotification('buyCashflowFail', null));

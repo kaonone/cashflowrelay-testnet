@@ -52,11 +52,8 @@ class TokenCard extends React.PureComponent<IProps> {
             if (isNeedDisplay && !isNeedDisplay(token)) { return null; }
 
             const { instalmentSize, amount } = token;
-            const paidAmount = 100; // TODO ds: calculate from orders
-            const missedAmount = 100; // TODO ds: calculate from orders
-            const dueAmount = 100; // TODO ds: calculate from orders
-            const paidPercent = toFixed(paidAmount / instalmentSize.toNumber(), 1);
             const instalments = this.getInstalments(orders);
+            const paidPercent = toFixed(instalments.paidInstallments / instalmentSize.toNumber(), 1);
             return (
               <div className={cn(classes.root, className)}>
                 <ExpansionPanel expanded={expanded} onChange={this.onToggle}>
@@ -85,13 +82,13 @@ class TokenCard extends React.PureComponent<IProps> {
                         <DonutChart
                           title={t(
                             tKeys.howMuchInstalmentIsComplete.getKey(),
-                            { paid: paidAmount, total: amount.toNumber(), percent: paidPercent },
+                            { paid: instalments.paidInstallments, total: amount.toNumber(), percent: paidPercent },
                           )}
                           total={amount.toNumber()}
                           segments={[
-                            { color: theme!.extra.colors.salem, value: paidAmount },
-                            { color: theme!.extra.colors.monza, value: missedAmount },
-                            { color: theme!.extra.colors.buttercup, value: dueAmount },
+                            { color: theme!.extra.colors.salem, value: instalments.paidInstallments },
+                            { color: theme!.extra.colors.monza, value: instalments.missedInstallments },
+                            { color: theme!.extra.colors.buttercup, value: instalments.dueInstallments },
                           ]}
                         />
                       </div>

@@ -4,12 +4,12 @@ import { IFormData } from './namespace';
 const availablePeriodicity: TimePeriod[] = ['day', 'week', 'month', 'quarter', 'year'];
 
 export const createCashFlowConfig = {
-  defaultName: 'Money for programming course',
+  defaultName: 'Money for ...',
   minAmount: 0,
   defaultAmount: 100,
   minInterest: 1,
   defaultInterest: 10,
-  maxInterest: 99,
+  maxInterest: 100,
   minInstallmentCount: 1,
   defaultInstallmentCount: 6,
   defaultPeriodicity: 'month' as TimePeriod,

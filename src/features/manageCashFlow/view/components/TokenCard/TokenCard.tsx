@@ -12,13 +12,13 @@ import { PayButton } from 'features/payInstalment';
 import { WithdrawButton } from 'features/withdrawCashFlow';
 
 import { IToken, TokenType, IOrder, IPaymentOrder } from 'shared/types/models';
-import { ExpansionPanel, ExpansionPanelDetails, DonutChart, ExpansionPanelSummary } from 'shared/view/elements';
+import { ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary } from 'shared/view/elements';
 import { ContentCopy, CircleArrow } from 'shared/view/elements/Icons';
-import { toFixed } from 'shared/helpers/integer';
 import { formatNumber } from 'shared/helpers/format';
 
 import Header from './Header/Header';
 import { StylesProps, provideStyles } from './TokenCard.style';
+import InstalmentsChart from './InstalmentsChart/InstalmentsChart';
 
 const tKeys = tKeysAll.features.manageCashFlows;
 
@@ -47,78 +47,67 @@ type IProps = IOwnProps & StylesProps & ITranslateProps;
 
 class TokenCard extends React.PureComponent<IProps> {
   public render() {
-    const { classes, className, type, expanded, t, theme, isNeedDisplay, tokenId, price, order, account } = this.props;
+    const { classes, className, type, expanded, isNeedDisplay, tokenId, price, order, account } = this.props;
 
     return (
       <WithOrders tokenId={tokenId}>
         {({ orders }) => (
           <ShowMainContractData<'cashflowFor'> type="cashflowFor" request={{ tokenId }}>
-          {({ data: token }) => {
-            if (!token) { return 'Token loading...'; }
-            if (isNeedDisplay && !isNeedDisplay(token)) { return null; }
-
-            const { instalmentSize, amount } = token;
-            const instalments = this.getInstalments(orders);
-            const instalmentsCount = this.getInstalmentsCount(instalments);
-            const instalmentsAmount = this.getInstalmentsAmount(instalments);
-            const paidPercent = toFixed(instalmentsAmount.paidInstallmentsAmount / instalmentSize.toNumber(), 1);
-            return (
-              <div className={cn(classes.root, className)}>
-                <ExpansionPanel expanded={expanded} onChange={this.onToggle}>
-                  <ExpansionPanelSummary
-                    className={classes.summary}
-                    classes={{ content: classes.summaryContent }}
-                  >
-                    <Header
-                      token={token}
-                      expanded={expanded}
-                      type={type}
-                      price={price}
-                      instalments={instalmentsCount}
-                    />
-                  </ExpansionPanelSummary>
-                  <ExpansionPanelDetails className={classes.details}>
-                    <div className={classes.main}>
-                      <div className={classes.leftSection} >
-                        {(['id', 'payer', 'lender'] as MetricKey[]).map(this.renderMetric.bind(null, token))}
+            {({ data: token }) => {
+              if (!token) { return 'Token loading...'; }
+              if (isNeedDisplay && !isNeedDisplay(token)) { return null; }
+              const { amount } = token;
+              const instalments = this.getInstalments(orders);
+              const instalmentsCount = this.getInstalmentsCount(instalments);
+              const instalmentsAmount = this.getInstalmentsAmount(instalments);
+              return (
+                <div className={cn(classes.root, className)}>
+                  <ExpansionPanel expanded={expanded} onChange={this.onToggle}>
+                    <ExpansionPanelSummary
+                      className={classes.summary}
+                      classes={{ content: classes.summaryContent }}
+                    >
+                      <Header
+                        token={token}
+                        expanded={expanded}
+                        type={type}
+                        price={price}
+                        instalments={instalmentsCount}
+                      />
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails className={classes.details}>
+                      <div className={classes.main}>
+                        <div className={classes.leftSection} >
+                          {(['id', 'payer', 'lender'] as MetricKey[]).map(this.renderMetric.bind(null, token))}
+                        </div>
+                        <div className={classes.rightSection}>
+                          {(['instalmentSize', 'firstInstalmentDate', 'lastInstalmentDate'] as MetricKey[])
+                            .map(this.renderMetric.bind(null, token))}
+                        </div>
+                        <div className={classes.progress}>
+                          <InstalmentsChart
+                            totalInstalments={amount.toNumber()}
+                            payed={instalmentsAmount.paidInstallmentsAmount}
+                            due={instalmentsAmount.dueInstallmentsAmount}
+                            missed={instalmentsAmount.missedInstallmentsAmount}
+                          />
+                        </div>
                       </div>
-                      <div className={classes.rightSection}>
-                        {(['instalmentSize', 'firstInstalmentDate', 'lastInstalmentDate'] as MetricKey[])
-                          .map(this.renderMetric.bind(null, token))}
-                      </div>
-                      <div className={classes.progress}>
-                        <DonutChart
-                          title={t(
-                            tKeys.howMuchInstalmentIsComplete.getKey(),
-                            {
-                              paid: instalmentsAmount.paidInstallmentsAmount,
-                              total: amount.toNumber(), percent: paidPercent,
-                            },
-                          )}
-                          total={amount.toNumber()}
-                          segments={[
-                            { color: theme!.extra.colors.salem, value: instalmentsAmount.paidInstallmentsAmount },
-                            { color: theme!.extra.colors.monza, value: instalmentsAmount.missedInstallmentsAmount },
-                            { color: theme!.extra.colors.buttercup, value: instalmentsAmount.dueInstallmentsAmount },
-                          ]}
-                        />
-                      </div>
+                      {['Repayment history', 'Withdrawal history'].map(stub => (
+                        <div key={stub} className={classes.stubSection}>
+                          <span>{stub}</span>
+                          <CircleArrow />
+                        </div>
+                      ))}
+                    </ExpansionPanelDetails>
+                    <div className={classes.footer}>
+                      {this.renderActions(token, account, order)}
                     </div>
-                    {['Repayment history', 'Withdrawal history'].map(stub => (
-                      <div key={stub} className={classes.stubSection}>
-                        <span>{stub}</span>
-                        <CircleArrow />
-                      </div>
-                    ))}
-                  </ExpansionPanelDetails>
-                  <div className={classes.footer}>
-                    {this.renderActions(token, account, order)}
-                  </div>
-                </ExpansionPanel>
-              </div>
-            );
-          }}
-        </ShowMainContractData>
+                  </ExpansionPanel>
+                </div>
+              );
+            }}
+          </ShowMainContractData>
         )}
       </WithOrders>
     );
@@ -220,19 +209,19 @@ class TokenCard extends React.PureComponent<IProps> {
   private getInstalments(orders: IPaymentOrder[]) {
     const today = Date.now();
     const paidInstallments = orders.filter(order => order.isPayed);
-    const dueInstallments = orders.filter(({isPayed, isDeleted, pendingDatePayment}) => {
+    const dueInstallments = orders.filter(({ isPayed, isDeleted, pendingDatePayment }) => {
       const deadline = moment(pendingDatePayment).add(30, 'days').valueOf();
       return !isDeleted && !isPayed && pendingDatePayment < today && today < deadline;
     });
-    const missedInstallments = orders.filter(({isPayed, isDeleted, pendingDatePayment}) => {
+    const missedInstallments = orders.filter(({ isPayed, isDeleted, pendingDatePayment }) => {
       const deadline = moment(pendingDatePayment).add(30, 'days').valueOf();
       return !isDeleted && !isPayed && deadline < pendingDatePayment;
     });
-    return {paidInstallments, dueInstallments, missedInstallments};
+    return { paidInstallments, dueInstallments, missedInstallments };
   }
 
   @bind
-  private getInstalmentsCount({paidInstallments, dueInstallments, missedInstallments}: IInstalments) {
+  private getInstalmentsCount({ paidInstallments, dueInstallments, missedInstallments }: IInstalments) {
     return {
       paidInstallments: paidInstallments.length,
       dueInstallments: dueInstallments.length,
@@ -241,7 +230,7 @@ class TokenCard extends React.PureComponent<IProps> {
   }
 
   @bind
-  private getInstalmentsAmount({paidInstallments, dueInstallments, missedInstallments}: IInstalments) {
+  private getInstalmentsAmount({ paidInstallments, dueInstallments, missedInstallments }: IInstalments) {
     const paidInstallmentsAmount = paidInstallments
       .reduce((summ, instalment) => summ + instalment.amount.toNumber(), 0);
 

@@ -55,7 +55,7 @@ export default {
       discountValue: 'Discount value',
       nextInstalmentInfo: '+%{amount} DAI on %{date}',
       amountPerPeriodicity: '%{amount} / %{periodicity}',
-      howMuchInstalmentIsComplete: '%{paid} / %{total} DAI %{percent}% complete',
+      howMuchInstalmentIsComplete: '%{amount}% complete',
       price: 'Price',
       sellCashflow: 'Sell cashflow',
       withdrawDai: 'Withdraw DAI',

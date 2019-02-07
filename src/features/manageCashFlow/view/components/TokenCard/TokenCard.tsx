@@ -37,6 +37,12 @@ interface IOwnProps {
   isNeedDisplay?(token: IToken): boolean;
 }
 
+interface IInstalments {
+  paidInstallments: IPaymentOrder[];
+  dueInstallments: IPaymentOrder[];
+  missedInstallments: IPaymentOrder[];
+}
+
 type IProps = IOwnProps & StylesProps & ITranslateProps;
 
 class TokenCard extends React.PureComponent<IProps> {
@@ -53,7 +59,9 @@ class TokenCard extends React.PureComponent<IProps> {
 
             const { instalmentSize, amount } = token;
             const instalments = this.getInstalments(orders);
-            const paidPercent = toFixed(instalments.paidInstallments / instalmentSize.toNumber(), 1);
+            const instalmentsCount = this.getInstalmentsCount(instalments);
+            const instalmentsAmount = this.getInstalmentsAmount(instalments);
+            const paidPercent = toFixed(instalmentsAmount.paidInstallmentsAmount / instalmentSize.toNumber(), 1);
             return (
               <div className={cn(classes.root, className)}>
                 <ExpansionPanel expanded={expanded} onChange={this.onToggle}>
@@ -66,7 +74,7 @@ class TokenCard extends React.PureComponent<IProps> {
                       expanded={expanded}
                       type={type}
                       price={price}
-                      instalments={instalments}
+                      instalments={instalmentsCount}
                     />
                   </ExpansionPanelSummary>
                   <ExpansionPanelDetails className={classes.details}>
@@ -82,13 +90,16 @@ class TokenCard extends React.PureComponent<IProps> {
                         <DonutChart
                           title={t(
                             tKeys.howMuchInstalmentIsComplete.getKey(),
-                            { paid: instalments.paidInstallments, total: amount.toNumber(), percent: paidPercent },
+                            {
+                              paid: instalmentsAmount.paidInstallmentsAmount,
+                              total: amount.toNumber(), percent: paidPercent,
+                            },
                           )}
                           total={amount.toNumber()}
                           segments={[
-                            { color: theme!.extra.colors.salem, value: instalments.paidInstallments },
-                            { color: theme!.extra.colors.monza, value: instalments.missedInstallments },
-                            { color: theme!.extra.colors.buttercup, value: instalments.dueInstallments },
+                            { color: theme!.extra.colors.salem, value: instalmentsAmount.paidInstallmentsAmount },
+                            { color: theme!.extra.colors.monza, value: instalmentsAmount.missedInstallmentsAmount },
+                            { color: theme!.extra.colors.buttercup, value: instalmentsAmount.dueInstallmentsAmount },
                           ]}
                         />
                       </div>
@@ -207,14 +218,40 @@ class TokenCard extends React.PureComponent<IProps> {
 
   @bind
   private getInstalments(orders: IPaymentOrder[]) {
-    const today = moment();
-    const prewDate = today.subtract(30, 'days').valueOf();
-    const paidInstallments = orders.filter(order => order.isPayed).length;
-    const dueInstallments = orders.filter(({isPayed, isDeleted, pendingDatePayment}) =>
-      !isDeleted && !isPayed && prewDate < pendingDatePayment).length;
-    const missedInstallments = orders.filter(({isPayed, isDeleted, pendingDatePayment}) =>
-      !isDeleted && !isPayed && prewDate > pendingDatePayment).length;
+    const today = Date.now();
+    const paidInstallments = orders.filter(order => order.isPayed);
+    const dueInstallments = orders.filter(({isPayed, isDeleted, pendingDatePayment}) => {
+      const deadline = moment(pendingDatePayment).add(30, 'days').valueOf();
+      return !isDeleted && !isPayed && pendingDatePayment < today && today < deadline;
+    });
+    const missedInstallments = orders.filter(({isPayed, isDeleted, pendingDatePayment}) => {
+      const deadline = moment(pendingDatePayment).add(30, 'days').valueOf();
+      return !isDeleted && !isPayed && deadline < pendingDatePayment;
+    });
     return {paidInstallments, dueInstallments, missedInstallments};
+  }
+
+  @bind
+  private getInstalmentsCount({paidInstallments, dueInstallments, missedInstallments}: IInstalments) {
+    return {
+      paidInstallments: paidInstallments.length,
+      dueInstallments: dueInstallments.length,
+      missedInstallments: missedInstallments.length,
+    };
+  }
+
+  @bind
+  private getInstalmentsAmount({paidInstallments, dueInstallments, missedInstallments}: IInstalments) {
+    const paidInstallmentsAmount = paidInstallments
+      .reduce((summ, instalment) => summ + instalment.amount.toNumber(), 0);
+
+    const dueInstallmentsAmount = dueInstallments
+      .reduce((summ, instalment) => summ + instalment.amount.toNumber(), 0);
+
+    const missedInstallmentsAmount = missedInstallments
+      .reduce((summ, instalment) => summ + instalment.amount.toNumber(), 0);
+
+    return { paidInstallmentsAmount, dueInstallmentsAmount, missedInstallmentsAmount };
   }
 }
 

@@ -19,6 +19,7 @@ import { formatNumber } from 'shared/helpers/format';
 
 import Header from './Header/Header';
 import { StylesProps, provideStyles } from './TokenCard.style';
+import InstalmentsChart from './InstalmentsChart/InstalmentsChart';
 
 const tKeys = tKeysAll.features.manageCashFlows;
 
@@ -49,7 +50,7 @@ class TokenCard extends React.PureComponent<IProps> {
           if (!token) { return 'Token loading...'; }
           if (isNeedDisplay && !isNeedDisplay(token)) { return null; }
 
-          const { instalmentSize, amount } = token;
+          const { instalmentSize, amount, instalmentCount } = token;
           const paidAmount = 100; // TODO ds: calculate from orders
           const missedAmount = 100; // TODO ds: calculate from orders
           const dueAmount = 100; // TODO ds: calculate from orders
@@ -79,17 +80,11 @@ class TokenCard extends React.PureComponent<IProps> {
                         .map(this.renderMetric.bind(null, token))}
                     </div>
                     <div className={classes.progress}>
-                      <DonutChart
-                        title={t(
-                          tKeys.howMuchInstalmentIsComplete.getKey(),
-                          { paid: paidAmount, total: amount.toNumber(), percent: paidPercent },
-                        )}
-                        total={amount.toNumber()}
-                        segments={[
-                          { color: theme!.extra.colors.salem, value: paidAmount },
-                          { color: theme!.extra.colors.monza, value: missedAmount },
-                          { color: theme!.extra.colors.buttercup, value: dueAmount },
-                        ]}
+                      <InstalmentsChart
+                        totalInstalments={instalmentCount}
+                        payed={6}
+                        waiting={1}
+                        overdue={2}
                       />
                     </div>
                   </div>

@@ -11,10 +11,7 @@ const styles = ({ extra: theme }: Theme) => ({
     position: 'absolute',
     top: 0,
   }),
-  title: rule({
-    fontFamily: theme.typography.primaryFont,
-    fontSize: '0.75rem',
-    fontWeight: 'bold',
+  content: rule({
     top: 0,
     padding: '0 15%',
     position: 'absolute',
@@ -22,7 +19,7 @@ const styles = ({ extra: theme }: Theme) => ({
     height: '100%',
     display: 'flex',
     alignItems: 'center',
-    textAlign: 'center',
+    justifyContent: 'center',
   }),
 });
 

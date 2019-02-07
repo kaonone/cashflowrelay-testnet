@@ -30,6 +30,7 @@ const colors = {
   harp: '#e3f1e3',
   valencia: '#D63B3B',
   electricViolet: '#9013FE',
+  apple: '#35BC2D',
 };
 
 export const theme = {

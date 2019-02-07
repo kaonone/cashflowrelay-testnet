@@ -1,6 +1,6 @@
-# C2FC 0xchanger
+# cashflowrelay
 
-[Demo Page](https://akropolisio.github.io/cashflowrelay/)
+[Demo Page](https://testnet.cashflowrelay.com/)
 
 ## For frontend (in root folder)
 ### Install all dependencies
@@ -36,3 +36,12 @@
 
 ### To start test
 - ```npm test``` or ```npm t``` for start test, before that you need start network (```npm run ganache-cli```)
+
+## We use
+- [x] Drizzle For handles instantiating web3 and contracts, fetching accounts, and keeping all of this data in sync with the blockchain.
+- [x] Ox protocol - that enables the peer-to-peer exchange of assets on the Ethereum blockchain.
+- [x] Typescript
+- [x] React
+- [x] Redux
+- [x] Redux-saga for side-effects
+- [x] Material-UI

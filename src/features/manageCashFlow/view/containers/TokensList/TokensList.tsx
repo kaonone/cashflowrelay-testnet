@@ -101,7 +101,7 @@ class TokensList extends React.PureComponent<IProps, IState> {
             />
           ))}
         </div>
-        <div className={classes.emptyStub}>Empty list</div>
+        <div className={classes.emptyStub}>{t(tKeys.emptyList.getKey())}</div>
       </div>
     );
   }

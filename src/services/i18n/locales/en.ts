@@ -67,6 +67,7 @@ export default {
       sellingPrice: 'Selling price',
       borrowingAmount: 'Borrowing amount',
       borrowLink: 'Borrow',
+      emptyList: 'You have no outgoing cashflows yet.',
     },
     signIn: {
       button: 'Connect to %{address}',

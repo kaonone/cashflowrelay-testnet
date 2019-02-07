@@ -18,6 +18,11 @@ interface IOwnProps {
   type: TokenType;
   expanded: boolean;
   price?: BigNumber;
+  instalments: {
+    paidInstallments: number;
+    dueInstallments: number;
+    missedInstallments: number;
+  };
 }
 
 type IProps = IOwnProps & StylesProps & ITranslateProps;
@@ -29,6 +34,7 @@ class Header extends React.PureComponent<IProps> {
       token: {
         interestRate, createdAt, periodDuration, lastInstalmentDate, instalmentSize, name, balance,
       },
+      instalments: { paidInstallments, dueInstallments, missedInstallments },
     } = this.props;
 
     const nextInstalmentDate = moment.min(
@@ -36,9 +42,6 @@ class Header extends React.PureComponent<IProps> {
       moment(createdAt + Math.floor((Date.now() - createdAt) / periodDuration) * periodDuration),
     );
 
-    const paidInstallments = 2; // TODO ds: calculate from orders
-    const dueInstallments = 2; // TODO ds: calculate from orders
-    const missedInstallments = 2; // TODO ds: calculate from orders
     const rating = 3; // TODO ds: calculate from orders
     const payerRating = 75; // TODO ds: calculate from orders
 

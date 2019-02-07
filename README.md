@@ -1,4 +1,4 @@
-# cashflowrelay
+# Cashflow Relay
 
 [Demo Page](https://testnet.cashflowrelay.com/)
 

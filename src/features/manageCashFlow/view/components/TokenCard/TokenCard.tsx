@@ -3,6 +3,7 @@ import { bind } from 'decko';
 import * as moment from 'moment';
 import cn from 'classnames';
 import { BigNumber } from '0x.js';
+import { withRouter, RouteComponentProps } from 'react-router';
 
 import { ShowMainContractData, WithOrders } from 'services/transactions';
 import { i18nConnect, ITranslateProps, tKeys as tKeysAll } from 'services/i18n';
@@ -10,6 +11,7 @@ import { SellButton } from 'features/sellCashFlow';
 import { BuyButton } from 'features/buyCashFlow';
 import { PayButton } from 'features/payInstalment';
 import { WithdrawButton } from 'features/withdrawCashFlow';
+import routes from 'modules/routes';
 
 import { IToken, TokenType, IOrder, IPaymentOrder } from 'shared/types/models';
 import { ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary } from 'shared/view/elements';
@@ -43,7 +45,7 @@ interface IInstalments {
   missedInstallments: IPaymentOrder[];
 }
 
-type IProps = IOwnProps & StylesProps & ITranslateProps;
+type IProps = IOwnProps & StylesProps & ITranslateProps & RouteComponentProps;
 
 class TokenCard extends React.PureComponent<IProps> {
   public render() {
@@ -182,7 +184,7 @@ class TokenCard extends React.PureComponent<IProps> {
           );
           const buyButton = !!order && !isMyToken && (
             <div className={classes.footerButton}>
-              <BuyButton cashflow={token} order={order} />
+              <BuyButton cashflow={token} order={order} onSuccess={this.onBuyToken} />
             </div>
           );
 
@@ -242,6 +244,11 @@ class TokenCard extends React.PureComponent<IProps> {
 
     return { paidInstallmentsAmount, dueInstallmentsAmount, missedInstallmentsAmount };
   }
+
+  @bind
+  private onBuyToken() {
+    this.props.history.push(routes.cashFlows.type.getRedirectPath({ type: 'incoming' }));
+  }
 }
 
-export default i18nConnect(provideStyles(TokenCard));
+export default withRouter(i18nConnect(provideStyles(TokenCard)));

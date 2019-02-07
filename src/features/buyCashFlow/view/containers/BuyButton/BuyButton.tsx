@@ -19,6 +19,7 @@ interface IOwnProps {
   order: IOrder;
   cashflow: IToken;
   disabled?: boolean;
+  onSuccess?(): void;
 }
 
 interface IStateProps {
@@ -53,6 +54,7 @@ class BuyButton extends React.PureComponent<IProps, IState> {
   public componentDidUpdate(prevProps: IProps) {
     if (prevProps.buying.isRequesting && !this.props.buying.isRequesting) {
       this.closeModal();
+      this.props.onSuccess && this.props.onSuccess();
     }
   }
 

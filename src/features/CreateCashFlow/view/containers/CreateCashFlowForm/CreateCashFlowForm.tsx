@@ -36,7 +36,7 @@ interface IPreparedFormData {
 }
 
 interface IOwnProps {
-  onSuccess?(): void;
+  onCreate?(): void;
   onFail?(): void;
 }
 
@@ -247,7 +247,7 @@ class CreateCashFlowForm extends React.PureComponent<IProps> {
   }
   @bind
   private onSubmit(data: IFormData) {
-    const { sendTransaction } = this.props;
+    const { sendTransaction, onCreate } = this.props;
     const value = OneDAI.times(calcRepaymentAmount(data.amount, data.interest));
     const commit = value.div(data.installmentCount).ceil();
     const resultValue = commit.times(data.installmentCount);
@@ -263,11 +263,11 @@ class CreateCashFlowForm extends React.PureComponent<IProps> {
       },
     }, this.transactionUuid);
     this.closeConfirmModal();
+    onCreate && onCreate();
   }
 
   @bind
   private onSuccess() {
-    this.props.onSuccess && this.props.onSuccess();
     this.transactionUuid = uuid();
   }
 

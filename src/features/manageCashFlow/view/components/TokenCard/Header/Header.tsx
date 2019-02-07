@@ -2,10 +2,11 @@ import * as React from 'react';
 import * as cn from 'classnames';
 import * as moment from 'moment';
 import { BigNumber } from '0x.js';
+import { MarkAs } from '_helpers';
 
 import { i18nConnect, ITranslateProps, tKeys as tKeysAll } from 'services/i18n';
 
-import { TokenType, IToken, ITokenStatus } from 'shared/types/models';
+import { TokenType, IToken, ITokenStatus, IInstallments } from 'shared/types/models';
 import { Star, OutlinedStar, CircleArrow } from 'shared/view/elements/Icons';
 import { formatNumber } from 'shared/helpers/format';
 
@@ -18,11 +19,7 @@ interface IOwnProps {
   type: TokenType;
   expanded: boolean;
   price?: BigNumber;
-  instalments: {
-    paidInstallments: number;
-    dueInstallments: number;
-    missedInstallments: number;
-  };
+  instalments: MarkAs<number, IInstallments>;
 }
 
 type IProps = IOwnProps & StylesProps & ITranslateProps;
@@ -34,7 +31,7 @@ class Header extends React.PureComponent<IProps> {
       token: {
         interestRate, createdAt, periodDuration, lastInstalmentDate, instalmentSize, name, balance,
       },
-      instalments: { paidInstallments, dueInstallments, missedInstallments },
+      instalments: { paid, due, missed },
     } = this.props;
 
     const nextInstalmentDate = moment.min(
@@ -54,9 +51,9 @@ class Header extends React.PureComponent<IProps> {
           {type !== 'obligations' && <span className={classes.payersRatingValue}>{`${payerRating}%`}</span>}
         </div>
         <div className={classes.instalments}>
-          <div className={cn(classes.instalment, classes.paid)}>{paidInstallments}</div>
-          <div className={cn(classes.instalment, classes.due)}>{dueInstallments}</div>
-          <div className={cn(classes.instalment, classes.missed)}>{missedInstallments}</div>
+          <div className={cn(classes.instalment, classes.paid)}>{paid}</div>
+          <div className={cn(classes.instalment, classes.due)}>{due}</div>
+          <div className={cn(classes.instalment, classes.missed)}>{missed}</div>
         </div>
         <div className={classes.stars}>
           {rating ?

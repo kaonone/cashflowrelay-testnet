@@ -1,7 +1,7 @@
 # Cashflow Relay Testnet
 
 - [CashflowRelay Portal](https://www.cashflowrelay.com/)
-- [Testnet app](https://mainnet.cashflowrelay.com/)
+- [Testnet app](https://testnet.cashflowrelay.com/)
 - [C2FC](https://github.com/akropolisio/c2fc-specs)
 
 ## For frontend (in root folder)

@@ -20,7 +20,7 @@ interface IMenuItem {
 
 const getItems = (isLogged: boolean) => ([] as IMenuItem[])
   .concat(isLogged ? [
-    { label: tKeys.shared.menu.myC2FCs.getKey(), to: routes.c2fc.type.getRedirectPath({ type: 'incoming' }) },
+    { label: tKeys.shared.menu.myCashflows.getKey(), to: routes.cashFlows.getRoutePath() },
   ] : [])
   .concat([{ label: tKeys.shared.menu.marketplace.getKey(), to: routes.marketplace.getRedirectPath() }]);
 

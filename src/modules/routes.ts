@@ -1,8 +1,8 @@
-import build, { getParam } from 'build-route-tree';
+import build, { getParam } from 'shared/helpers/buildRouteTree';
 
 const rawTree = {
   marketplace: null,
-  c2fc: {
+  cashFlows: {
     type: getParam(null),
   },
   create: null,

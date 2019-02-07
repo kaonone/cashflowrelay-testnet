@@ -8,18 +8,20 @@ declare module 'drizzle' {
   export interface DrizzleState {
     accountBalances: Record<AccountAddress, string>;
     accounts: Record<number, AccountAddress>;
-    contracts: Record<'DAI', {
+    contracts: Record<string, {
       [fnName: string]: Record<string, undefined | {
         args: any[];
         fnIndex: number;
-        value: string;
+        value: any;
       }>;
     }>;
     drizzleStatus: {
       initialized: boolean;
     }
-    transactionStack: [] | unknown;
-    transactions: {} | unknown;
+    transactionStack: Record<string, string>; // [] | unknown;
+    transactions: Record<string, {
+      status: string;
+    }>;
     web3: {
       status: 'initialized' | 'failed';
       networkId: 1 | 2 | 3 | 4 | 42; // https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#construction_worker-network-check
@@ -32,6 +34,9 @@ declare module 'drizzle' {
     contractName: string;
     abi?: ABIDefinition[];
     web3Contract?: Contract;
+    networks?: Record<string, {
+      address: string;
+    }>;
   }
 
   export interface IDrizzleOptions {
@@ -44,10 +49,11 @@ declare module 'drizzle' {
     public addContract(contract: IContract): void;
 
     public contractList: IContract[];
-    public contracts: Record<'DAI', {
+    public contracts: Record<string, {
       methods: {
         [fnName: string]: {
           cacheCall(...args: any[]): string;
+          cacheSend(...args: any[]): string;
         };
       };
     }>;

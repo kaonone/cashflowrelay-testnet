@@ -1,28 +1,79 @@
 import { SubsetMapStrict } from '_helpers';
-import { TimePeriod, ID } from './common';
+import { BigNumber } from '0x.js';
+import { IBlockChainToken, IToken, IBlockChainPaymentOrder, IPaymentOrder } from './cashFlow';
 
 export interface ITransaction {
   txid: string;
 }
 
-export type TransactionType = 'getInFund' | 'depositToFund';
-export type ABIRequestDataByType = SubsetMapStrict<Record<TransactionType, any>, {
-  getInFund: {
-    fundId: ID;
-    regularPayment: number;
-    periodicity: TimePeriod;
-    retirementDate: number;
-    wallet: string;
+export type SetTransactionType =
+  'addMinter' | 'createCashFlow' | 'executeOrder' | 'executePayment' | 'createOrder' | 'withdrawPayments';
+export type GetContractTransactionType =
+  'isMinter' | 'ownerOf' | 'idsOfCashflowsFor' | 'cashflowFor' | 'idsOfSubscribedCashflowsFor';
+export type GetPaymentOrderTransactionType = 'getOrdersList' | 'getByOrderId';
+export type TransactionType = SetTransactionType | GetContractTransactionType | GetPaymentOrderTransactionType;
+
+export type TransactionRequestDataByType = SubsetMapStrict<Record<TransactionType, any>, {
+  // set
+  addMinter: null;
+  createCashFlow: {
+    name: string;
+    value: BigNumber; // full repayment amount
+    commit: BigNumber; // installment size
+    interestRate: number;
+    duration: number; // in seconds
   };
-  depositToFund: {
-    fundId: ID;
-  };
+  executeOrder: { tokenId: number, orderId: number };
+  executePayment: { tokenId: number, amount: BigNumber };
+  createOrder: { tokenId: number, amount: BigNumber };
+  withdrawPayments: { tokenId: number, amount: BigNumber };
+  // get
+  isMinter: { address?: string };
+  ownerOf: { tokenId: number };
+  idsOfCashflowsFor: { address?: string };
+  idsOfSubscribedCashflowsFor: { address?: string };
+  cashflowFor: { tokenId: number };
+  // get payment order
+  getOrdersList: { tokenIds: number };
+  getByOrderId: { tokenId: number, orderId: number };
 }>;
 
-export type ABIRequest = {
-  [key in TransactionType]: {
-    uuid: string;
+export type ContractTransactionResponseDataByType = SubsetMapStrict<Record<GetContractTransactionType, any>, {
+  isMinter: boolean;
+  ownerOf: string; // address
+  idsOfCashflowsFor: string[];
+  idsOfSubscribedCashflowsFor: string[];
+  cashflowFor: IBlockChainToken;
+}>;
+
+export type ContractTransactionDataByType = SubsetMapStrict<Record<GetContractTransactionType, any>, {
+  isMinter: boolean;
+  ownerOf: string; // address
+  idsOfCashflowsFor: number[];
+  idsOfSubscribedCashflowsFor: number[];
+  cashflowFor: IToken;
+}>;
+
+export type PaymentOrderTransactionResponseDataByType = SubsetMapStrict<Record<GetPaymentOrderTransactionType, any>, {
+  getOrdersList: string[];
+  getByOrderId: IBlockChainPaymentOrder;
+}>;
+
+export type PaymentOrderTransactionDataByType = SubsetMapStrict<Record<GetPaymentOrderTransactionType, any>, {
+  getOrdersList: number[];
+  getByOrderId: IPaymentOrder;
+}>;
+
+export type SetTransactionRequest = {
+  [key in SetTransactionType]: {
     type: key;
-    data: ABIRequestDataByType[key];
+    data: TransactionRequestDataByType[key];
   };
-}[TransactionType];
+}[SetTransactionType];
+
+export type GetTransactionRequest = {
+  [key in GetContractTransactionType]: {
+    type: key;
+    data: TransactionRequestDataByType[key];
+  };
+}[GetContractTransactionType];

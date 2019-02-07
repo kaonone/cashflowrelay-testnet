@@ -41,3 +41,5 @@ declare module 'webpack-isomorphic-dev-middleware';
 declare module 'thread-loader';
 declare module 'react-jss-hmr/webpack';
 declare module 'circular-dependency-plugin';
+declare module 'filemanager-webpack-plugin';
+declare module 'react-minimal-pie-chart';

@@ -1,8 +1,10 @@
 {
-  "name": "akropolis",
-  "version": "1.0.0",
-  "description": "Akropolis",
+  "name": "C2FCExchanger",
+  "version": "1.0.5",
+  "description": "C2FC Exchanger",
   "scripts": {
+    "postinstall": "npm --prefix ./ethereum-contracts i",
+    "compile-contract": "npm --prefix ./ethereum-contracts run compile-contracts",
     "check-types": "node_modules/.bin/tsc -p . --noEmit -w",
     "dev": "npm run watch:dev",
     "fast": "better-npm-run watch:dev:fast",
@@ -19,11 +21,14 @@
     "test:coverage": "node_modules/.bin/jest --coverage --watch",
     "build:dev": "better-npm-run build:dev",
     "build:prod": "better-npm-run build:prod",
+    "build:gh-pages": "better-npm-run build:gh-pages",
     "analyze:dev": "better-npm-run analyze:dev",
     "analyze:prod": "better-npm-run analyze:prod",
     "yeoman": "better-npm-run initial:yeoman",
     "stylelint-autofix": "./node_modules/.bin/stylelint \"./src/**/*.scss\" --fix",
-    "heroku-postbuild": "npm run build:prod"
+    "heroku-postbuild": "npm run build:prod",
+    "predeploy": "npm run build:gh-pages",
+    "deploy": "gh-pages -d build"
   },
   "betterScripts": {
     "custom-node": {
@@ -137,6 +142,15 @@
         "TS_NODE_FILES": true,
         "TS_NODE_COMPILER_OPTIONS": "{\"target\": \"es5\", \"module\": \"commonjs\"}"
       }
+    },
+    "build:gh-pages": {
+      "command": "bnr custom-node node_modules/.bin/webpack --progress --colors --config webpack/prod.config.ts",
+      "env": {
+        "NODE_ENV": "production",
+        "FOR_GH_PAGES": true,
+        "TS_NODE_FILES": true,
+        "TS_NODE_COMPILER_OPTIONS": "{\"target\": \"es5\", \"module\": \"commonjs\"}"
+      }
     }
   },
   "repository": {
@@ -174,6 +188,7 @@
     "enzyme-to-json": "^3.3.4",
     "favicons-webpack-plugin": "0.0.9",
     "fork-ts-checker-webpack-plugin": "^0.5.0",
+    "gh-pages": "^2.0.1",
     "html-webpack-plugin": "^3.2.0",
     "jest": "^23.6.0",
     "mini-css-extract-plugin": "^0.4.5",
@@ -202,6 +217,9 @@
     "yo": "^2.0.5"
   },
   "dependencies": {
+    "0x.js": "^3.0.3",
+    "@0x/connect": "^3.0.13",
+    "@0x/web3-wrapper": "^3.2.4",
     "@date-io/moment": "^1.0.1",
     "@material-ui/core": "^3.6.2",
     "@material-ui/icons": "^3.0.1",
@@ -217,6 +235,7 @@
     "@types/node-polyglot": "^0.4.31",
     "@types/prop-types": "^15.5.6",
     "@types/qrcode.react": "^0.8.1",
+    "@types/query-string": "^6.2.0",
     "@types/ramda": "^0.25.46",
     "@types/react": "^16.7.18",
     "@types/react-dom": "^16.0.11",
@@ -228,6 +247,7 @@
     "@types/react-router-dom": "^4.3.1",
     "@types/react-select": "^1.2.6",
     "@types/react-text-mask": "^5.4.2",
+    "@types/recharts": "^1.1.10",
     "@types/redux-auth-wrapper": "^2.0.9",
     "@types/serialize-javascript": "^1.5.0",
     "@types/stylelint": "^9.4.1",
@@ -243,7 +263,6 @@
     "bem-cn": "^3.0.1",
     "better-npm-run": "^0.1.1",
     "bootstrap": "^3.3.7",
-    "build-route-tree": "^1.0.2",
     "cheerio": "^1.0.0-rc.2",
     "circular-dependency-plugin": "^5.0.2",
     "classnames": "^2.2.6",
@@ -260,22 +279,26 @@
     "events": "^3.0.0",
     "express": "^4.16.3",
     "file-loader": "^2.0.0",
+    "filemanager-webpack-plugin": "^2.0.5",
     "final-form": "^4.11.0",
+    "final-form-calculate": "^1.3.0",
     "inversify": "^5.0.1",
     "inversify-inject-decorators": "^3.1.0",
     "jss": "^9.8.3",
     "jss-compose": "^5.0.0",
     "material-ui-pickers": "^2.1.1",
-    "moment": "^2.23.0",
+    "moment": "^2.18.1",
     "node-polyglot": "^2.3.0",
     "node-sass": "^4.11.0",
     "normalize.css": "^8.0.0",
     "normalizr": "^2.3.1",
+    "path-to-regexp": "^3.0.0",
     "postcss-loader": "^3.0.0",
     "postcss-reporter": "^6.0.0",
     "postcss-scss": "^2.0.0",
     "prop-types": "^15.6.2",
     "qrcode.react": "^0.9.0",
+    "query-string": "^6.2.0",
     "ramda": "^0.26.1",
     "react": "^16.7.0",
     "react-async-bootstrapper": "^2.1.0",
@@ -293,6 +316,7 @@
     "react-router-dom": "^4.3.1",
     "react-select": "^1.2.1",
     "react-text-mask": "^5.4.3",
+    "recharts": "^1.4.2",
     "redux": "^4.0.1",
     "redux-auth-wrapper": "^2.0.3",
     "redux-make-communication": "^1.0.1",
@@ -304,7 +328,7 @@
     "thread-loader": "^1.2.0",
     "ts-loader": "^5.3.0",
     "ts-node": "^7.0.1",
-    "typescript": "^3.2.4",
+    "typescript": "^3.3.1",
     "url-loader": "^1.1.2",
     "uuid": "^3.3.2"
   },

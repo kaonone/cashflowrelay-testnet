@@ -3,13 +3,17 @@ import { TYPES, container } from './configureIoc';
 import configureStore, { createReducer } from './configureStore';
 import { configureJss } from 'core/configureJss';
 
-import { MarketplaceModule } from 'modules';
+import { MarketplaceModule, CashFlowModule } from 'modules';
 import { reduxEntry as adaptabilityRE } from 'services/adaptability';
 import { reduxEntry as dataProviderRE } from 'services/dataProvider';
 import { reduxEntry as i18nRE } from 'services/i18n';
-import { reduxEntry as signTransactionRE } from 'services/signTransaction';
+import { reduxEntry as orderbookRE } from 'services/orderbook';
+import { reduxEntry as transactionsRE } from 'services/transactions';
 import { reduxEntry as userRE } from 'services/user';
+import { reduxEntry as notificationRE } from 'services/notifications';
 
+import { reduxEntry as buyCashFlowRE } from 'features/buyCashFlow';
+import { reduxEntry as sellCashFlowRE } from 'features/sellCashFlow';
 import { reduxEntry as signInRE } from 'features/signIn';
 
 import { ReducersMap } from 'shared/types/redux';
@@ -19,6 +23,7 @@ function configureApp(data?: IAppData): IAppData {
   /* Prepare main app elements */
   const modules: IModule[] = [
     MarketplaceModule,
+    CashFlowModule,
   ];
 
   if (data) {
@@ -27,11 +32,15 @@ function configureApp(data?: IAppData): IAppData {
 
   const sharedReduxEntries: IReduxEntry[] = [
     adaptabilityRE,
+    buyCashFlowRE,
     dataProviderRE,
     i18nRE,
-    signTransactionRE,
-    userRE,
+    notificationRE,
+    orderbookRE,
+    sellCashFlowRE,
     signInRE,
+    transactionsRE,
+    userRE,
   ];
 
   const connectedSagas: RootSaga[] = [];

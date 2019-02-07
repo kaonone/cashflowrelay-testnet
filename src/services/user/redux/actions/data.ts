@@ -6,3 +6,9 @@ export function completeAuthentication(address: string): NS.ICompleteAuthenticat
     payload: { address },
   };
 }
+
+export function logout(): NS.ILogout {
+  return {
+    type: 'USER:LOGOUT',
+  };
+}

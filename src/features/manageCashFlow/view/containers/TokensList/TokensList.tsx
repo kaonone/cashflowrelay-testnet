@@ -101,7 +101,11 @@ class TokensList extends React.PureComponent<IProps, IState> {
             />
           ))}
         </div>
-        <div className={classes.emptyStub}>Empty list</div>
+        <div className={classes.emptyStub}>{
+          type === 'incoming' ? t(tKeys.emptyIncomingList.getKey())
+            :
+            t(tKeys.emptyOutgoingList.getKey())
+        }</div>
       </div>
     );
   }

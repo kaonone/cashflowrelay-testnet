@@ -11,6 +11,7 @@ export default {
       moreThenOrEqual: 'Should be more then or equal %{value}',
       lessThenOrEqual: 'Should be less then or equal %{value}',
       invalidWalletAddress: 'Invalid wallet address',
+      notDefault: 'Value must be different from initial',
     },
     pageNotFound: 'We can’t find this page',
     copiedAtClipboard: 'Copied at clipboard',

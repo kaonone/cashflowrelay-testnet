@@ -9,7 +9,7 @@ import { BigNumber } from '0x.js';
 
 import { i18nConnect, ITranslateProps, tKeys as allKeys, ITranslateKey } from 'services/i18n';
 import { actions as transactionActions } from 'services/transactions';
-import { lessThenOrEqual, moreThenOrEqual, moreThen, isRequired } from 'shared/validators';
+import { lessThenOrEqual, moreThenOrEqual, moreThen, isRequired, notDefault } from 'shared/validators';
 import { calcRepaymentAmount, calcInstallmentSize, OneDAI } from 'shared/helpers/model';
 import CashFlowInfo from 'shared/view/model/CashFlowInfo/CashFlowInfo';
 import { DrawerModal } from 'shared/view/components';
@@ -71,7 +71,7 @@ const names: { [key in keyof IFormData]: key } = {
 
 function validateForm(values: IFormData): Partial<MarkAs<ITranslateKey, IFormData>> {
   return {
-    name: isRequired(values.name),
+    name: isRequired(values.name) || notDefault<string>(initialValues.name, values.name),
     interest: (
       moreThenOrEqual(createCashFlowConfig.minInterest, values.interest) ||
       lessThenOrEqual(createCashFlowConfig.maxInterest, values.interest)
@@ -131,7 +131,15 @@ class CreateCashFlowForm extends React.PureComponent<IProps> {
                   <>
                     <div className={classes.loanSummary}>
                       <LoanSummary
-                        nameInput={<TextInputField name={names.name} required fullWidth />}
+                        nameInput={
+                          <TextInputField
+                            name={names.name}
+                            inputProps={{
+                              maxLength: 50,
+                            }}
+                            required
+                            fullWidth
+                          />}
                         firstInstallmentDate={firstInstallmentDate}
                         lastInstallmentDate={lastInstallmentDate}
                         installmentSize={installmentSize}

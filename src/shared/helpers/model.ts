@@ -5,8 +5,9 @@ export function calcRepaymentAmount(amount: number, interestByPercent: number) {
   return new BigNumber(amount).times(new BigNumber(interestByPercent).div(100).plus(1));
 }
 
-export function calcInstallmentSize(amount: number, interestByPercent: number, installmentSize: number) {
-  return calcRepaymentAmount(amount, interestByPercent).div(installmentSize);
+export function calcInstallmentSize(amount: number, interestByPercent: number, installmentCount: number) {
+
+  return calcRepaymentAmount(amount || 1, interestByPercent).div(installmentCount || 1);
 }
 
 export const OneDAI = new BigNumber('1e18');

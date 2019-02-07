@@ -1,29 +1,31 @@
 import * as React from 'react';
 
-import { provideStyles, StylesProps } from './InstalmentsChart.style';
 import { i18nConnect, ITranslateProps, tKeys as tKeysAll } from 'services/i18n';
 import { DonutChart } from 'shared/view/elements';
+import { toFixed } from 'shared/helpers/integer';
+
+import { provideStyles, StylesProps } from './InstalmentsChart.style';
 
 const tKeys = tKeysAll.features.manageCashFlows;
 
 interface IOwnProps {
   totalInstalments: number;
   payed: number;
-  waiting: number;
-  overdue: number;
+  due: number;
+  missed: number;
 }
 
 type IProps = IOwnProps & StylesProps & ITranslateProps;
 
 function InstalmentsChart(props: IProps) {
-  const { classes, t, payed, waiting, overdue, totalInstalments, theme } = props;
+  const { classes, t, payed, due, missed, totalInstalments, theme } = props;
 
-  const completionPercent = (payed + waiting + overdue) / totalInstalments * 100;
+  const completionPercent = (payed + due + missed) / totalInstalments * 100;
 
   const segments = completionPercent ? [
-    { name: 'payed', value: payed, color: theme!.extra.colors.apple },
-    { name: 'waiting', value: waiting, color: theme!.extra.colors.buttercup },
-    { name: 'overdue', value: overdue, color: theme!.extra.colors.monza },
+    { name: 'Payed', value: payed, color: theme!.extra.colors.apple },
+    { name: 'Due', value: due, color: theme!.extra.colors.buttercup },
+    { name: 'Missed', value: missed, color: theme!.extra.colors.monza },
   ]
     : [{ name: '', value: 1, color: theme!.extra.colors.alabaster }];
   return (
@@ -33,7 +35,7 @@ function InstalmentsChart(props: IProps) {
           <div className={classes.title}>
             {t(
               tKeys.howMuchInstalmentIsComplete.getKey(),
-              { amount: completionPercent },
+              { amount: toFixed(completionPercent, 0) },
             )}
           </div>
           <div className={classes.progress}>

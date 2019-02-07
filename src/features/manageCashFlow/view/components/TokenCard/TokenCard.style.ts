@@ -62,6 +62,11 @@ const styles = ({ extra: theme }: Theme) => ({
     composes: '$metric',
     display: 'flex',
     alignItems: 'center',
+
+    '$leftSection & ': {
+      flexGrow: 1,
+      justifyContent: 'space-between',
+    },
   }),
 
   icon: rule({

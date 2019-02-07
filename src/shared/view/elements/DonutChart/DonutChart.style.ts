@@ -1,7 +1,7 @@
-import { withStyles, WithStyles, Theme } from 'shared/styles';
+import { withStyles, WithStyles } from 'shared/styles';
 import { rule } from 'shared/helpers/style';
 
-const styles = ({ extra: theme }: Theme) => ({
+const styles = () => ({
   root: rule({
     position: 'relative',
     width: '100%',

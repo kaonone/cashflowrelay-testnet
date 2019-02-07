@@ -1,7 +1,7 @@
 import { SagaIterator, Channel, eventChannel } from 'redux-saga';
 import { put, takeLatest, take, select, call } from 'redux-saga/effects';
 import { DrizzleState } from 'drizzle';
-import { awaitStateChanging } from 'shared/helpers/redux';
+import { awaitStateChanging, awaitDrizzleTransactionSuccess } from 'shared/helpers/redux';
 import * as sigUtil from 'eth-sig-util';
 import { PromisedReturnType } from '_helpers';
 import { BigNumber } from '@0x/utils';
@@ -135,7 +135,7 @@ async function getAllPermissions(
   ]);
 }
 
-export function* setMinterSaga({ drizzle, Ox: { web3Wrapper } }: IDependencies) {
+export function* setMinterSaga({ drizzle }: IDependencies) {
   try {
     const account = drizzle.store.getState().accounts[0];
     const contract = drizzle.contracts[mainContractName];
@@ -144,7 +144,7 @@ export function* setMinterSaga({ drizzle, Ox: { web3Wrapper } }: IDependencies) 
     yield awaitStateChanging(drizzle.store, (state: DrizzleState) => Boolean(state.transactionStack[stackId]));
     const drizzleState = drizzle.store.getState();
     const txHash = drizzleState.transactionStack[stackId];
-    yield call([web3Wrapper, 'awaitTransactionSuccessAsync'], txHash);
+    yield awaitDrizzleTransactionSuccess(drizzle.store, txHash);
     yield put(actions.setMinterSuccess());
   } catch (error) {
     const message = getErrorMsg(error);
@@ -154,7 +154,7 @@ export function* setMinterSaga({ drizzle, Ox: { web3Wrapper } }: IDependencies) 
 
 export function* setApproved(deps: IDependencies, action: NS.ISetApproved) {
   try {
-    const { contractWrappers, web3Wrapper } = deps.Ox;
+    const { contractWrappers } = deps.Ox;
     const { drizzle } = deps;
     const drizzleState = drizzle.store.getState();
     const account = drizzleState.accounts[0];
@@ -164,7 +164,7 @@ export function* setApproved(deps: IDependencies, action: NS.ISetApproved) {
       account,
       action.payload.isApproved,
     );
-    yield call([web3Wrapper, 'awaitTransactionSuccessAsync'], txHash);
+    yield awaitDrizzleTransactionSuccess(drizzle.store, txHash);
     yield put(actions.setApprovedSuccess({ isApproved: action.payload.isApproved }));
   } catch (error) {
     const message = getErrorMsg(error);
@@ -174,7 +174,7 @@ export function* setApproved(deps: IDependencies, action: NS.ISetApproved) {
 
 export function* setPayingAllowance(deps: IDependencies, action: NS.ISetPayingAllowance) {
   try {
-    const { contractWrappers, web3Wrapper } = deps.Ox;
+    const { contractWrappers } = deps.Ox;
     const { drizzle } = deps;
     const drizzleState = drizzle.store.getState();
     const account = drizzleState.accounts[0];
@@ -190,7 +190,7 @@ export function* setPayingAllowance(deps: IDependencies, action: NS.ISetPayingAl
       NETWORK_CONFIG.c2fcContract,
       params[method],
     );
-    yield call([web3Wrapper, 'awaitTransactionSuccessAsync'], txHash);
+    yield awaitDrizzleTransactionSuccess(drizzle.store, txHash);
     yield put(actions.setPayingAllowanceSuccess({ isPayingAllowance: action.payload.isPayingAllowance }));
   } catch (error) {
     const message = getErrorMsg(error);
@@ -200,7 +200,7 @@ export function* setPayingAllowance(deps: IDependencies, action: NS.ISetPayingAl
 
 export function* setBuyingAllowance(deps: IDependencies, action: NS.ISetBuyingAllowance) {
   try {
-    const { contractWrappers, web3Wrapper } = deps.Ox;
+    const { contractWrappers } = deps.Ox;
     const { drizzle } = deps;
     const drizzleState = drizzle.store.getState();
     const account = drizzleState.accounts[0];
@@ -215,7 +215,7 @@ export function* setBuyingAllowance(deps: IDependencies, action: NS.ISetBuyingAl
       account,
       params[method],
     );
-    yield call([web3Wrapper, 'awaitTransactionSuccessAsync'], txHash);
+    yield awaitDrizzleTransactionSuccess(drizzle.store, txHash);
     yield put(actions.setBuyingAllowanceSuccess({ isBuyingAllowance: action.payload.isBuyingAllowance }));
   } catch (error) {
     const message = getErrorMsg(error);

@@ -6,19 +6,20 @@ import { connect } from 'react-redux';
 import * as moment from 'moment';
 import createDecorator from 'final-form-calculate';
 import { BigNumber } from '0x.js';
+import * as uuid from 'uuid';
 
 import { i18nConnect, ITranslateProps, tKeys as allKeys, ITranslateKey } from 'services/i18n';
-import { actions as transactionActions } from 'services/transactions';
+import { actions as transactionActions, TransactionListener } from 'services/transactions';
 import { lessThenOrEqual, moreThenOrEqual, moreThen, isRequired, notDefault } from 'shared/validators';
 import { calcRepaymentAmount, calcInstallmentSize, OneDAI } from 'shared/helpers/model';
 import CashFlowInfo from 'shared/view/model/CashFlowInfo/CashFlowInfo';
 import { DrawerModal } from 'shared/view/components';
 import { TextInputField } from 'shared/view/form';
-import { Button } from 'shared/view/elements';
+import { Button, CircleProgressBar } from 'shared/view/elements';
 
+import { IFormData } from '../../../namespace';
 import { createCashFlowConfig } from '../../../constants';
 import { LoanSummary, ConfigurationCommitment } from '../../components';
-import { IFormData } from '../../../namespace';
 import { StylesProps, provideStyles } from './CreateCashFlowForm.style';
 
 const tKeys = allKeys.features.createCashFlow.form;
@@ -34,9 +35,9 @@ interface IPreparedFormData {
   periodDuration: number;
 }
 
-// tslint:disable-next-line:no-empty-interface
 interface IOwnProps {
-  // onSuccess(): void;
+  onSuccess?(): void;
+  onFail?(): void;
 }
 
 type IActionProps = typeof mapDispatch;
@@ -104,6 +105,7 @@ const calculateDecorator = createDecorator({
 
 class CreateCashFlowForm extends React.PureComponent<IProps> {
   public state: IState = { openConfirmModal: false };
+  private transactionUuid = uuid();
 
   public render() {
     const { classes, t } = this.props;
@@ -149,16 +151,28 @@ class CreateCashFlowForm extends React.PureComponent<IProps> {
                         repayingAmount={repayingAmount}
                         periodDuration={periodDuration}
                         actions={[
-                          <Button
+                          <TransactionListener
                             key=""
-                            disabled={submitFailed && invalid}
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
+                            uuid={this.transactionUuid}
+                            onSuccess={this.onSuccess}
+                            onFail={this.onFail}
                           >
-                            {t(tKeys.submitButton.getKey())}
-                          </Button>]
+                            {({ status }) => (
+                              <Button
+                                disabled={(submitFailed && invalid) || status === 'pending'}
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                color="primary"
+                              >
+                                {t(tKeys.submitButton.getKey())}
+                                {status === 'pending' && (
+                                  <div className={classes.preloader}><CircleProgressBar size={22} /></div>
+                                )}
+                              </Button>
+                            )}
+                          </TransactionListener>,
+                        ]
                         }
                       />
                     </div>
@@ -247,8 +261,20 @@ class CreateCashFlowForm extends React.PureComponent<IProps> {
         duration: moment.duration(data.installmentCount, data.periodicity).asSeconds(),
         interestRate: data.interest,
       },
-    });
+    }, this.transactionUuid);
     this.closeConfirmModal();
+  }
+
+  @bind
+  private onSuccess() {
+    this.props.onSuccess && this.props.onSuccess();
+    this.transactionUuid = uuid();
+  }
+
+  @bind
+  private onFail() {
+    this.props.onFail && this.props.onFail();
+    this.transactionUuid = uuid();
   }
 }
 

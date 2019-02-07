@@ -87,7 +87,7 @@ export default {
         },
       },
       permissions: {
-        title: 'Authorise Cashflow Relay to:',
+        title: 'In the context of this hackaton, please authorise Cashflow Relay to perform these operations:',
         createCashflows: 'Create cashflows',
         sellCashflows: 'Sell cashflows',
         payInstalments: 'Pay instalments from your wallet',

@@ -22,7 +22,11 @@ const styles = ({ extra: theme }: Theme) => ({
   }),
 
   permissionTitle: rule({
+    marginRight: 'auto',
+  }),
 
+  isHidden: rule({
+    visibility: 'hidden',
   }),
 });
 

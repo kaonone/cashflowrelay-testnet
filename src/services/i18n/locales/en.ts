@@ -20,6 +20,7 @@ export default {
     noEthereumConnection: 'No connection to the Etherium network',
     noEthereumAccounts: 'We can\'t find any Ethereum accounts! Please check and make sure Metamask or your browser are pointed at the correct network and your account is unlocked.',
     needUseMetamask: 'This browser has no connection to the Ethereum network. Please use the Chrome/FireFox extension MetaMask, or dedicated Ethereum browsers Mist or Parity.',
+    makeSureUseKovan: 'Please make sure you are using Kovan Test Network when connecting your Metamask',
   },
   components: {
     fund: {

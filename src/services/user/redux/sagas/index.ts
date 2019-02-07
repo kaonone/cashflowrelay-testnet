@@ -1,7 +1,7 @@
 import { SagaIterator, Channel, eventChannel } from 'redux-saga';
 import { put, takeLatest, take, select, call } from 'redux-saga/effects';
 import { DrizzleState } from 'drizzle';
-import { awaitStateChanging, awaitDrizzleTransactionSuccess } from 'shared/helpers/redux';
+import { awaitStateChanging } from 'shared/helpers/redux';
 import * as sigUtil from 'eth-sig-util';
 import { PromisedReturnType } from '_helpers';
 import { BigNumber } from '@0x/utils';

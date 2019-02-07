@@ -4,17 +4,16 @@ import * as moment from 'moment';
 import cn from 'classnames';
 import { BigNumber } from '0x.js';
 
-import { ShowMainContractData } from 'services/transactions';
+import { ShowMainContractData, WithOrders } from 'services/transactions';
 import { i18nConnect, ITranslateProps, tKeys as tKeysAll } from 'services/i18n';
 import { SellButton } from 'features/sellCashFlow';
 import { BuyButton } from 'features/buyCashFlow';
 import { PayButton } from 'features/payInstalment';
 import { WithdrawButton } from 'features/withdrawCashFlow';
 
-import { IToken, TokenType, IOrder } from 'shared/types/models';
-import { ExpansionPanel, ExpansionPanelDetails, DonutChart, ExpansionPanelSummary } from 'shared/view/elements';
+import { IToken, TokenType, IOrder, IPaymentOrder } from 'shared/types/models';
+import { ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary } from 'shared/view/elements';
 import { ContentCopy, CircleArrow } from 'shared/view/elements/Icons';
-import { toFixed } from 'shared/helpers/integer';
 import { formatNumber } from 'shared/helpers/format';
 
 import Header from './Header/Header';
@@ -38,71 +37,79 @@ interface IOwnProps {
   isNeedDisplay?(token: IToken): boolean;
 }
 
+interface IInstalments {
+  paidInstallments: IPaymentOrder[];
+  dueInstallments: IPaymentOrder[];
+  missedInstallments: IPaymentOrder[];
+}
+
 type IProps = IOwnProps & StylesProps & ITranslateProps;
 
 class TokenCard extends React.PureComponent<IProps> {
   public render() {
-    const { classes, className, type, expanded, t, theme, isNeedDisplay, tokenId, price, order, account } = this.props;
+    const { classes, className, type, expanded, isNeedDisplay, tokenId, price, order, account } = this.props;
 
     return (
-      <ShowMainContractData<'cashflowFor'> type="cashflowFor" request={{ tokenId }}>
-        {({ data: token }) => {
-          if (!token) { return 'Token loading...'; }
-          if (isNeedDisplay && !isNeedDisplay(token)) { return null; }
-
-          const { instalmentSize, amount, instalmentCount } = token;
-          const paidAmount = 100; // TODO ds: calculate from orders
-          const missedAmount = 100; // TODO ds: calculate from orders
-          const dueAmount = 100; // TODO ds: calculate from orders
-          const paidPercent = toFixed(paidAmount / instalmentSize.toNumber(), 1);
-
-          return (
-            <div className={cn(classes.root, className)}>
-              <ExpansionPanel expanded={expanded} onChange={this.onToggle}>
-                <ExpansionPanelSummary
-                  className={classes.summary}
-                  classes={{ content: classes.summaryContent }}
-                >
-                  <Header
-                    token={token}
-                    expanded={expanded}
-                    type={type}
-                    price={price}
-                  />
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails className={classes.details}>
-                  <div className={classes.main}>
-                    <div className={classes.leftSection} >
-                      {(['id', 'payer', 'lender'] as MetricKey[]).map(this.renderMetric.bind(null, token))}
-                    </div>
-                    <div className={classes.rightSection}>
-                      {(['instalmentSize', 'firstInstalmentDate', 'lastInstalmentDate'] as MetricKey[])
-                        .map(this.renderMetric.bind(null, token))}
-                    </div>
-                    <div className={classes.progress}>
-                      <InstalmentsChart
-                        totalInstalments={instalmentCount}
-                        payed={6}
-                        waiting={1}
-                        overdue={2}
+      <WithOrders tokenId={tokenId}>
+        {({ orders }) => (
+          <ShowMainContractData<'cashflowFor'> type="cashflowFor" request={{ tokenId }}>
+            {({ data: token }) => {
+              if (!token) { return 'Token loading...'; }
+              if (isNeedDisplay && !isNeedDisplay(token)) { return null; }
+              const { amount } = token;
+              const instalments = this.getInstalments(orders);
+              const instalmentsCount = this.getInstalmentsCount(instalments);
+              const instalmentsAmount = this.getInstalmentsAmount(instalments);
+              return (
+                <div className={cn(classes.root, className)}>
+                  <ExpansionPanel expanded={expanded} onChange={this.onToggle}>
+                    <ExpansionPanelSummary
+                      className={classes.summary}
+                      classes={{ content: classes.summaryContent }}
+                    >
+                      <Header
+                        token={token}
+                        expanded={expanded}
+                        type={type}
+                        price={price}
+                        instalments={instalmentsCount}
                       />
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails className={classes.details}>
+                      <div className={classes.main}>
+                        <div className={classes.leftSection} >
+                          {(['id', 'payer', 'lender'] as MetricKey[]).map(this.renderMetric.bind(null, token))}
+                        </div>
+                        <div className={classes.rightSection}>
+                          {(['instalmentSize', 'firstInstalmentDate', 'lastInstalmentDate'] as MetricKey[])
+                            .map(this.renderMetric.bind(null, token))}
+                        </div>
+                        <div className={classes.progress}>
+                          <InstalmentsChart
+                            totalInstalments={amount.toNumber()}
+                            payed={instalmentsAmount.paidInstallmentsAmount}
+                            due={instalmentsAmount.dueInstallmentsAmount}
+                            missed={instalmentsAmount.missedInstallmentsAmount}
+                          />
+                        </div>
+                      </div>
+                      {['Repayment history', 'Withdrawal history'].map(stub => (
+                        <div key={stub} className={classes.stubSection}>
+                          <span>{stub}</span>
+                          <CircleArrow />
+                        </div>
+                      ))}
+                    </ExpansionPanelDetails>
+                    <div className={classes.footer}>
+                      {this.renderActions(token, account, order)}
                     </div>
-                  </div>
-                  {['Repayment history', 'Withdrawal history'].map(stub => (
-                    <div key={stub} className={classes.stubSection}>
-                      <span>{stub}</span>
-                      <CircleArrow />
-                    </div>
-                  ))}
-                </ExpansionPanelDetails>
-                <div className={classes.footer}>
-                  {this.renderActions(token, account, order)}
+                  </ExpansionPanel>
                 </div>
-              </ExpansionPanel>
-            </div>
-          );
-        }}
-      </ShowMainContractData>
+              );
+            }}
+          </ShowMainContractData>
+        )}
+      </WithOrders>
     );
   }
 
@@ -196,6 +203,44 @@ class TokenCard extends React.PureComponent<IProps> {
         }}
       </ShowMainContractData>
     );
+  }
+
+  @bind
+  private getInstalments(orders: IPaymentOrder[]) {
+    const today = Date.now();
+    const paidInstallments = orders.filter(order => order.isPayed);
+    const dueInstallments = orders.filter(({ isPayed, isDeleted, pendingDatePayment }) => {
+      const deadline = moment(pendingDatePayment).add(30, 'days').valueOf();
+      return !isDeleted && !isPayed && pendingDatePayment < today && today < deadline;
+    });
+    const missedInstallments = orders.filter(({ isPayed, isDeleted, pendingDatePayment }) => {
+      const deadline = moment(pendingDatePayment).add(30, 'days').valueOf();
+      return !isDeleted && !isPayed && deadline < pendingDatePayment;
+    });
+    return { paidInstallments, dueInstallments, missedInstallments };
+  }
+
+  @bind
+  private getInstalmentsCount({ paidInstallments, dueInstallments, missedInstallments }: IInstalments) {
+    return {
+      paidInstallments: paidInstallments.length,
+      dueInstallments: dueInstallments.length,
+      missedInstallments: missedInstallments.length,
+    };
+  }
+
+  @bind
+  private getInstalmentsAmount({ paidInstallments, dueInstallments, missedInstallments }: IInstalments) {
+    const paidInstallmentsAmount = paidInstallments
+      .reduce((summ, instalment) => summ + instalment.amount.toNumber(), 0);
+
+    const dueInstallmentsAmount = dueInstallments
+      .reduce((summ, instalment) => summ + instalment.amount.toNumber(), 0);
+
+    const missedInstallmentsAmount = missedInstallments
+      .reduce((summ, instalment) => summ + instalment.amount.toNumber(), 0);
+
+    return { paidInstallmentsAmount, dueInstallmentsAmount, missedInstallmentsAmount };
   }
 }
 

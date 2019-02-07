@@ -12,6 +12,10 @@ import { GlobalLoader } from 'shared/view/elements';
 
 import RetryModal from '../RetryModal/RetryModal';
 
+interface IState {
+  isUnsupportedNetwork: boolean;
+}
+
 interface IOwnProps {
   errorComp?: React.ReactNode;
   loadingComp?: React.ReactNode;
@@ -28,7 +32,8 @@ type ActionProps = typeof mapDispatch;
 
 type IProps = IOwnProps & ActionProps & IStateProps & InjectDrizzleProps & RouteComponentProps & ITranslateProps;
 
-class LoadingContainer extends React.Component<IProps> {
+class LoadingContainer extends React.Component<IProps, IState> {
+  public state: IState = { isUnsupportedNetwork: false };
   public componentDidUpdate(prevProps: IProps) {
     const {
       initialized, drizzle, drizzleState, isLogged,
@@ -54,7 +59,7 @@ class LoadingContainer extends React.Component<IProps> {
       );
     }
 
-    if (this.isEmptyAccounts()) {
+    if (this.isEmptyAccounts() || this.state.isUnsupportedNetwork) {
       return (
         <RetryModal isOpen={true} onRetry={this.reloadPage}>
           {t(tKeys.shared.noEthereumAccounts.getKey())}

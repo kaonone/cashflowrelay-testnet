@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bind } from 'decko';
+import * as cn from 'classnames';
 
 import { IAppReduxState } from 'shared/types/app';
 import { ICommunication } from 'shared/types/redux';
 import { i18nConnect, ITranslateProps, tKeys as tKeysAll } from 'services/i18n';
-import { Switch } from 'shared/view/elements';
+import { Switch, CircleProgressBar } from 'shared/view/elements';
 
 import { actions, selectors } from '../../redux';
 import { provideStyles, StylesProps } from './GivePermissions.style';
@@ -34,6 +35,7 @@ class GivePermissions extends React.PureComponent<IProps> {
       isMinter, setMinter, settingMinter,
       isApproved, settingApproved,
       isPayingAllowance, settingPayingAllowance, isBuyingAllowance, settingBuyingAllowance } = this.props;
+
     return (
       <div className={classes.root}>
         <div className={classes.title}>{t(tKeys.permissions.title.getKey())}</div>
@@ -46,6 +48,9 @@ class GivePermissions extends React.PureComponent<IProps> {
               checked={isMinter}
               disabled={settingMinter.isRequesting || isMinter}
             />
+            <div className={cn({ [classes.isHidden]: !settingMinter.isRequesting })}>
+              <CircleProgressBar size={12} />
+            </div>
           </div>
           <div className={classes.permission}>
             <div className={classes.permissionTitle}>{t(tKeys.permissions.sellCashflows.getKey())}</div>
@@ -55,6 +60,9 @@ class GivePermissions extends React.PureComponent<IProps> {
               checked={isApproved}
               onChange={this.toggleApproved}
             />
+            <div className={cn({ [classes.isHidden]: !settingApproved.isRequesting })}>
+              <CircleProgressBar size={12} />
+            </div>
           </div>
           <div className={classes.permission}>
             <div className={classes.permissionTitle}>{t(tKeys.permissions.payInstalments.getKey())}</div>
@@ -64,6 +72,9 @@ class GivePermissions extends React.PureComponent<IProps> {
               checked={isPayingAllowance}
               onChange={this.togglePayingAllowance}
             />
+            <div className={cn({ [classes.isHidden]: !settingPayingAllowance.isRequesting })}>
+              <CircleProgressBar size={12} />
+            </div>
           </div>
           <div className={classes.permission}>
             <div className={classes.permissionTitle}>{t(tKeys.permissions.buyCashflows.getKey())}</div>
@@ -73,8 +84,10 @@ class GivePermissions extends React.PureComponent<IProps> {
               checked={isBuyingAllowance}
               onChange={this.toggleBuyingAllowance}
             />
+            <div className={cn({ [classes.isHidden]: !settingBuyingAllowance.isRequesting })}>
+              <CircleProgressBar size={12} />
+            </div>
           </div>
-
         </div>
       </div>
     );

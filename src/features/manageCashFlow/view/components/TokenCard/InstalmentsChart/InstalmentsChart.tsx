@@ -23,14 +23,14 @@ function InstalmentsChart(props: IProps) {
   const completionPercent = (payed + due + missed) / totalInstalments * 100;
 
   const segments = completionPercent ? [
-    { name: 'Payed', value: payed, color: theme!.extra.colors.apple },
-    { name: 'Due', value: due, color: theme!.extra.colors.buttercup },
-    { name: 'Missed', value: missed, color: theme!.extra.colors.monza },
+    { name: 'Timely instalments', value: payed, color: theme!.extra.colors.apple },
+    { name: 'Under 30 days late instalments', value: due, color: theme!.extra.colors.buttercup },
+    { name: 'Over 30 days late instalments', value: missed, color: theme!.extra.colors.monza },
   ]
     : [{ name: '', value: 1, color: theme!.extra.colors.alabaster }];
   return (
     <div className={classes.root}>
-      <DonutChart segments={segments} withTooltip={!!completionPercent}>
+      <DonutChart segments={segments} withTooltip={!!completionPercent} >
         <div className={classes.content}>
           <div className={classes.title}>
             {t(

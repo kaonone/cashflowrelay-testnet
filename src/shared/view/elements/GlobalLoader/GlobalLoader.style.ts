@@ -27,7 +27,14 @@ const styles = ({ extra: theme }: Theme) => ({
 
   spinner: rule({
     display: 'flex',
+    marginBottom: '2.625rem',
   }),
+
+  message: {
+    fontSize: '0.875rem',
+    color: theme.colors.tundora,
+
+  },
 
   circle: rule({
     backgroundColor: theme.colors.purpleHeart,

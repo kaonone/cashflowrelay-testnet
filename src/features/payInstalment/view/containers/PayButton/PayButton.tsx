@@ -36,7 +36,7 @@ class PayButton extends React.PureComponent<IProps> {
             color: 'primary' as 'primary',
             children: (
               <>
-                Pay installment
+                Pay instalment
                 {ordersLoading && <div className={classes.preloader}><CircleProgressBar size={22} /></div>}
               </>
             ),

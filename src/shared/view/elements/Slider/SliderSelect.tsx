@@ -68,8 +68,8 @@ class SliderSelect extends React.Component<IProps> {
   private checkPropsConsistency() {
     const { children } = this.props;
 
-    children && React.Children.toArray(children).some(child => {
-      const isUnsuitableChild = typeof child === 'string' || typeof child === 'number' || !child.props.value;
+    children && React.Children.toArray(children).some((child: React.ReactElement<ISliderItemProps>) => {
+      const isUnsuitableChild = !child || !child.props || !child.props.value;
       isUnsuitableChild && console.error('`SliderSelect` `children` contains unsuitable child');
       return isUnsuitableChild;
     });

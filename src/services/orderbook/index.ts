@@ -4,7 +4,7 @@ import { IReduxEntry } from 'shared/types/app';
 
 export { namespace, selectors, actions };
 export { InjectOrderbookProps } from './namespace';
-export * from './view/containers';
+export { default as useOrderbook } from './hooks/useOrderbook';
 
 export const reduxEntry: IReduxEntry = {
   reducers: { orderbook: reducer },

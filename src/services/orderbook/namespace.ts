@@ -19,7 +19,6 @@ export interface IReduxState {
 
 export interface InjectOrderbookProps {
   orders: IOrderList;
-  hideOrders: TokenId[];
   ordersLoading: ICommunication;
   loadMore(): void;
 }

@@ -9,7 +9,6 @@ import { HttpClient } from '@0x/connect';
 import { Web3Wrapper } from '@0x/web3-wrapper';
 
 import * as adaptabilityNS from 'services/adaptability/namespace';
-import * as dataProviderNS from 'services/dataProvider/namespace';
 import * as i18nNS from 'services/i18n/namespace';
 import * as orderbookNS from 'services/orderbook/namespace';
 import * as transactionsNS from 'services/transactions/namespace';
@@ -22,7 +21,6 @@ import * as sellCashFlowNS from 'features/sellCashFlow/namespace';
 import * as signInNS from 'features/signIn/namespace';
 
 import { JSS, Theme } from 'shared/styles';
-import { IMultiInstanceState } from 'shared/helpers/redux';
 import { LocalStorage } from 'services/storage';
 
 export interface IModule {
@@ -77,7 +75,6 @@ export interface IFeatureEntry<
 export interface IAppReduxState {
   // services
   adaptability: adaptabilityNS.IReduxState;
-  dataProvider: IMultiInstanceState<dataProviderNS.IReduxState>;
   i18n: i18nNS.IReduxState;
   orderbook: orderbookNS.IReduxState;
   transactions: transactionsNS.IReduxState;

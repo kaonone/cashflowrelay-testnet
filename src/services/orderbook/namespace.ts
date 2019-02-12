@@ -1,7 +1,7 @@
 import { BigNumber } from '0x.js';
 
 import { ICommunication, IAction, IPlainFailAction } from 'shared/types/redux';
-import { IOrderList } from 'shared/types/models';
+import { IOrderList, IOrder } from 'shared/types/models';
 
 export type TokenId = BigNumber;
 
@@ -21,6 +21,11 @@ export interface InjectOrderbookProps {
   orders: IOrderList;
   ordersLoading: ICommunication;
   loadMore(): void;
+}
+
+export interface InjectMyOrderProps {
+  order: IOrder | null;
+  orderLoading: ICommunication;
 }
 
 export type ILoadMyOrders = IAction<'ORDERBOOK:LOAD_MY_ORDERS', { page?: number; perPage?: number }>;

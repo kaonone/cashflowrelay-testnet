@@ -1,10 +1,11 @@
 import * as React from 'react';
-import { bind } from 'decko';
 import { withRouter, RouteComponentProps } from 'react-router';
 
 import routes from 'modules/routes';
 
 import { ShowMainContractData } from 'services/transactions';
+import { useMyOrder } from 'services/orderbook';
+
 import { SellButton } from 'features/sellCashFlow';
 import { BuyButton } from 'features/buyCashFlow';
 import { PayButton } from 'features/payInstalment';
@@ -23,64 +24,64 @@ interface IProps {
   paymentOrdersLoading: boolean;
 }
 
-class Actions extends React.PureComponent<IProps & RouteComponentProps, {}> {
-  public render() {
-    const { type, account, buttonClass, marketOrder, token, paymentOrdersLoading, paymentOrders } = this.props;
-    return (
-      <ShowMainContractData<'ownerOf'> type="ownerOf" request={{ tokenId: token.id }}>
-        {({ data: owner }) => {
-          if (!owner || !account || paymentOrdersLoading) { return null; }
+function Actions(props: IProps & RouteComponentProps) {
+  const { type, account, buttonClass, marketOrder, token, paymentOrdersLoading, paymentOrders } = props;
+  const { order, orderLoading } = useMyOrder(token.id);
 
-          const totalPaidAmount = calcTotalPaidAmount(paymentOrders);
-          const isFullRepaid = token.amount.comparedTo(totalPaidAmount) <= 0;
+  const onBuyToken = React.useCallback(() => {
+    props.history.push(routes.cashFlows.type.getRedirectPath({ type: 'incoming' }));
+  }, []);
 
-          const onSaleNow: boolean = false; // TODO ds: check token on sale
-          const isMyToken = owner.toLowerCase() === account.toLowerCase();
+  const onSaleNow: boolean = !orderLoading.isRequesting && !!order; // TODO ds: check token on sale
 
-          const withdrawButton = isMyToken && !onSaleNow && (
-            <div className={buttonClass}>
-              <WithdrawButton token={token} />
-            </div>
-          );
-          const sellButton = isMyToken && !isFullRepaid && (
-            <div className={buttonClass}>
-              <SellButton cashflow={token} disabled={onSaleNow} />
-            </div>
-          );
-          const payInstallmentButton = !isFullRepaid && (
-            <div className={buttonClass}>
-              <PayButton token={token} variant={isMyToken ? 'outlined' : 'contained'} />
-            </div>
-          );
-          const buyButton = !!marketOrder && !isMyToken && (
-            <div className={buttonClass}>
-              <BuyButton cashflow={token} order={marketOrder} onSuccess={this.onBuyToken} />
-            </div>
-          );
+  return (
+    <ShowMainContractData<'ownerOf'> type="ownerOf" request={{ tokenId: token.id }}>
+      {({ data: owner }) => {
+        if (!owner || !account || paymentOrdersLoading) { return null; }
 
-          const renderByType: Record<TokenType, () => React.ReactNode> = {
-            incoming: () => (<>
-              {sellButton}
-              {withdrawButton}
-            </>),
-            obligations: () => (<>
-              {payInstallmentButton}
-              {sellButton}
-              {isFullRepaid && withdrawButton}
-            </>),
-            selling: () => <>{buyButton}</>,
-          };
+        const totalPaidAmount = calcTotalPaidAmount(paymentOrders);
+        const isFullRepaid = token.amount.comparedTo(totalPaidAmount) <= 0;
 
-          return renderByType[type]();
-        }}
-      </ShowMainContractData>
-    );
-  }
+        const isMyToken = owner.toLowerCase() === account.toLowerCase();
 
-  @bind
-  private onBuyToken() {
-    this.props.history.push(routes.cashFlows.type.getRedirectPath({ type: 'incoming' }));
-  }
+        const withdrawButton = isMyToken && !onSaleNow && (
+          <div className={buttonClass}>
+            <WithdrawButton token={token} disabled={orderLoading.isRequesting} />
+          </div>
+        );
+        const sellButton = isMyToken && !isFullRepaid && !onSaleNow && (
+          <div className={buttonClass}>
+            <SellButton cashflow={token} disabled={orderLoading.isRequesting} />
+          </div>
+        );
+        const payInstallmentButton = !isFullRepaid && (
+          <div className={buttonClass}>
+            <PayButton token={token} variant={isMyToken ? 'outlined' : 'contained'} />
+          </div>
+        );
+        const buyButton = !!marketOrder && !isMyToken && (
+          <div className={buttonClass}>
+            <BuyButton cashflow={token} order={marketOrder} onSuccess={onBuyToken} />
+          </div>
+        );
+
+        const renderByType: Record<TokenType, () => React.ReactNode> = {
+          incoming: () => (<>
+            {sellButton}
+            {withdrawButton}
+          </>),
+          obligations: () => (<>
+            {payInstallmentButton}
+            {sellButton}
+            {isFullRepaid && withdrawButton}
+          </>),
+          selling: () => <>{buyButton}</>,
+        };
+
+        return renderByType[type]();
+      }}
+    </ShowMainContractData>
+  );
 }
 
 export default withRouter(Actions);

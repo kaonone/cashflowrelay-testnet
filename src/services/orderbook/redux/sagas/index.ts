@@ -1,4 +1,4 @@
-import { put, call, takeLatest, select } from 'redux-saga/effects';
+import { put, call, takeLatest, select, takeLeading } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
 import { assetDataUtils } from '0x.js';
 import { APIOrder, PaginatedCollection } from '@0x/types';
@@ -22,7 +22,7 @@ const completeAuthType: ICompleteAuthentication['type'] = 'USER:COMPLETE_AUTHENT
 function getSaga(deps: IDependencies) {
   return function* saga(): SagaIterator {
     yield takeLatest(loadOrdersType, loadOrdersSaga, deps);
-    yield takeLatest(loadMyOrdersType, loadMyOrdersSaga, deps);
+    yield takeLeading(loadMyOrdersType, loadMyOrdersSaga, deps);
     yield takeLatest(completeAuthType, loadMyOrdersByAuthenticate);
   };
 }
@@ -51,7 +51,7 @@ export function* loadOrdersSaga(deps: IDependencies, action: NS.ILoadOrders) {
 export function* loadMyOrdersSaga(deps: IDependencies, action: NS.ILoadMyOrders) {
   const { drizzle } = deps;
   const { client } = deps.Ox;
-  const makerAddress = drizzle.store.getState().accounts[0];
+  const makerAddress = drizzle.store.getState().accounts[0].toLowerCase();
   const prev: ReturnType<typeof selectors.selectOrders> = yield select(selectors.selectOrders);
   const page = action.payload.page || prev.page;
   const perPage = action.payload.perPage || prev.perPage;

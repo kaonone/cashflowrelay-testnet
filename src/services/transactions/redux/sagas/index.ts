@@ -72,19 +72,19 @@ const getParamsByRequest: { [key in SetTransactionType]: ParamsConverter<key> } 
     data.duration.toFixed(0),
   ],
   createOrder: (data) => [
-    data.tokenId.toFixed(0),
+    data.tokenId,
     data.amount.toFixed(0),
   ],
   executeOrder: (data) => [
-    data.tokenId.toFixed(0),
+    data.tokenId,
     data.orderId.toFixed(0),
   ],
   executePayment: (data) => [
-    data.tokenId.toFixed(0),
+    data.tokenId,
     data.amount.toFixed(0),
   ],
   withdrawPayments: (data) => [
-    data.tokenId.toFixed(0),
+    data.tokenId,
     data.amount.toFixed(0),
   ],
 };

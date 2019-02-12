@@ -27,13 +27,13 @@ type MetricKey =
 
 interface IOwnProps {
   className?: string;
-  tokenId: number;
+  tokenId: string;
   account: string | null;
   marketOrder?: IOrder;
   type: TokenType;
   expanded: boolean;
   price?: BigNumber;
-  onToggle(id: number): void;
+  onToggle(id: string): void;
   isNeedDisplay?(token: IToken): boolean;
 }
 

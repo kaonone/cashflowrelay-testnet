@@ -13,7 +13,7 @@ interface IChildrenProps {
 }
 
 interface IOwnProps {
-  tokenId: number;
+  tokenId: string;
   children(props: IChildrenProps): React.ReactNode;
 }
 

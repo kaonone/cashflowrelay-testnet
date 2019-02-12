@@ -26,7 +26,7 @@ const sellingTitles = titlesKeys.concat(['instalmentSize', 'nextInstalment', 'pr
 
 interface IOwnProps {
   type: TokenType;
-  tokenIds?: number[];
+  tokenIds?: string[];
   orders?: IOrderList;
 }
 
@@ -41,7 +41,7 @@ function mapState(state: IAppReduxState): IStateProps {
 }
 
 interface IState {
-  expandedTokenId: number | null;
+  expandedTokenId: string | null;
 }
 
 type IProps = IStateProps & IOwnProps & ITranslateProps & StylesProps;
@@ -92,8 +92,8 @@ class TokensList extends React.PureComponent<IProps, IState> {
               account={account}
               className={classes.tokenCard}
               onToggle={this.expandCard}
-              expanded={order.tokenId.toNumber() === expandedTokenId}
-              tokenId={order.tokenId.toNumber()}
+              expanded={order.tokenId.toString() === expandedTokenId}
+              tokenId={order.tokenId.toString()}
               marketOrder={order}
               type={type}
               isNeedDisplay={isNeedTokenByType[type]}
@@ -111,7 +111,7 @@ class TokensList extends React.PureComponent<IProps, IState> {
   }
 
   @bind
-  public expandCard(tokenId: number) {
+  public expandCard(tokenId: string) {
     this.setState((pState: IState) => ({ expandedTokenId: pState.expandedTokenId === tokenId ? null : tokenId }));
   }
 }

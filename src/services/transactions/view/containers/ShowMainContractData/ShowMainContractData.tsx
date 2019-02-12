@@ -110,8 +110,8 @@ const convertResponseByType: { [key in GetContractTransactionType]: ResponseConv
       lastInstalmentDate: createdAt + duration,
     };
   },
-  idsOfCashflowsFor: response => response.map(Number),
-  idsOfSubscribedCashflowsFor: response => response.map(Number),
+  idsOfCashflowsFor: response => response,
+  idsOfSubscribedCashflowsFor: response => response,
 };
 
 const Container = withDrizzle(ShowMainContractData);

@@ -1,6 +1,6 @@
 import { BigNumber } from '0x.js';
 import * as moment from 'moment';
-import { IPaymentOrder, IInstallments } from 'shared/types/models';
+import { IPaymentOrder, IInstallments, IToken } from 'shared/types/models';
 
 export function calcRepaymentAmount(amount: number, interestByPercent: number) {
   // return amount * (1 + interestByPercent / 100);
@@ -36,6 +36,15 @@ export function calcTotalPaidAmount(orders: IPaymentOrder[]): BigNumber {
       (sum: BigNumber, instalment) => sum.add(instalment.amount),
       new BigNumber(0),
     );
+}
+
+export function calcIsFullRepaid(orders: IPaymentOrder[], token: IToken): boolean {
+  const repaidAmount = orders
+    .filter(order => order.isPayed)
+    .map(order => order.amount)
+    .reduce((cur, acc) => acc.plus(cur), new BigNumber(0));
+
+  return repaidAmount.comparedTo(token.amount) >= 0;
 }
 
 export function groupInstallmentsByPaymentStatus(orders: IPaymentOrder[]): IInstallments {

@@ -15,9 +15,7 @@ import Header from './Header/Header';
 import { StylesProps, provideStyles } from './TokenCard.style';
 import InstalmentsChart from './InstalmentsChart/InstalmentsChart';
 import Actions from './Actions/Actions';
-import {
-  groupInstallmentsByPaymentStatus, calcInstallmentsCount, calcInstallmentsAmount, groupInstallmentsByPaymentDate,
-} from 'shared/helpers/model';
+import { calcInstallmentsAmount, groupInstallmentsByPaymentDate } from 'shared/helpers/model';
 
 const tKeys = tKeysAll.features.manageCashFlows;
 
@@ -51,7 +49,6 @@ function TokenCard(props: IProps) {
   if (isNeedDisplay && !isNeedDisplay(token)) { return null; }
 
   const { amount } = token;
-  const installmentsCountForHeader = calcInstallmentsCount(groupInstallmentsByPaymentStatus(orders));
   const installmentsAmountForPieCart = calcInstallmentsAmount(groupInstallmentsByPaymentDate(orders));
 
   return (
@@ -66,7 +63,6 @@ function TokenCard(props: IProps) {
             expanded={expanded}
             type={type}
             price={price}
-            instalments={installmentsCountForHeader}
           />
         </ExpansionPanelSummary>
         <ExpansionPanelDetails className={classes.details}>

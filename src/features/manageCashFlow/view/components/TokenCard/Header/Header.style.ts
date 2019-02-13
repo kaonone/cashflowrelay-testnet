@@ -43,12 +43,7 @@ const styles = ({ extra: theme }: Theme) => ({
   }),
 
   stars: rule({
-    display: 'flex',
     flexBasis: theme.tableColumns.width.rating,
-  }),
-
-  activeStar: rule({
-    color: theme.colors.ripeLemon,
   }),
 
   nextInstalmentCell: rule({
@@ -148,6 +143,9 @@ const styles = ({ extra: theme }: Theme) => ({
     transform: 'rotate(180deg)',
   }),
 
+  withOpacity: rule({
+    opacity: 0.4,
+  }),
 });
 
 export const provideStyles = withStyles(styles);

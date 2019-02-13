@@ -29,6 +29,21 @@ export function calcInstallmentsAmount({ paid, due, missed }: IInstallments) {
   };
 }
 
+export function calcNextInstalmentDate(token: IToken) {
+  const { lastInstalmentDate, createdAt, periodDuration, instalmentCount } = token;
+
+  const loanDuration = instalmentCount * periodDuration;
+  const passedTime = Math.min(loanDuration, Date.now() - createdAt);
+  const passedPercent = new BigNumber(passedTime).div(loanDuration);
+
+  const nextInstalmentNumber = passedPercent.times(instalmentCount).ceil().toNumber();
+
+  return moment.min(
+    moment(lastInstalmentDate),
+    moment(createdAt + nextInstalmentNumber * periodDuration),
+  );
+}
+
 export function calcTotalPaidAmount(orders: IPaymentOrder[]): BigNumber {
   return orders
     .filter(order => order.isPayed)
@@ -45,6 +60,27 @@ export function calcIsFullRepaid(orders: IPaymentOrder[], token: IToken): boolea
     .reduce((cur, acc) => acc.plus(cur), new BigNumber(0));
 
   return repaidAmount.comparedTo(token.amount) >= 0;
+}
+
+/**
+ * Calcuate rating.
+ * R1 - paid on time
+ * R2 = not paid with delay
+ * R3 = paid with delay
+ *
+ * rating = (R1 + 0.5 * R3) / (R1 + R2 + R3) * 100
+ */
+export function calcTokenRating(orders: IPaymentOrder[]): number {
+  const groupedByStatus = groupInstallmentsByPaymentStatus(orders);
+  const groupedByPaymentDate = groupInstallmentsByPaymentDate(orders);
+
+  const R1 = groupedByPaymentDate.paid.length;
+  const R2 = groupedByStatus.due.length + groupedByStatus.missed.length;
+  const R3 = groupedByPaymentDate.due.length + groupedByPaymentDate.missed.length;
+
+  const rawRating = (R1 + 0.5 * R3) / (R1 + R2 + R3) * 100;
+
+  return new BigNumber(rawRating).round().toNumber();
 }
 
 export function groupInstallmentsByPaymentStatus(orders: IPaymentOrder[]): IInstallments {

@@ -5,62 +5,37 @@ import {
   GetContractTransactionType, TransactionRequestDataByType,
   ContractTransactionResponseDataByType, ContractTransactionDataByType,
 } from 'shared/types/models';
-import { withDrizzle, InjectDrizzleProps } from 'shared/helpers/react';
+import { useDrizzle } from 'shared/helpers/react';
 import { OneDAI } from 'shared/helpers/model';
 import { mainContractName } from 'shared/constants';
 
-interface IChildrenProps<T extends GetContractTransactionType> {
+interface InjectProps<T extends GetContractTransactionType> {
   data: ContractTransactionDataByType[T] | null;
 }
 
-interface IOwnProps<T extends GetContractTransactionType> {
-  type: T;
-  request: TransactionRequestDataByType[T];
-  children?(props: IChildrenProps<T>): React.ReactNode;
-}
+export default function useMainContractData<T extends GetContractTransactionType>(
+  type: T,
+  request: TransactionRequestDataByType[T],
+): InjectProps<T> {
+  const { drizzle, drizzleState } = useDrizzle();
+  const [dataKey, setDataKey] = React.useState('');
 
-type IProps = IOwnProps<GetContractTransactionType> & InjectDrizzleProps;
+  const contract = drizzle.contracts[mainContractName];
+  const account = drizzleState.accounts[0];
 
-interface IState {
-  dataKey: string;
-}
-
-class ShowMainContractData extends React.PureComponent<IProps, IState> {
-  public state: IState = { dataKey: '' };
-
-  public componentDidMount() {
-    this.updateData();
-  }
-
-  public componentDidUpdate(prevProps: IProps) {
-    const { type } = this.props;
-    if (prevProps.type !== type) {
-      this.updateData();
-    }
-  }
-
-  public render() {
-    const { drizzleState, type, request, children } = this.props;
-    const contract = drizzleState.contracts[mainContractName];
-    const account = drizzleState.accounts[0];
-
-    const fullResponse = contract[type][this.state.dataKey];
-    const response = fullResponse && fullResponse.value !== undefined && fullResponse.value || null;
-    const data = response && (convertResponseByType[type] as ResponseConverter)(response, request, account);
-    return typeof children === 'function' ? children({ data }) : response.toString();
-  }
-
-  private updateData() {
-    const { drizzle, drizzleState, type, request } = this.props;
-    const contract = drizzle.contracts[mainContractName];
-    const account = drizzleState.accounts[0];
-
+  React.useEffect(() => {
     const params = (getParamsByRequest[type] as ParamsConverter)(request, account);
+    const nextDataKey = contract.methods[type].cacheCall(...params);
+    setDataKey(nextDataKey);
+  }, [type, account]);
 
-    const dataKey = contract.methods[type].cacheCall(...params);
+  const contractState = drizzleState.contracts[mainContractName];
 
-    this.setState({ dataKey });
-  }
+  const fullResponse = contractState[type][dataKey];
+  const response = fullResponse && fullResponse.value !== undefined && fullResponse.value || null;
+  const data = response && (convertResponseByType[type] as ResponseConverter)(response, request, account);
+
+  return { data };
 }
 
 type ParamsConverter<T extends GetContractTransactionType = GetContractTransactionType> =
@@ -113,11 +88,3 @@ const convertResponseByType: { [key in GetContractTransactionType]: ResponseConv
   idsOfCashflowsFor: response => response,
   idsOfSubscribedCashflowsFor: response => response,
 };
-
-const Container = withDrizzle(ShowMainContractData);
-
-function ShowMainContractDataGeneric<T extends GetContractTransactionType>(props: IOwnProps<T>) {
-  return <Container {...props} />;
-}
-
-export default ShowMainContractDataGeneric;

@@ -38,7 +38,7 @@ export interface IBlockChainToken {
 
 export type TokenType = 'incoming' | 'obligations' | 'selling';
 
-export type ITokenStatus = 'pending' | 'saving' | 'awaiting' | 'sold';
+export type TokenStatus = 'pending' | 'saving' | 'awaitingBuyer' | 'sold' | 'completed';
 
 export type IOrder = SignedOrder & {
   price: BigNumber;

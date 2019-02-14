@@ -11,7 +11,7 @@ import * as uuid from 'uuid';
 import { i18nConnect, ITranslateProps, tKeys as allKeys, ITranslateKey } from 'services/i18n';
 import { actions as transactionActions, TransactionListener } from 'services/transactions';
 import { lessThenOrEqual, moreThenOrEqual, moreThen, isRequired, notDefault } from 'shared/validators';
-import { calcRepaymentAmount, calcInstallmentSize, OneDAI } from 'shared/helpers/model';
+import { calcRepaymentAmount, calcInstallmentSize, OneDAI } from 'shared/model/calculate';
 import CashFlowInfo from 'shared/view/model/CashFlowInfo/CashFlowInfo';
 import { DrawerModal } from 'shared/view/components';
 import { TextInputField } from 'shared/view/form';

@@ -15,7 +15,7 @@ import Header from './Header/Header';
 import { StylesProps, provideStyles } from './TokenCard.style';
 import InstalmentsChart from './InstalmentsChart/InstalmentsChart';
 import Actions from './Actions/Actions';
-import { calcInstallmentsAmount, groupInstallmentsByPaymentDate } from 'shared/helpers/model';
+import { calcInstallmentsAmount, groupInstallmentsByPaymentDate } from 'shared/model/calculate';
 
 const tKeys = tKeysAll.features.manageCashFlows;
 

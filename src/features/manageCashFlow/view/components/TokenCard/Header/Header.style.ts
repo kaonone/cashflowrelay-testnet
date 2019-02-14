@@ -44,6 +44,7 @@ const styles = ({ extra: theme }: Theme) => ({
 
   stars: rule({
     flexBasis: theme.tableColumns.width.rating,
+    paddingRight: theme.spacing.unit / 2,
   }),
 
   nextInstalmentCell: rule({
@@ -51,6 +52,10 @@ const styles = ({ extra: theme }: Theme) => ({
     flexBasis: theme.tableColumns.width.nextInstalment,
   }),
   nextInstalment: rule({
+    flexGrow: 1,
+    marginRight: theme.spacing.unit / 2,
+    display: 'flex',
+    justifyContent: 'center',
     fontWeight: 600,
     fontSize: '0.625rem',
     padding: '0.3125rem 0.625rem',
@@ -96,7 +101,8 @@ const styles = ({ extra: theme }: Theme) => ({
     flexBasis: theme.tableColumns.width.cashFlowBalance,
   }),
   status: rule({
-    width: '6.25rem',
+    flexGrow: 1,
+    marginRight: theme.spacing.unit / 2,
     display: 'flex',
     justifyContent: 'center',
     padding: '0.3125rem',

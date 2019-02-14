@@ -2,7 +2,7 @@ import { BigNumber } from '0x.js';
 import { useState, useEffect, useMemo } from 'react';
 
 import { IPaymentOrder, IBlockChainPaymentOrder } from 'shared/types/models';
-import { OneDAI } from 'shared/helpers/model';
+import { OneDAI } from 'shared/model/calculate';
 import { useDrizzle } from 'shared/helpers/react';
 import checkDrizzleResponse from 'shared/helpers/CheckDrizzleResponse';
 import { mainContractName } from 'shared/constants';

@@ -6,7 +6,7 @@ import {
   ContractTransactionResponseDataByType, ContractTransactionDataByType,
 } from 'shared/types/models';
 import { useDrizzle } from 'shared/helpers/react';
-import { OneDAI } from 'shared/helpers/model';
+import { OneDAI } from 'shared/model/calculate';
 import { mainContractName } from 'shared/constants';
 
 interface InjectProps<T extends GetContractTransactionType> {

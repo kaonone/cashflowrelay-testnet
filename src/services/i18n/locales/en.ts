@@ -33,8 +33,9 @@ export default {
       status: {
         pending: 'tx pending',
         saving: 'saving',
-        awaiting: 'Awaiting buyer',
+        awaitingBuyer: 'Awaiting buyer',
         sold: 'sold',
+        completed: 'Completed',
       },
       obligations: 'Obligations',
       income: 'Income',

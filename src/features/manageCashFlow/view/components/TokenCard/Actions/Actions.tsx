@@ -12,7 +12,7 @@ import { PayButton } from 'features/payInstalment';
 import { WithdrawButton } from 'features/withdrawCashFlow';
 
 import { TokenType, IToken, IOrder, IPaymentOrder } from 'shared/types/models';
-import { calcTotalPaidAmount } from 'shared/helpers/model';
+import { calcTotalPaidAmount } from 'shared/model/calculate';
 
 interface IProps {
   type: TokenType;

@@ -5,7 +5,7 @@ import { ITranslateProps, i18nConnect } from 'services/i18n';
 import { SendTransactionButton, usePaymentOrders } from 'services/transactions';
 import { IPaymentOrder, IToken } from 'shared/types/models';
 import { CircleProgressBar } from 'shared/view/elements';
-import { calcIsFullRepaid } from 'shared/helpers/model';
+import { calcIsFullRepaid } from 'shared/model/calculate';
 import { DECIMAL } from 'shared/constants';
 
 import { StylesProps, provideStyles } from './PayButton.style';

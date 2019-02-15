@@ -24,7 +24,7 @@ declare module 'drizzle' {
     }>;
     web3: {
       status: 'initialized' | 'failed';
-      networkId: 1 | 2 | 3 | 4 | 42; // https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#construction_worker-network-check
+      networkId?: 1 | 2 | 3 | 4 | 42; // https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#construction_worker-network-check
     };
   }
 

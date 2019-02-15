@@ -12,6 +12,8 @@ export default {
       lessThenOrEqual: 'Should be less then or equal %{value}',
       invalidWalletAddress: 'Invalid wallet address',
       notDefault: 'Value must be different from initial',
+      maxStringLength: 'Should be less then %{max} character',
+      allowedCharactersForCashFlowName: 'Should contain only allowed characters: %{characters}',
     },
     pageNotFound: 'We can’t find this page',
     copiedAtClipboard: 'Copied at clipboard',

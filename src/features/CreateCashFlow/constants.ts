@@ -5,6 +5,7 @@ const availablePeriodicity: TimePeriod[] = ['day', 'week', 'month', 'quarter', '
 
 export const createCashFlowConfig = {
   defaultName: 'Money for ...',
+  maxNameLength: 50,
   minAmount: 0,
   defaultAmount: 100,
   minInterest: 1,

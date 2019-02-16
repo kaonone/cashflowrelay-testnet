@@ -70,7 +70,7 @@ export function logoutSaga({ storage }: IDependencies, _a: NS.ILogout) {
   try {
     storage.reset();
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 

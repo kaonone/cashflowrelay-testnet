@@ -1,5 +1,5 @@
 import { BigNumber } from '0x.js';
-import { useState, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { IPaymentOrder, IBlockChainPaymentOrder } from 'shared/types/models';
 import { OneDAI } from 'shared/model/calculate';
@@ -13,28 +13,26 @@ interface IChildrenProps {
 }
 
 export default function usePaymentOrders(tokenId: string): IChildrenProps {
-  const [keyForOrderIds, setKeyForOrderIds] = useState('');
-  const [keysForOrders, setKeysForOrders] = useState<Array<{ key: string, id: string }>>([]);
   const { drizzle, drizzleState } = useDrizzle();
-
   const contract = drizzle.contracts[mainContractName];
   const contractState = drizzleState.contracts[mainContractName];
+
+  const keyForOrderIds = useMemo(
+    () => contract.methods.getOrdersList.cacheCall(tokenId.toString()),
+    [tokenId],
+  );
+
   const orderIdsResponse = contractState.getOrdersList[keyForOrderIds];
-  const orderIds = checkDrizzleResponse<string[], string[]>(orderIdsResponse, []);
+  const orderIds = useMemo(
+    () => checkDrizzleResponse<string[], string[]>(orderIdsResponse, []),
+    [orderIdsResponse],
+  );
 
-  useEffect(() => {
-    const nextKeyForOrderIds = contract.methods.getOrdersList.cacheCall(tokenId.toString());
-
-    setKeyForOrderIds(nextKeyForOrderIds);
-    setKeysForOrders([]);
-  }, [tokenId]);
-
-  useEffect(() => {
-    const nextKeysForOrders = orderIds.map(id => ({
+  const keysForOrders = useMemo(() => {
+    return orderIds.map(id => ({
       key: contract.methods.getByOrderId.cacheCall(tokenId.toString(), id),
       id,
     }));
-    setKeysForOrders(nextKeysForOrders);
   }, [orderIds]);
 
   const orders = useMemo(() => keysForOrders.map(({ key, id }) => {
@@ -47,10 +45,10 @@ export default function usePaymentOrders(tokenId: string): IChildrenProps {
 
   const ordersLoading = !orderIds || orders.some(order => !order);
 
-  return {
+  return useMemo(() => ({
     orders: filteredOrders,
     ordersLoading,
-  };
+  }), [filteredOrders, ordersLoading]);
 }
 
 function convertOrderResponse(order: IBlockChainPaymentOrder, id: string): IPaymentOrder {

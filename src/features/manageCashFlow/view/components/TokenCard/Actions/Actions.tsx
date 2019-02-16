@@ -12,7 +12,7 @@ import { PayButton } from 'features/payInstalment';
 import { WithdrawButton } from 'features/withdrawCashFlow';
 
 import { TokenType, IToken, IOrder, IPaymentOrder } from 'shared/types/models';
-import { calcTotalPaidAmount } from 'shared/model/calculate';
+import { calcIsFullRepaid } from 'shared/model/calculate';
 
 interface IProps {
   type: TokenType;
@@ -37,8 +37,7 @@ function Actions(props: IProps & RouteComponentProps) {
 
   if (!owner || !account || paymentOrdersLoading) { return null; }
 
-  const totalPaidAmount = calcTotalPaidAmount(paymentOrders);
-  const isFullRepaid = token.amount.comparedTo(totalPaidAmount) <= 0;
+  const isFullRepaid = calcIsFullRepaid(paymentOrders, token);
   const isMyToken = owner.toLowerCase() === account.toLowerCase();
 
   type ButtonType = false | [string, React.ReactNode];

@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { bind } from 'decko';
 import { connect } from 'react-redux';
-import { BigNumber } from '0x.js';
 
 import { ITranslateProps, i18nConnect } from 'services/i18n';
 import { IAppReduxState } from 'shared/types/app';
@@ -10,6 +8,8 @@ import { ICommunication } from 'shared/types/redux';
 import { CashFlowInfo, SellingPriceField } from 'shared/view/model';
 import { DrawerModal } from 'shared/view/components';
 import { Button, CircleProgressBar } from 'shared/view/elements';
+import { useOnChangeState } from 'shared/helpers/react';
+import { useRecommendedPrice } from 'shared/model/hooks';
 
 import * as actions from './../../../redux/actions';
 import * as selectors from './../../../redux/selectors';
@@ -26,11 +26,6 @@ interface IStateProps {
 
 type IActionProps = typeof mapDispatch;
 
-interface IState {
-  isOpenSellModal: boolean;
-  price: number;
-}
-
 type IProps = IStateProps & IActionProps & IOwnProps & StylesProps & ITranslateProps;
 
 function mapState(state: IAppReduxState): IStateProps {
@@ -43,96 +38,71 @@ const mapDispatch = {
   sell: actions.sell,
 };
 
-class SellButton extends React.PureComponent<IProps, IState> {
-  public state: IState = {
-    isOpenSellModal: false,
-    price: this.calcRecommendedPrice().def,
-  };
+function SellButton(props: IProps) {
+  const { cashflow, sell, disabled, selling, classes } = props;
+  const [isOpenSellModal, setIsOpenSellModal] = React.useState(false);
+  const [price, setPrice] = React.useState(0);
 
-  public componentDidUpdate(prevProps: IProps) {
-    if (prevProps.selling.isRequesting && !this.props.selling.isRequesting) {
-      this.closeModal();
-    }
-  }
-
-  public render() {
-    const { cashflow, disabled, selling, classes } = this.props;
-    const { isOpenSellModal, price } = this.state;
-    const recommendedAmount = this.calcRecommendedPrice();
-    return (
-      <>
-        <Button variant="contained" color="primary" onClick={this.openModal} disabled={disabled}>Sell cashflow</Button>
-        <DrawerModal
-          open={isOpenSellModal}
-          title={cashflow.name}
-          onClose={this.closeModal}
-          actions={[(
-            <Button
-              variant="contained"
-              color="primary"
-              key=""
-              fullWidth
-              onClick={this.onConfirm}
-              disabled={selling.isRequesting}
-            >
-              Sell cashflow
-              {selling.isRequesting && <div className={classes.preloader}><CircleProgressBar size={22} /></div>}
-            </Button>
-          )]}
-        >
-          <>
-            <SellingPriceField
-              sellPrice={price}
-              onChangeSellPrice={this.changePrice}
-            />
-            <CashFlowInfo
-              recommendedPrice={`${recommendedAmount.min} - ${recommendedAmount.max} DAI`}
-              token={cashflow}
-              fields={['instalmentSize', 'duration', 'firstInstalmentDate', 'lastInstalmentDate']}
-            />
-          </>
-        </DrawerModal>
-      </>
-    );
-  }
-
-  @bind
-  private onConfirm() {
-    const { sell, cashflow } = this.props;
-    const { price } = this.state;
+  const closeModal = React.useCallback(() => setIsOpenSellModal(false), []);
+  const openModal = React.useCallback(() => setIsOpenSellModal(true), []);
+  const onConfirm = React.useCallback(() => {
     sell({ cashflow, price });
-  }
+  }, [price, cashflow, sell]);
 
-  @bind
-  private calcRecommendedPrice(): { min: number, def: number, max: number } {
-    const { amount, interestRate } = this.props.cashflow;
-    const percent = new BigNumber(interestRate).div(100);
-    const delta = percent.div(3);
+  const { isLoading: isLoadingRecommendedPrice, recommendedPrice } = useRecommendedPrice(cashflow.id);
 
-    const def = amount.div(new BigNumber(1).plus(percent)).ceil();
-    const min = def.times(new BigNumber(1).minus(delta)).ceil();
-    const max = def.times(new BigNumber(1).plus(delta)).ceil();
-    return {
-      def: def.toNumber(),
-      min: min.toNumber(),
-      max: max.toNumber(),
-    };
-  }
+  useOnChangeState(
+    props.selling.isRequesting,
+    (prev, cur) => prev && !cur,
+    () => setIsOpenSellModal(false),
+  );
 
-  @bind
-  private openModal() {
-    this.setState({ isOpenSellModal: true });
-  }
+  useOnChangeState(
+    isLoadingRecommendedPrice,
+    (prev, cur) => prev && !cur,
+    () => !!recommendedPrice && setPrice(recommendedPrice.avg.toNumber()),
+  );
 
-  @bind
-  private closeModal() {
-    this.setState({ isOpenSellModal: false });
-  }
-
-  @bind
-  private changePrice(price: number) {
-    this.setState({ price });
-  }
+  return (
+    <>
+      <Button variant="contained" color="primary" onClick={openModal} disabled={disabled}>Sell cashflow</Button>
+      <DrawerModal
+        open={isOpenSellModal}
+        title={cashflow.name}
+        onClose={closeModal}
+        actions={[(
+          <Button
+            variant="contained"
+            color="primary"
+            key=""
+            fullWidth
+            onClick={onConfirm}
+            disabled={selling.isRequesting}
+          >
+            Sell cashflow
+            {selling.isRequesting && <div className={classes.preloader}><CircleProgressBar size={22} /></div>}
+          </Button>
+        )]}
+      >
+        <>
+          <SellingPriceField
+            sellPrice={price}
+            onChangeSellPrice={setPrice}
+            disabled={isLoadingRecommendedPrice}
+          />
+          <CashFlowInfo
+            recommendedPrice={
+              recommendedPrice
+                ? `${recommendedPrice.min.toString()} - ${recommendedPrice.max.toString()} DAI`
+                : undefined
+            }
+            token={cashflow}
+            fields={['instalmentSize', 'duration', 'firstInstalmentDate', 'lastInstalmentDate']}
+          />
+        </>
+      </DrawerModal>
+    </>
+  );
 }
 
 export { SellButton };

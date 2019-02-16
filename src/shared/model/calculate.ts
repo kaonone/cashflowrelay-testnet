@@ -44,7 +44,13 @@ export function calcNextInstalmentDate(token: IToken) {
   );
 }
 
-export function calcTotalPaidAmount(orders: IPaymentOrder[]): BigNumber {
+export function calcIsFullRepaid(orders: IPaymentOrder[], token: IToken): boolean {
+  const repaidAmount = calcRepaidAmount(orders);
+
+  return repaidAmount.comparedTo(token.amount) >= 0;
+}
+
+export function calcRepaidAmount(orders: IPaymentOrder[]): BigNumber {
   return orders
     .filter(order => order.isPayed)
     .reduce(
@@ -53,17 +59,8 @@ export function calcTotalPaidAmount(orders: IPaymentOrder[]): BigNumber {
     );
 }
 
-export function calcIsFullRepaid(orders: IPaymentOrder[], token: IToken): boolean {
-  const repaidAmount = orders
-    .filter(order => order.isPayed)
-    .map(order => order.amount)
-    .reduce((cur, acc) => acc.plus(cur), new BigNumber(0));
-
-  return repaidAmount.comparedTo(token.amount) >= 0;
-}
-
 /**
- * Calcuate rating.
+ * Calculate rating.
  * R1 - paid on time
  * R2 = not paid with delay
  * R3 = paid with delay

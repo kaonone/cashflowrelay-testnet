@@ -9,7 +9,7 @@ export interface IToken {
   balance: BigNumber;
   createdAt: number; // in milliseconds
   duration: number; // in milliseconds
-  id: number;
+  id: string;
   instalmentSize: BigNumber;
   interestRate: number; // in percent
   lastPaymentDate: number; // in milliseconds
@@ -38,7 +38,7 @@ export interface IBlockChainToken {
 
 export type TokenType = 'incoming' | 'obligations' | 'selling';
 
-export type ITokenStatus = 'pending' | 'saving' | 'awaiting' | 'sold';
+export type TokenStatus = 'pending' | 'saving' | 'awaitingBuyer' | 'sold' | 'completed';
 
 export type IOrder = SignedOrder & {
   price: BigNumber;

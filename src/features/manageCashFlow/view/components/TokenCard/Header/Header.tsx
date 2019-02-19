@@ -1,13 +1,17 @@
 import * as React from 'react';
 import * as cn from 'classnames';
-import * as moment from 'moment';
 import { BigNumber } from '0x.js';
-import { MarkAs } from '_helpers';
 
 import { i18nConnect, ITranslateProps, tKeys as tKeysAll } from 'services/i18n';
+import { usePaymentOrders } from 'services/transactions';
 
-import { TokenType, IToken, ITokenStatus, IInstallments } from 'shared/types/models';
-import { Star, OutlinedStar, CircleArrow } from 'shared/view/elements/Icons';
+import { TokenType, IToken } from 'shared/types/models';
+import { StarsRating } from 'shared/view/elements';
+import { CircleArrow } from 'shared/view/elements/Icons';
+import {
+  calcInstallmentsCount, groupInstallmentsByPaymentStatus, calcTokenRating, calcNextInstalmentDate,
+} from 'shared/model/calculate';
+import { useTokenStatus } from 'shared/model/hooks';
 import { formatNumber } from 'shared/helpers/format';
 
 import { StylesProps, provideStyles } from './Header.style';
@@ -19,79 +23,63 @@ interface IOwnProps {
   type: TokenType;
   expanded: boolean;
   price?: BigNumber;
-  instalments: MarkAs<number, IInstallments>;
 }
 
 type IProps = IOwnProps & StylesProps & ITranslateProps;
 
-class Header extends React.PureComponent<IProps> {
-  public render() {
-    const {
-      classes, type, t, expanded, price,
-      token: {
-        interestRate, createdAt, periodDuration, lastInstalmentDate, instalmentSize, name, balance,
-      },
-      instalments: { paid, due, missed },
-    } = this.props;
+function Header(props: IProps) {
+  const { classes, type, t, expanded, price, token } = props;
+  const { interestRate, instalmentSize, name, balance, id } = token;
 
-    const nextInstalmentDate = moment.min(
-      moment(lastInstalmentDate),
-      moment(createdAt + Math.floor((Date.now() - createdAt) / periodDuration) * periodDuration),
-    );
+  const { orders: paymentOrders, ordersLoading: paymentOrdersLoading } = usePaymentOrders(id);
+  const { status, statusLoading } = useTokenStatus(id);
 
-    const rating = 3; // TODO ds: calculate from orders
-    const payerRating = 75; // TODO ds: calculate from orders
+  const nextInstalmentDate = calcNextInstalmentDate(token);
 
-    const status: ITokenStatus = 'pending' as ITokenStatus; // TODO ds: calculate status
+  const { paid, due, missed } = calcInstallmentsCount(groupInstallmentsByPaymentStatus(paymentOrders));
+  const rating = calcTokenRating(paymentOrders);
+  const payerRating = 75; // TODO ds: calculate from orders
 
-    return (
-      <div className={classes.root}>
-        <div className={classes.title}>{name}</div>
-        <div className={classes.payersRating}>
-          {type !== 'obligations' && <span className={classes.payersRatingValue}>{`${payerRating}%`}</span>}
-        </div>
-        <div className={classes.instalments}>
-          <div className={cn(classes.instalment, classes.paid)}>{paid}</div>
-          <div className={cn(classes.instalment, classes.due)}>{due}</div>
-          <div className={cn(classes.instalment, classes.missed)}>{missed}</div>
-        </div>
-        <div className={classes.stars}>
-          {rating ?
-            Array.from({ length: rating }).map((_, i) => <Star className={classes.activeStar} key={i} />)
-            :
-            Array.from({ length: 5 }).map((_, i) => <OutlinedStar key={i} />)
-          }
-        </div>
-        <div className={classes.discountCell}>
-          <div className={classes.discount}>{`${interestRate}%`}</div>
-        </div>
-        <div className={classes.statusCell}>
-          <div className={cn(classes.status, { [classes.contained]: status === 'sold' || type === 'incoming' })}>
-            {(() => {
-              switch (type) {
-                case 'incoming':
-                case 'obligations':
-                  return `${formatNumber(balance.toNumber(), 2)} DAI`;
-                case 'selling':
-                  return `+${formatNumber(instalmentSize.toNumber(), 2)} DAI`;
-                default:
-                  return t(tKeys.status[status].getKey());
-              }
-            })()}
-          </div>
-        </div>
-        <div className={classes.nextInstalmentCell}>
-          <div className={classes.nextInstalment}>{nextInstalmentDate.format('LL')}</div>
+  const isNullBalance = token.balance.comparedTo(0) === 0;
+  const isContainedStatus = !status && !isNullBalance || status === 'sold';
 
-        </div>
-        <div className={classes.amount}>
-          {type === 'selling' && price && `${formatNumber(price.toNumber(), 2)} DAI`}
-          {type !== 'selling' && `${formatNumber(instalmentSize.toNumber(), 2)} DAI`}
-        </div>
-        <CircleArrow className={cn(classes.expandIcon, { [classes.isRotated]: expanded })} />
+  return (
+    <div className={classes.root}>
+      <div className={classes.title}>{name}</div>
+      <div className={classes.payersRating}>
+        {type !== 'obligations' && <span className={classes.payersRatingValue}>{`${payerRating}%`}</span>}
       </div>
-    );
-  }
+      <div className={cn(classes.instalments, { [classes.withOpacity]: paymentOrdersLoading })}>
+        <div className={cn(classes.instalment, classes.paid)}>{paid}</div>
+        <div className={cn(classes.instalment, classes.due)}>{due}</div>
+        <div className={cn(classes.instalment, classes.missed)}>{missed}</div>
+      </div>
+      <div className={cn(classes.stars, { [classes.withOpacity]: paymentOrdersLoading })}>
+        <StarsRating rating={rating} />
+      </div>
+      <div className={classes.discountCell}>
+        <div className={classes.discount}>{`${interestRate}%`}</div>
+      </div>
+      <div className={cn(classes.statusCell, { [classes.withOpacity]: statusLoading })}>
+        <div className={cn(classes.status, { [classes.contained]: isContainedStatus })}>
+          {!!status ? t(tKeys.status[status].getKey()) : ({
+            incoming: `${formatNumber(balance.toNumber(), 2)} DAI`,
+            obligations: `${formatNumber(balance.toNumber(), 2)} DAI`,
+            selling: `+${formatNumber(instalmentSize.toNumber(), 2)} DAI`,
+          })[type]}
+        </div>
+      </div>
+      <div className={classes.nextInstalmentCell}>
+        <div className={classes.nextInstalment}>{nextInstalmentDate.format('LL')}</div>
+
+      </div>
+      <div className={classes.amount}>
+        {type === 'selling' && price && `${formatNumber(price.toNumber(), 2)} DAI`}
+        {type !== 'selling' && `${formatNumber(instalmentSize.toNumber(), 2)} DAI`}
+      </div>
+      <CircleArrow className={cn(classes.expandIcon, { [classes.isRotated]: expanded })} />
+    </div>
+  );
 }
 
 export default i18nConnect(provideStyles(Header));

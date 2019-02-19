@@ -5,7 +5,6 @@ import { configureJss } from 'core/configureJss';
 
 import { MarketplaceModule, CashFlowModule } from 'modules';
 import { reduxEntry as adaptabilityRE } from 'services/adaptability';
-import { reduxEntry as dataProviderRE } from 'services/dataProvider';
 import { reduxEntry as i18nRE } from 'services/i18n';
 import { reduxEntry as orderbookRE } from 'services/orderbook';
 import { reduxEntry as transactionsRE } from 'services/transactions';
@@ -33,7 +32,6 @@ function configureApp(data?: IAppData): IAppData {
   const sharedReduxEntries: IReduxEntry[] = [
     adaptabilityRE,
     buyCashFlowRE,
-    dataProviderRE,
     i18nRE,
     notificationRE,
     orderbookRE,

@@ -1,6 +1,6 @@
 import { BigNumber } from '0x.js';
 import * as moment from 'moment';
-import { IPaymentOrder, IInstallments } from 'shared/types/models';
+import { IPaymentOrder, IInstallments, IToken } from 'shared/types/models';
 
 export function calcRepaymentAmount(amount: number, interestByPercent: number) {
   // return amount * (1 + interestByPercent / 100);
@@ -29,13 +29,55 @@ export function calcInstallmentsAmount({ paid, due, missed }: IInstallments) {
   };
 }
 
-export function calcTotalPaidAmount(orders: IPaymentOrder[]): BigNumber {
+export function calcNextInstalmentDate(token: IToken) {
+  const { lastInstalmentDate, createdAt, periodDuration, instalmentCount } = token;
+
+  const loanDuration = instalmentCount * periodDuration;
+  const passedTime = Math.min(loanDuration, Date.now() - createdAt);
+  const passedPercent = new BigNumber(passedTime).div(loanDuration);
+
+  const nextInstalmentNumber = passedPercent.times(instalmentCount).ceil().toNumber();
+
+  return moment.min(
+    moment(lastInstalmentDate),
+    moment(createdAt + nextInstalmentNumber * periodDuration),
+  );
+}
+
+export function calcIsFullRepaid(orders: IPaymentOrder[], token: IToken): boolean {
+  const repaidAmount = calcRepaidAmount(orders);
+
+  return repaidAmount.comparedTo(token.amount) >= 0;
+}
+
+export function calcRepaidAmount(orders: IPaymentOrder[]): BigNumber {
   return orders
     .filter(order => order.isPayed)
     .reduce(
       (sum: BigNumber, instalment) => sum.add(instalment.amount),
       new BigNumber(0),
     );
+}
+
+/**
+ * Calculate rating.
+ * R1 - paid on time
+ * R2 = not paid with delay
+ * R3 = paid with delay
+ *
+ * rating = (R1 + 0.5 * R3) / (R1 + R2 + R3) * 100
+ */
+export function calcTokenRating(orders: IPaymentOrder[]): number {
+  const groupedByStatus = groupInstallmentsByPaymentStatus(orders);
+  const groupedByPaymentDate = groupInstallmentsByPaymentDate(orders);
+
+  const R1 = groupedByPaymentDate.paid.length;
+  const R2 = groupedByStatus.due.length + groupedByStatus.missed.length;
+  const R3 = groupedByPaymentDate.due.length + groupedByPaymentDate.missed.length;
+
+  const rawRating = (R1 + 0.5 * R3) / (R1 + R2 + R3) * 100;
+
+  return new BigNumber(rawRating).round().toNumber();
 }
 
 export function groupInstallmentsByPaymentStatus(orders: IPaymentOrder[]): IInstallments {

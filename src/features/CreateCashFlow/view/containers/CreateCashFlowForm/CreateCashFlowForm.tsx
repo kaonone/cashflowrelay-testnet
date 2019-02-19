@@ -10,8 +10,10 @@ import * as uuid from 'uuid';
 
 import { i18nConnect, ITranslateProps, tKeys as allKeys, ITranslateKey } from 'services/i18n';
 import { actions as transactionActions, TransactionListener } from 'services/transactions';
-import { lessThenOrEqual, moreThenOrEqual, moreThen, isRequired, notDefault } from 'shared/validators';
-import { calcRepaymentAmount, calcInstallmentSize, OneDAI } from 'shared/helpers/model';
+import {
+  lessThenOrEqual, moreThenOrEqual, moreThen, isRequired, notDefault, maxStringLength, allowedCharactersForCashFlowName,
+} from 'shared/validators';
+import { calcRepaymentAmount, calcInstallmentSize, OneDAI } from 'shared/model/calculate';
 import CashFlowInfo from 'shared/view/model/CashFlowInfo/CashFlowInfo';
 import { DrawerModal } from 'shared/view/components';
 import { TextInputField } from 'shared/view/form';
@@ -72,7 +74,12 @@ const names: { [key in keyof IFormData]: key } = {
 
 function validateForm(values: IFormData): Partial<MarkAs<ITranslateKey, IFormData>> {
   return {
-    name: isRequired(values.name) || notDefault<string>(initialValues.name, values.name),
+    name: (
+      isRequired(values.name) ||
+      notDefault<string>(initialValues.name, values.name) ||
+      maxStringLength(createCashFlowConfig.maxNameLength, values.name) ||
+      allowedCharactersForCashFlowName(values.name)
+    ),
     interest: (
       moreThenOrEqual(createCashFlowConfig.minInterest, values.interest) ||
       lessThenOrEqual(createCashFlowConfig.maxInterest, values.interest)

@@ -1,4 +1,4 @@
-import { SagaIterator, Channel, eventChannel } from 'redux-saga';
+import { SagaIterator, eventChannel, EventChannel } from 'redux-saga';
 import { put, takeLatest, take, select, call } from 'redux-saga/effects';
 import { DrizzleState } from 'drizzle';
 import { awaitStateChanging } from 'shared/helpers/redux';
@@ -40,7 +40,7 @@ export function getSaga(deps: IDependencies) {
   };
 }
 
-export function* checkIsUserSigned({ drizzle, storage }: IDependencies) {
+export function* checkIsUserSigned({ drizzle, storage }: IDependencies, _a: NS.ICheckIsUserSigned) {
   try {
     const result = storage.get<string>(storageKeys.signedMessage);
 
@@ -66,17 +66,17 @@ export function* checkIsUserSigned({ drizzle, storage }: IDependencies) {
   }
 }
 
-export function logoutSaga({ storage }: IDependencies) {
+export function logoutSaga({ storage }: IDependencies, _a: NS.ILogout) {
   try {
     storage.reset();
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 
 // don't work because drizzle is not listen account changing
-export function* listenAccountChange({ drizzle }: IDependencies) {
-  const drizzleStateChannel: Channel<DrizzleState> = eventChannel((emitter) => {
+export function* listenAccountChange({ drizzle }: IDependencies, _a: NS.ICompleteAuthentication) {
+  const drizzleStateChannel: EventChannel<DrizzleState> = eventChannel((emitter) => {
     return drizzle.store.subscribe(() => {
       emitter(drizzle.store.getState());
     });
@@ -100,7 +100,7 @@ export function* listenAccountChange({ drizzle }: IDependencies) {
   }
 }
 
-export function* checkPermissionsSaga(deps: IDependencies) {
+export function* checkPermissionsSaga(deps: IDependencies, _a: NS.ICheckPermissions) {
   try {
     const [isMinter, isApproved, payingAllowance, buyingAllowance]: PromisedReturnType<typeof getAllPermissions> =
       yield call(getAllPermissions, deps);
@@ -135,7 +135,7 @@ async function getAllPermissions(
   ]);
 }
 
-export function* setMinterSaga(deps: IDependencies) {
+export function* setMinterSaga(deps: IDependencies, _a: NS.ISetMinter) {
   try {
     const { web3Wrapper } = deps.Ox;
     const { drizzle } = deps;

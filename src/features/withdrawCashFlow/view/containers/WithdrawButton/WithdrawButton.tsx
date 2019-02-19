@@ -10,6 +10,7 @@ import { StylesProps, provideStyles } from './WithdrawButton.style';
 
 interface IOwnProps {
   token: IToken;
+  disabled?: boolean;
 }
 
 type IProps = IOwnProps & StylesProps & ITranslateProps;
@@ -19,7 +20,7 @@ class WithdrawButton extends React.PureComponent<IProps> {
   public render() {
     const { token } = this.props;
 
-    const disabled = token.balance.comparedTo(0) === 0;
+    const disabled = this.props.disabled || token.balance.comparedTo(0) === 0;
 
     return (
       <SendTransactionButton<'withdrawPayments'>

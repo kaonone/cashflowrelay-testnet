@@ -3,7 +3,7 @@ import { IToken } from 'shared/types/models';
 
 // tslint:disable:max-line-length
 export const mockCashFlow: IToken = {
-  id: 0,
+  id: '0',
   name: 'Money for programming course',
   payer: '0x9b9977d825bdb0db5e1e31e897d3839a6aeaa5a6',
   instalmentSize: new BigNumber(20),
@@ -21,13 +21,13 @@ export const mockCashFlow: IToken = {
 }
 ;
 
-const token1: IToken = { ...mockCashFlow, id: 1 };
-const token2: IToken = { ...mockCashFlow, id: 2, name: 'Money for tuition fees' };
-const token3: IToken = { ...mockCashFlow, id: 3, name: 'Quick n Easy money' };
-const token4: IToken = { ...mockCashFlow, id: 4, name: 'Money for wedding' };
+const token1: IToken = { ...mockCashFlow, id: '1' };
+const token2: IToken = { ...mockCashFlow, id: '2', name: 'Money for tuition fees' };
+const token3: IToken = { ...mockCashFlow, id: '3', name: 'Quick n Easy money' };
+const token4: IToken = { ...mockCashFlow, id: '4', name: 'Money for wedding' };
 
-const token5: IToken = { ...mockCashFlow, id: 5 };
-const token6: IToken = { ...mockCashFlow, id: 6 };
+const token5: IToken = { ...mockCashFlow, id: '5' };
+const token6: IToken = { ...mockCashFlow, id: '6' };
 
 export const obligationsMock: IToken[] = [token1, token2, token3, token4];
 

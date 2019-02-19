@@ -1,4 +1,3 @@
-export * from './multiConnect';
 export * from './init';
 export * from './awaitStateChanging';
 export { default as composeReducers } from './composeReducers';

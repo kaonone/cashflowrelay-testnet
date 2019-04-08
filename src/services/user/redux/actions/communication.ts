@@ -30,3 +30,8 @@ export const { execute: setBuyingAllowance, completed: setBuyingAllowanceSuccess
   makeCommunicationActionCreators<NS.ISetBuyingAllowance, NS.ISetBuyingAllowanceSuccess, NS.ISetBuyingAllowanceFail>(
     'USER:SET_BUYING_ALLOWANCE', 'USER:SET_BUYING_ALLOWANCE_SUCCESS', 'USER:SET_BUYING_ALLOWANCE_FAIL',
   );
+
+export const { execute: setStakingAllowance, completed: setStakingAllowanceSuccess, failed: setStakingAllowanceFail } =
+  makeCommunicationActionCreators<NS.ISetStakingAllowance, NS.ISetStakingAllowanceSuccess, NS.ISetStakingAllowanceFail>(
+    'USER:SET_STAKING_ALLOWANCE', 'USER:SET_STAKING_ALLOWANCE_SUCCESS', 'USER:SET_STAKING_ALLOWANCE_FAIL',
+  );

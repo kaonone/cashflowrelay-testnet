@@ -37,4 +37,9 @@ export const communicationReducer = combineReducers<NS.IReduxState['communicatio
       'USER:SET_BUYING_ALLOWANCE', 'USER:SET_BUYING_ALLOWANCE_SUCCESS', 'USER:SET_BUYING_ALLOWANCE_FAIL',
       initial.communication.settingBuyingAllowance,
     ),
+  settingStakingAllowance:
+    makeCommunicationReducer<NS.ISetStakingAllowance, NS.ISetStakingAllowanceSuccess, NS.ISetStakingAllowanceFail>(
+      'USER:SET_STAKING_ALLOWANCE', 'USER:SET_STAKING_ALLOWANCE_SUCCESS', 'USER:SET_STAKING_ALLOWANCE_FAIL',
+      initial.communication.settingStakingAllowance,
+    ),
 } as ReducersMap<NS.IReduxState['communication']>);

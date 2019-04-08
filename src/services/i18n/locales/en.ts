@@ -91,10 +91,11 @@ export default {
         },
       },
       permissions: {
-        title: 'In the context of this hackaton, please authorise Cashflow Relay to perform these operations:',
+        title: 'Please authorise Cashflow Relay to perform these operations:',
         createCashflows: 'Create cashflows',
         sellCashflows: 'Sell cashflows',
         payInstalments: 'Pay instalments from your wallet',
+        stakeTokens: 'Stake AKT tokens',
         buyCashflows: 'Buy cashflows',
       },
     },

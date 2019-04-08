@@ -42,7 +42,7 @@ export default {
       obligations: 'Obligations',
       income: 'Income',
       name: 'Name',
-      payersRating: 'Payer\'s score',
+      stake: 'Stake',
       performance: 'Performance',
       rating: 'Rating',
       nextInstalment: 'Next instalment',

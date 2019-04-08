@@ -50,8 +50,8 @@ const styles = ({ extra: theme }: Theme) => ({
     '&$name': {
       flexBasis: theme.tableColumns.width.name,
     },
-    '&$payersRating': {
-      flexBasis: theme.tableColumns.width.payersRating,
+    '&$stake': {
+      flexBasis: theme.tableColumns.width.stake,
     },
     '&$performance': {
       flexBasis: theme.tableColumns.width.performance,
@@ -80,7 +80,7 @@ const styles = ({ extra: theme }: Theme) => ({
   }),
 
   name: {},
-  payersRating: {},
+  stake: {},
   performance: {},
   rating: {},
   nextInstalment: {},

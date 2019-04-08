@@ -29,7 +29,7 @@ type IProps = IOwnProps & StylesProps & ITranslateProps;
 
 function Header(props: IProps) {
   const { classes, type, t, expanded, price, token } = props;
-  const { interestRate, instalmentSize, name, balance, id } = token;
+  const { interestRate, instalmentSize, name, balance, id, stakeSize } = token;
 
   const { orders: paymentOrders, ordersLoading: paymentOrdersLoading } = usePaymentOrders(id);
   const { status, statusLoading } = useTokenStatus(id);
@@ -38,7 +38,6 @@ function Header(props: IProps) {
 
   const { paid, due, missed } = calcInstallmentsCount(groupInstallmentsByPaymentStatus(paymentOrders));
   const rating = calcTokenRating(paymentOrders);
-  const payerRating = 75; // TODO ds: calculate from orders
 
   const isNullBalance = token.balance.comparedTo(0) === 0;
   const isContainedStatus = !status && !isNullBalance || status === 'sold';
@@ -46,8 +45,8 @@ function Header(props: IProps) {
   return (
     <div className={classes.root}>
       <div className={classes.title}>{name}</div>
-      <div className={classes.payersRating}>
-        {type !== 'obligations' && <span className={classes.payersRatingValue}>{`${payerRating}%`}</span>}
+      <div className={classes.stake}>
+        {`${stakeSize.toString()} AKT`}
       </div>
       <div className={cn(classes.instalments, { [classes.withOpacity]: paymentOrdersLoading })}>
         <div className={cn(classes.instalment, classes.paid)}>{paid}</div>

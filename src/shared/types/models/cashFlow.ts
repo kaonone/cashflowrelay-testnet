@@ -11,6 +11,7 @@ export interface IToken {
   duration: number; // in milliseconds
   id: string;
   instalmentSize: BigNumber;
+  stakeSize: BigNumber;
   interestRate: number; // in percent
   lastPaymentDate: number; // in milliseconds
   name: string;

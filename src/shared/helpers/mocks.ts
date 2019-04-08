@@ -7,6 +7,7 @@ export const mockCashFlow: IToken = {
   name: 'Money for programming course',
   payer: '0x9b9977d825bdb0db5e1e31e897d3839a6aeaa5a6',
   instalmentSize: new BigNumber(20),
+  stakeSize: new BigNumber(200),
   firstInstalmentDate: new Date(2019, 2, 10).getTime(),
   lastInstalmentDate: new Date(2019, 4, 10).getTime(),
   balance: new BigNumber(20),

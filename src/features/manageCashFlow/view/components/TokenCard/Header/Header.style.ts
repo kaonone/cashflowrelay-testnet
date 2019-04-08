@@ -21,20 +21,10 @@ const styles = ({ extra: theme }: Theme) => ({
     textOverflow: 'ellipsis',
   }),
 
-  payersRating: rule({
-    display: 'flex',
-    flexBasis: theme.tableColumns.width.payersRating,
-  }),
-
-  payersRatingValue: rule({
-    width: '2.5rem',
-    display: 'flex',
-    justifyContent: 'center',
-    padding: '0.3125rem',
-    borderRadius: '0.25rem',
-    backgroundColor: '#b8e986',
-    fontWeight: 600,
-    fontSize: '0.625rem',
+  stake: rule({
+    flexBasis: theme.tableColumns.width.stake,
+    fontSize: '1.125rem',
+    fontWeight: 'bold',
   }),
 
   text: rule({

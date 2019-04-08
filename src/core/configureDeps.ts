@@ -4,7 +4,7 @@ import { Drizzle, generateStore, IDrizzleOptions, IContract } from 'drizzle';
 import Api from 'services/api/Api';
 import { IDependencies, IAppReduxState } from 'shared/types/app';
 
-import daiABI from 'blockchain/abi/dai.json';
+import erc20ABI from 'blockchain/abi/erc20.json';
 import C2FCFull from 'contracts/C2FCFull.json';
 import { LocalStorage } from 'services/storage';
 
@@ -24,8 +24,13 @@ function getNetworks(contractAddress: string) {
 const contracts: IContract[] = [
   {
     contractName: 'DAI',
-    abi: daiABI as IContract['abi'],
+    abi: erc20ABI as IContract['abi'],
     networks: getNetworks(NETWORK_CONFIG.daiContract),
+  },
+  {
+    contractName: 'AKT',
+    abi: erc20ABI as IContract['abi'],
+    networks: getNetworks(NETWORK_CONFIG.aktContract),
   },
   {
     ...C2FCFull,

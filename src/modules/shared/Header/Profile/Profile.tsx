@@ -21,7 +21,9 @@ class Profile extends React.PureComponent<StylesProps> {
     return (
       <>
         <div className={classes.root} ref={this.accountStatusRef}>
-          <ShowBalance /><AccountAddress onClick={this.openMenu} />
+          <ShowBalance token="DAI" />
+          <ShowBalance token="AKT" />
+          <AccountAddress onClick={this.openMenu} />
         </div>
         <ProfileMenu
           open={isOpenMenu}

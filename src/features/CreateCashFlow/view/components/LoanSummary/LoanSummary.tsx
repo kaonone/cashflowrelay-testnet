@@ -15,6 +15,7 @@ interface IOwnProps {
   amount: number;
   interest: number;
   installmentSize: number;
+  stakeSize: number;
   firstInstallmentDate: number; // milliseconds
   lastInstallmentDate: number; // milliseconds
   repayingAmount: number;
@@ -28,7 +29,7 @@ type IProps = IOwnProps & StylesProps & ITranslateProps;
 class LoanSummary extends React.PureComponent<IProps> {
   public render() {
     const {
-      classes, t, nameInput, actions, duration, periodDuration,
+      classes, t, nameInput, actions, duration, periodDuration, stakeSize,
       amount, interest, installmentSize, firstInstallmentDate, lastInstallmentDate, repayingAmount } = this.props;
     return (
       <div className={classes.root}>
@@ -53,6 +54,10 @@ class LoanSummary extends React.PureComponent<IProps> {
                 periodicity: moment.duration(periodDuration).humanize(),
               })}
             </span>
+          </div>
+          <div className={classes.field}>
+            <span className={classes.fieldName}>{t(tKeys.fields.stakeSize.getKey())}</span>
+            <span className={classes.fieldValue}>{`${formatNumber(stakeSize, 2)} AKT`}</span>
           </div>
           <div className={classes.field}>
             <span className={classes.fieldName}>{t(tKeys.fields.duration.getKey())}</span>

@@ -97,7 +97,7 @@ function SellButton(props: IProps) {
                 : undefined
             }
             token={cashflow}
-            fields={['instalmentSize', 'duration', 'firstInstalmentDate', 'lastInstalmentDate']}
+            fields={['instalmentSize', 'stakeSize', 'duration', 'firstInstalmentDate', 'lastInstalmentDate']}
           />
         </>
       </DrawerModal>

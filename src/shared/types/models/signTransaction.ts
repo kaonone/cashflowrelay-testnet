@@ -19,6 +19,7 @@ export type TransactionRequestDataByType = SubsetMapStrict<Record<TransactionTyp
   createCashFlow: {
     name: string;
     value: BigNumber; // full repayment amount
+    stake: BigNumber; // stake size
     commit: BigNumber; // installment size
     interestRate: number;
     duration: number; // in seconds

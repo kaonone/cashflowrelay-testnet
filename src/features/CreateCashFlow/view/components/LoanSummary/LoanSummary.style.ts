@@ -35,7 +35,7 @@ const styles = ({ extra: theme }: Theme) => ({
     justifyContent: 'space-between',
     marginBottom: '1.0625rem',
 
-    '&:nth-child(3n)': {
+    '&:nth-child(4)': {
       marginBottom: '2.375rem',
     },
   }),

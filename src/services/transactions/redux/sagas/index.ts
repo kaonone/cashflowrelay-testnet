@@ -70,6 +70,7 @@ const getParamsByRequest: { [key in SetTransactionType]: ParamsConverter<key> } 
     data.commit.toFixed(0),
     data.interestRate.toFixed(0),
     data.duration.toFixed(0),
+    // data.stake.toFixed(0), // TODO akt: uncomment and check this param
   ],
   createOrder: (data) => [
     data.tokenId,

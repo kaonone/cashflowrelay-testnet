@@ -20,7 +20,7 @@ import { TextInputField } from 'shared/view/form';
 import { Button, CircleProgressBar } from 'shared/view/elements';
 
 import { IFormData } from '../../../namespace';
-import { createCashFlowConfig } from '../../../constants';
+import { createCashFlowConfig, fieldNames } from '../../../constants';
 import { LoanSummary, ConfigurationCommitment } from '../../components';
 import { StylesProps, provideStyles } from './CreateCashFlowForm.style';
 
@@ -30,6 +30,7 @@ interface IPreparedFormData {
   firstInstallmentDate: number;
   lastInstallmentDate: number;
   installmentSize: number;
+  stakeSize: number;
   duration: number;
   interest: number;
   amount: number;
@@ -61,15 +62,7 @@ const initialValues: IFormData = {
   ).toNumber(),
   installmentCount: createCashFlowConfig.defaultInstallmentCount,
   periodicity: createCashFlowConfig.defaultPeriodicity,
-};
-
-const names: { [key in keyof IFormData]: key } = {
-  name: 'name',
-  amount: 'amount',
-  interest: 'interest',
-  installmentSize: 'installmentSize',
-  installmentCount: 'installmentCount',
-  periodicity: 'periodicity',
+  stakeSize: createCashFlowConfig.defaultStakeSize,
 };
 
 function validateForm(values: IFormData): Partial<MarkAs<ITranslateKey, IFormData>> {
@@ -86,26 +79,26 @@ function validateForm(values: IFormData): Partial<MarkAs<ITranslateKey, IFormDat
     ),
     amount: moreThen(createCashFlowConfig.minAmount, values.amount),
     installmentCount: moreThen(createCashFlowConfig.minInstallmentCount, values.installmentCount),
-
+    stakeSize: moreThen(createCashFlowConfig.minStakeSize, values.stakeSize),
   };
 }
 
 const calculateDecorator = createDecorator({
-  field: names.amount,
+  field: fieldNames.amount,
   updates: {
-    [names.installmentSize]: (amount: number, all: IFormData): number =>
+    [fieldNames.installmentSize]: (amount: number, all: IFormData): number =>
       calcInstallmentSize(amount, all.interest, all.installmentCount).toNumber(),
   },
 }, {
-    field: names.interest,
+    field: fieldNames.interest,
     updates: {
-      [names.installmentSize]: (interest: number, all: IFormData): number =>
+      [fieldNames.installmentSize]: (interest: number, all: IFormData): number =>
         calcInstallmentSize(all.amount, interest, all.installmentCount).toNumber(),
     },
   }, {
-    field: names.installmentCount,
+    field: fieldNames.installmentCount,
     updates: {
-      [names.installmentSize]: (installmentCount: number, all: IFormData): number =>
+      [fieldNames.installmentSize]: (installmentCount: number, all: IFormData): number =>
         calcInstallmentSize(all.amount, all.interest, installmentCount).toNumber(),
     },
   });
@@ -133,7 +126,7 @@ class CreateCashFlowForm extends React.PureComponent<IProps> {
             <FormSpy subscription={{ values: true, invalid: true, submitFailed: true }}>
               {({ values, invalid, submitFailed }) => {
                 const {
-                  firstInstallmentDate, lastInstallmentDate, installmentSize,
+                  firstInstallmentDate, lastInstallmentDate, installmentSize, stakeSize,
                   duration, interest, amount, repayingAmount, periodDuration,
                 } = this.convertFormValues(values as IFormData);
                 return (
@@ -142,16 +135,18 @@ class CreateCashFlowForm extends React.PureComponent<IProps> {
                       <LoanSummary
                         nameInput={
                           <TextInputField
-                            name={names.name}
+                            name={fieldNames.name}
                             inputProps={{
                               maxLength: 50,
                             }}
                             required
                             fullWidth
-                          />}
+                          />
+                        }
                         firstInstallmentDate={firstInstallmentDate}
                         lastInstallmentDate={lastInstallmentDate}
                         installmentSize={installmentSize}
+                        stakeSize={stakeSize}
                         duration={duration}
                         interest={interest}
                         amount={amount}
@@ -203,6 +198,7 @@ class CreateCashFlowForm extends React.PureComponent<IProps> {
                       <CashFlowInfo
                         token={{
                           instalmentSize: new BigNumber(installmentSize.toString()),
+                          stakeSize: new BigNumber(stakeSize.toString()),
                           amount: new BigNumber(repayingAmount.toString()),
                           duration,
                           firstInstalmentDate: firstInstallmentDate,
@@ -210,7 +206,10 @@ class CreateCashFlowForm extends React.PureComponent<IProps> {
                           periodDuration,
                         }}
                         price={amount}
-                        fields={['amount', 'instalmentSize', 'duration', 'firstInstalmentDate', 'lastInstalmentDate']}
+                        fields={[
+                          'amount', 'instalmentSize', 'stakeSize',
+                          'duration', 'firstInstalmentDate', 'lastInstalmentDate',
+                        ]}
                       />
                     </DrawerModal></>
                 );
@@ -233,7 +232,7 @@ class CreateCashFlowForm extends React.PureComponent<IProps> {
   }
 
   private convertFormValues(values: IFormData): IPreparedFormData {
-    const { installmentCount, periodicity, installmentSize, interest, amount } = values as IFormData;
+    const { installmentCount, periodicity, installmentSize, interest, amount, stakeSize } = values;
     const today = moment();
     const lastInstallmentDate = moment().add(installmentCount, periodicity);
     const diff = lastInstallmentDate.diff(today);
@@ -244,6 +243,7 @@ class CreateCashFlowForm extends React.PureComponent<IProps> {
     return {
       interest,
       amount,
+      stakeSize,
       installmentSize,
       firstInstallmentDate: today.valueOf(),
       lastInstallmentDate: lastInstallmentDate.valueOf(),
@@ -259,11 +259,14 @@ class CreateCashFlowForm extends React.PureComponent<IProps> {
     const commit = value.div(data.installmentCount).ceil();
     const resultValue = commit.times(data.installmentCount);
 
+    const stake = OneDAI.times(data.stakeSize);
+
     sendTransaction({
       type: 'createCashFlow',
       data: {
         name: data.name,
         value: resultValue,
+        stake,
         commit,
         duration: moment.duration(data.installmentCount, data.periodicity).asSeconds(),
         interestRate: data.interest,

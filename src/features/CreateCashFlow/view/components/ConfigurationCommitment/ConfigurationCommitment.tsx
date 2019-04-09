@@ -92,6 +92,13 @@ class ConfigurationCommitment extends React.PureComponent<IProps> {
             decimalScale={0}
           />
         </div>
+        <div className={classes.field}>
+          <NumberInputField
+            {...getFieldProps('stakeSize', t)}
+            thousandSeparator
+            decimalScale={0}
+          />
+        </div>
       </div>
     );
   }

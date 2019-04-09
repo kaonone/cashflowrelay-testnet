@@ -10,6 +10,7 @@ import { SellButton } from 'features/sellCashFlow';
 import { BuyButton } from 'features/buyCashFlow';
 import { PayButton } from 'features/payInstalment';
 import { WithdrawButton } from 'features/withdrawCashFlow';
+import { WithdrawStakeButton } from 'features/withdrawStake';
 
 import { TokenType, IToken, IOrder, IPaymentOrder } from 'shared/types/models';
 import { calcIsFullRepaid } from 'shared/model/calculate';
@@ -45,6 +46,9 @@ function Actions(props: IProps & RouteComponentProps) {
   const withdrawButton: ButtonType = isMyToken && !onSaleNow && ['withdraw', (
     <WithdrawButton token={token} disabled={orderLoading.isRequesting} />
   )];
+  const withdrawStakeButton: ButtonType = token.isCreatedByMe && isFullRepaid && ['withdrawStake', (
+    <WithdrawStakeButton token={token} disabled={orderLoading.isRequesting} />
+  )];
   const sellButton: ButtonType = isMyToken && !isFullRepaid && !onSaleNow && ['sell', (
     <SellButton cashflow={token} disabled={orderLoading.isRequesting} />
   )];
@@ -57,7 +61,7 @@ function Actions(props: IProps & RouteComponentProps) {
 
   const buttonsByType: Record<TokenType, ButtonType[]> = {
     incoming: [sellButton, withdrawButton],
-    obligations: [payInstallmentButton, sellButton, isFullRepaid && withdrawButton],
+    obligations: [payInstallmentButton, sellButton, isFullRepaid && withdrawButton, withdrawStakeButton],
     selling: [buyButton],
   };
 

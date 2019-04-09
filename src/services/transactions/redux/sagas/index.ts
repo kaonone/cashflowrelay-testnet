@@ -19,6 +19,7 @@ const notsByType: Record<SetTransactionType, NotificationType[]> = {
   executeOrder: ['userPayInstallment', 'userPayInstallmentSuccess', 'userPayInstallmentFail'],
   executePayment: ['userPayInstallment', 'userPayInstallmentSuccess', 'userPayInstallmentFail'],
   withdrawPayments: ['withdrawCashFlow', 'withdrawCashFlowSuccess', 'withdrawCashFlowFail'],
+  withdrawStake: ['withdrawStake', 'withdrawStakeSuccess', 'withdrawStakeFail'],
 };
 
 function getSaga(deps: IDependencies) {
@@ -57,6 +58,7 @@ const methodByType: Record<SetTransactionType, string> = {
   executeOrder: 'executeOrder',
   executePayment: 'executePayment',
   withdrawPayments: 'withdrawPayments',
+  withdrawStake: 'withdrawStake', // TODO akt: check method name
 };
 
 type ParamsConverter<T extends SetTransactionType = SetTransactionType> =
@@ -88,6 +90,10 @@ const getParamsByRequest: { [key in SetTransactionType]: ParamsConverter<key> } 
     data.tokenId,
     data.amount.toFixed(0),
   ],
+  withdrawStake: (data) => [
+    data.tokenId,
+    data.amount.toFixed(0),
+  ], // TODO akt: check params
 };
 
 export { getSaga };

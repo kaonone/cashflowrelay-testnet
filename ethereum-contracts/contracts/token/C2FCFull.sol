@@ -337,13 +337,16 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         ) 
         internal returns (bool) 
     {
-        uint256 _tokenId = totalSupply().add(1);
-
-        require(mint(msg.sender, _tokenId), "Doesnt' mint");
+        
 
         uint256 _a = IERC20(stackingTokenAddress).allowance(msg.sender, address(this));
 
         if (stackingTokens <= _a) {
+
+            uint256 _tokenId = totalSupply().add(1);
+
+            require(mint(msg.sender, _tokenId), "Doesnt' mint");
+
             IERC20(tokenAddress).transferFrom(msg.sender, address(this), stackingTokens); 
             _cashflowsIds[_tokenId] = Cashflow(msg.sender, name, value, commit, interestRate, duration, 0, block.timestamp, 0, stackingTokens);
             _subscribedTokens[msg.sender].push(_tokenId);

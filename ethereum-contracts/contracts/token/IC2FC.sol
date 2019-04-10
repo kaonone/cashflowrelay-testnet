@@ -64,7 +64,8 @@ contract IC2FC is IERC165 {
         uint256 duration,
         uint256 balance,
         uint256 created,
-        uint256 lastPayment
+        uint256 lastPayment,
+        uint256 stackingTokens
         );
 
     /**

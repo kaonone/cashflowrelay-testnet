@@ -1,7 +1,7 @@
-import { withStyles, WithStyles } from 'shared/styles';
+import { withStyles, WithStyles, Theme } from 'shared/styles';
 import { rule } from 'shared/helpers/style';
 
-const styles = () => ({
+const styles = (theme: Theme) => ({
   root: rule({
     display: 'flex',
     justifyContent: 'space-between',
@@ -13,6 +13,11 @@ const styles = () => ({
 
   loanSummary: rule({
     flexBasis: '40%',
+  }),
+
+  preloader: rule({
+    display: 'inline-flex',
+    marginLeft: theme.spacing.unit,
   }),
 });
 

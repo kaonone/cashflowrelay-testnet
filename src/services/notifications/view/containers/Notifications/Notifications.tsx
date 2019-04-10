@@ -9,6 +9,8 @@ import * as actions from './../../../redux/actions';
 import TopNotification from '../TopNotification/TopNotification';
 import { INotification, NotificationId } from 'shared/types/models';
 
+const notificationDuration = 3000;
+
 interface IStateProps {
   notifications: INotification[];
   hideNotifications: NotificationId[];
@@ -41,19 +43,19 @@ class Notifications extends React.Component<IProps> {
     const isShowNotification = actualNotifications.length > 0;
     const currentNotification = actualNotifications[0];
     if (this.props.showingNotification === '' && isShowNotification) {
-      setTimeout(() => this.hideNotification(currentNotification.id), 10000);
+      setTimeout(() => this.hideNotification(currentNotification.id), notificationDuration);
       setShowingNotification(currentNotification.id);
     }
   }
 
   public render() {
-    const {notifications, hideNotifications, hideNotification} = this.props;
+    const { notifications, hideNotifications, hideNotification } = this.props;
     const actualNotifications = this.getActualNotifications(notifications, hideNotifications);
     const currentNotification = actualNotifications[0];
     const isShowNotification = actualNotifications.length > 0;
     return (
       isShowNotification && (
-        <TopNotification hideNotification={hideNotification} notificationInfo={currentNotification}/>
+        <TopNotification hideNotification={hideNotification} notificationInfo={currentNotification} />
       )
     );
   }
@@ -65,13 +67,13 @@ class Notifications extends React.Component<IProps> {
 
   @bind
   private hideNotification(id: string) {
-    const {hideNotification, setShowingNotification} = this.props;
+    const { hideNotification, setShowingNotification } = this.props;
     hideNotification(id);
     setShowingNotification('');
   }
 }
 
-export {Notifications};
+export { Notifications };
 export default (
   connect(mapState, mapDispatch)(Notifications)
 );

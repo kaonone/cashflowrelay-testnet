@@ -13,7 +13,12 @@ const styles = ({ extra: theme }: Theme) => ({
 
   emptyStub: rule({
     display: 'none',
-
+    fontFamily: theme.typography.primaryFont,
+    padding: '2.0625rem',
+    color: theme.colors.tundora,
+    backgroundColor: theme.colors.white,
+    boxShadow: '0 2px 4px 0 rgba(184, 184, 184, 0.5)',
+    textAlign: 'center',
     '$tokens:empty + &': {
       display: 'block',
     },

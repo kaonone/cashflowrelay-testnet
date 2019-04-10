@@ -26,6 +26,12 @@ const NavButton = withComponent(Link)(Button);
 
 type IProps = ITranslateProps & InjectedAuthRouterProps & StylesProps & RouteComponentProps<{ type: TokenType }>;
 
+const transactionByType: Record<TokenType, 'idsOfCashflowsFor' | 'idsOfSubscribedCashflowsFor'> = {
+  incoming: 'idsOfCashflowsFor',
+  obligations: 'idsOfSubscribedCashflowsFor',
+  selling: 'idsOfSubscribedCashflowsFor',
+};
+
 class Marketplace extends React.PureComponent<IProps> {
   public render() {
 
@@ -51,7 +57,10 @@ class Marketplace extends React.PureComponent<IProps> {
               {t(tKeys.borrowLink.getKey())}
             </NavButton>
           </div>
-          <ShowMainContractData<'idsOfCashflowsFor'> type="idsOfCashflowsFor" request={{}}>
+          <ShowMainContractData<'idsOfCashflowsFor' | 'idsOfSubscribedCashflowsFor'>
+            type={transactionByType[selectedType]}
+            request={{}}
+          >
             {({ data }) => !data ? 'Loading...' : <TokensList type={selectedType} tokenIds={data} />}
           </ShowMainContractData>
         </div>

@@ -104,7 +104,6 @@ export function* checkPermissionsSaga(deps: IDependencies) {
   try {
     const [isMinter, isApproved, payingAllowance, buyingAllowance]: PromisedReturnType<typeof getAllPermissions> =
       yield call(getAllPermissions, deps);
-
     yield put(actions.checkPermissionsSuccess({
       isMinter,
       isApproved,
@@ -136,8 +135,10 @@ async function getAllPermissions(
   ]);
 }
 
-export function* setMinterSaga({ drizzle, Ox: { web3Wrapper } }: IDependencies) {
+export function* setMinterSaga(deps: IDependencies) {
   try {
+    const { web3Wrapper } = deps.Ox;
+    const { drizzle } = deps;
     const account = drizzle.store.getState().accounts[0];
     const contract = drizzle.contracts[mainContractName];
     const stackId = contract.methods.addMinter.cacheSend({ from: account });

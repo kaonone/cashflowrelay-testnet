@@ -34,7 +34,7 @@ const styles = ({ extra: theme }: Theme) => ({
   }),
 
   rightSection: rule({
-    flexBasis: '40%',
+    flexBasis: '35%',
   }),
 
   metricField: rule({
@@ -42,7 +42,7 @@ const styles = ({ extra: theme }: Theme) => ({
   }),
 
   metric: rule({
-    marginBottom: '1.125rem',
+    marginBottom: '1.875rem',
     fontSize: '0.75rem',
     lineHeight: '1.125rem',
     color: theme.palette.text.primary,
@@ -62,6 +62,11 @@ const styles = ({ extra: theme }: Theme) => ({
     composes: '$metric',
     display: 'flex',
     alignItems: 'center',
+
+    '$leftSection & ': {
+      flexGrow: 1,
+      justifyContent: 'space-between',
+    },
   }),
 
   icon: rule({
@@ -71,8 +76,9 @@ const styles = ({ extra: theme }: Theme) => ({
   }),
 
   progress: rule({
-    width: '7.375rem',
-    height: '7.375rem',
+    width: '130px',
+    height: '130px',
+    flexShrink: 0,
     marginRight: '0.9375rem',
   }),
 

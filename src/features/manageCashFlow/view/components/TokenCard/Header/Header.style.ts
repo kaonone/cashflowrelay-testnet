@@ -17,6 +17,8 @@ const styles = ({ extra: theme }: Theme) => ({
     flexBasis: theme.tableColumns.width.name,
     fontSize: '1.125rem',
     fontWeight: 'bold',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   }),
 
   payersRating: rule({

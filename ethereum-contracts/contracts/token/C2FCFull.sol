@@ -329,7 +329,8 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
             IERC20(tokenAddress).transferFrom(msg.sender, address(this), stackingTokens); 
             _cashflowsIds[_tokenId] = Cashflow(msg.sender, name, value, commit, interestRate, duration, 0, block.timestamp, 0, stackingTokens);
             _subscribedTokens[msg.sender].push(_tokenId);
-            emit CashflowCreated(msg.sender, name, value, commit, interestRate, duration, _tokenId, block.timestamp);
+            
+            emit CashflowCreated(msg.sender, name, value, commit, interestRate, duration, _tokenId, block.timestamp, stackingTokens);
             return true;
         } else {
             return false;

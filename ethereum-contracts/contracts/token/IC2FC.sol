@@ -26,6 +26,7 @@ contract IC2FC is IERC165 {
      * @param duration uint256 period of Cashflow
      * @param tokenId uint256 ID of the token (base token, for example, ERC721)
      * @param created timestamp date created 
+     * @param stackingTokens uint256 value of stacking AKT Tokens
      */
      
     event CashflowCreated(
@@ -36,7 +37,8 @@ contract IC2FC is IERC165 {
         uint256 interestRate, 
         uint256 duration, 
         uint256 indexed tokenId,
-        uint256 created
+        uint256 created,
+        uint256 stackingTokens
     );
    
     

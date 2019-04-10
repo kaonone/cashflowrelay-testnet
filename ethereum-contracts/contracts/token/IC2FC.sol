@@ -117,7 +117,8 @@ contract IC2FC is IERC165 {
         uint256 value, 
         uint256 commit, 
         uint256 interestRate, 
-        uint256 duration
+        uint256 duration,
+        uint256 stackingTokens
         ) 
         public returns (bool);
 }

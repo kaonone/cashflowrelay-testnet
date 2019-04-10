@@ -302,7 +302,25 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         return true;
     }
 
+    //Withdraw Stacking
+    function withdrawStacking(
+        uint256 tokenId
+    ) public onlySubscriber(tokenId) returns (bool success)  {
+        Cashflow storage _c = _cashflowsIds[tokenId];
 
+        if (_c.balance > _c.value) {
+            
+            address _owner = ownerOf(tokenId);
+            IERC20(tokenAddress).transfer(_owner, _c.stackingTokens);
+            _c.stackingTokens = 0;
+            emit WithDrawPayment(tokenId, _owner, block.timestamp);
+            return true;
+
+        } else {
+            
+            return false;
+        }
+    }
 
     /**
       * internal functions
@@ -374,7 +392,6 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         }  
     }
 
-    
     function _executeOrder(
         uint256 tokenId, //tokenId
         uint256 orderId //orderId

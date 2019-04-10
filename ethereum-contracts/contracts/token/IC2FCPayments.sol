@@ -57,6 +57,14 @@ contract IC2FCPayments is IC2FC {
         uint256 datePayment
     );
 
+
+    // event for Withdraw Stacking
+    event WithDrawPayment(
+        uint256 tokenId,
+        address indexed publisher,
+        uint256 datePayment
+    );
+
     
      /**
      * @dev Check if payments for Cashflow is active
@@ -173,6 +181,19 @@ contract IC2FCPayments is IC2FC {
     function withdrawPayments(
         uint256 tokenId, 
         uint256 amount
+    ) 
+    public 
+        returns (bool success);
+
+
+    /**
+     * @dev Withdraw stacking from Cashflow
+     * @param tokenId uint256 ID of the token (base token, for example, ERC721)
+     * @return true or false operation
+     */
+
+    function withdrawStacking(
+        uint256 tokenId
     ) 
     public 
         returns (bool success);

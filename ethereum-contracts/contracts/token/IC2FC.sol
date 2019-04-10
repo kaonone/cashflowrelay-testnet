@@ -12,7 +12,9 @@ import "../introspection/IERC165.sol";
 contract IC2FC is IERC165 {
 
     //Adress for Token as Currency of Cashflows. Default: DAI
-    address tokenAddress = 0xC4375B7De8af5a38a93548eb8453a498222C4fF2;
+    address tokenAddress = 0x89d24A6b4CcB1B6fAA2625fE562bDD9a23260359;
+
+    address stackingTokenAddress = 0xCFd6e4044DD6E6CE64AeD0711F849C7B9134d7Db;
 
     /**
      * @dev Event for Created Cashflows
@@ -24,6 +26,7 @@ contract IC2FC is IERC165 {
      * @param duration uint256 period of Cashflow
      * @param tokenId uint256 ID of the token (base token, for example, ERC721)
      * @param created timestamp date created 
+     * @param stackingTokens uint256 value of stacking AKT Tokens
      */
      
     event CashflowCreated(
@@ -34,7 +37,8 @@ contract IC2FC is IERC165 {
         uint256 interestRate, 
         uint256 duration, 
         uint256 indexed tokenId,
-        uint256 created
+        uint256 created,
+        uint256 stackingTokens
     );
    
     
@@ -62,7 +66,8 @@ contract IC2FC is IERC165 {
         uint256 duration,
         uint256 balance,
         uint256 created,
-        uint256 lastPayment
+        uint256 lastPayment,
+        uint256 stackingTokens
         );
 
     /**

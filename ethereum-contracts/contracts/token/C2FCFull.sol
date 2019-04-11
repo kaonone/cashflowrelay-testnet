@@ -21,6 +21,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         uint256 interestRate; 
         uint256 duration;
         uint256 balance;
+        uint256 payedValue;
         uint256 created;
         uint256 lastPayment;
         uint256 stackingTokens;
@@ -153,6 +154,16 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         require(tokenId<=totalSupply(), "TokenId doesn't exit");
 
         return _cashflowsIds[tokenId].balance;
+    }
+
+    function payedValueOfCashflowFor(uint256 tokenId) public view returns
+    (
+        uint256 payedValue
+    ) 
+    {
+        require(tokenId<=totalSupply(), "TokenId doesn't exit");
+
+        return _cashflowsIds[tokenId].payedValue;
     }
 
     function  idsOfCashflowsFor(address _owner) public view returns 
@@ -308,12 +319,10 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
     ) public onlySubscriber(tokenId) returns (bool success)  {
         Cashflow storage _c = _cashflowsIds[tokenId];
 
-        if (_c.balance > _c.value) {
-            
-            address _owner = ownerOf(tokenId);
-            IERC20(tokenAddress).transfer(_owner, _c.stackingTokens);
+        if (_c.payedValue >= _c.value) {
+            IERC20(stackingTokenAddress).transfer(_c.subscriber, _c.stackingTokens);
             _c.stackingTokens = 0;
-            emit WithDrawPayment(tokenId, _owner, block.timestamp);
+            emit WithDrawStacking(tokenId, _c.subscriber, block.timestamp);
             return true;
 
         } else {
@@ -337,8 +346,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         ) 
         internal returns (bool) 
     {
-        
-
+    
         uint256 _a = IERC20(stackingTokenAddress).allowance(msg.sender, address(this));
 
         if (stackingTokens <= _a) {
@@ -347,8 +355,8 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
 
             require(mint(msg.sender, _tokenId), "Doesnt' mint");
 
-            IERC20(tokenAddress).transferFrom(msg.sender, address(this), stackingTokens); 
-            _cashflowsIds[_tokenId] = Cashflow(msg.sender, name, value, commit, interestRate, duration, 0, block.timestamp, 0, stackingTokens);
+            IERC20(stackingTokenAddress).transferFrom(msg.sender, address(this), stackingTokens); 
+            _cashflowsIds[_tokenId] = Cashflow(msg.sender, name, value, commit, interestRate, duration, 0, 0, block.timestamp, 0, stackingTokens);
             _subscribedTokens[msg.sender].push(_tokenId);
             
             emit CashflowCreated(msg.sender, name, value, commit, interestRate, duration, _tokenId, block.timestamp, stackingTokens);
@@ -409,6 +417,7 @@ contract C2FCFull is ERC721Full, ERC721Mintable, Ownable, IC2FCPayments {
         if (_o.amount <= _a) {
             IERC20(tokenAddress).transferFrom(_o.subscriber, address(this), _o.amount); 
             _c.balance = _c.balance.add(_o.amount);
+            _c.payedValue = _c.payedValue.add(_o.amount);
             _o.isPayed = true;
             emit ExecuteOrder(tokenId, _o.subscriber, _owner, tokenAddress, _o.amount, block.timestamp);
             return true;

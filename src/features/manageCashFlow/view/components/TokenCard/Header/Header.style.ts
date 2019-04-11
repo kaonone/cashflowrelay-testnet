@@ -21,20 +21,10 @@ const styles = ({ extra: theme }: Theme) => ({
     textOverflow: 'ellipsis',
   }),
 
-  payersRating: rule({
-    display: 'flex',
-    flexBasis: theme.tableColumns.width.payersRating,
-  }),
-
-  payersRatingValue: rule({
-    width: '2.5rem',
-    display: 'flex',
-    justifyContent: 'center',
-    padding: '0.3125rem',
-    borderRadius: '0.25rem',
-    backgroundColor: '#b8e986',
-    fontWeight: 600,
-    fontSize: '0.625rem',
+  stake: rule({
+    flexBasis: theme.tableColumns.width.stake,
+    fontSize: '1.125rem',
+    fontWeight: 'bold',
   }),
 
   text: rule({
@@ -43,12 +33,8 @@ const styles = ({ extra: theme }: Theme) => ({
   }),
 
   stars: rule({
-    display: 'flex',
     flexBasis: theme.tableColumns.width.rating,
-  }),
-
-  activeStar: rule({
-    color: theme.colors.ripeLemon,
+    paddingRight: theme.spacing.unit / 2,
   }),
 
   nextInstalmentCell: rule({
@@ -56,6 +42,10 @@ const styles = ({ extra: theme }: Theme) => ({
     flexBasis: theme.tableColumns.width.nextInstalment,
   }),
   nextInstalment: rule({
+    flexGrow: 1,
+    marginRight: theme.spacing.unit / 2,
+    display: 'flex',
+    justifyContent: 'center',
     fontWeight: 600,
     fontSize: '0.625rem',
     padding: '0.3125rem 0.625rem',
@@ -101,7 +91,8 @@ const styles = ({ extra: theme }: Theme) => ({
     flexBasis: theme.tableColumns.width.cashFlowBalance,
   }),
   status: rule({
-    width: '6.25rem',
+    flexGrow: 1,
+    marginRight: theme.spacing.unit / 2,
     display: 'flex',
     justifyContent: 'center',
     padding: '0.3125rem',
@@ -148,6 +139,9 @@ const styles = ({ extra: theme }: Theme) => ({
     transform: 'rotate(180deg)',
   }),
 
+  withOpacity: rule({
+    opacity: 0.4,
+  }),
 });
 
 export const provideStyles = withStyles(styles);

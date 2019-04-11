@@ -93,7 +93,7 @@ class BuyButton extends React.PureComponent<IProps, IState> {
           <CashFlowInfo
             token={cashflow}
             price={order.price.toNumber()}
-            fields={['amount', 'instalmentSize', 'duration', 'firstInstalmentDate', 'lastInstalmentDate']}
+            fields={['amount', 'instalmentSize', 'stakeSize', 'duration', 'firstInstalmentDate', 'lastInstalmentDate']}
           />
         </DrawerModal>
       </>

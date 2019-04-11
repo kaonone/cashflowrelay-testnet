@@ -94,10 +94,10 @@ export const theme = {
   tableColumns: {
     width: {
       name: '12rem',
-      payersRating: '5.2rem',
+      stake: '5.2rem',
       performance: '5rem',
       rating: '7rem',
-      nextInstalment: '6.8rem',
+      nextInstalment: '7.2rem',
       cashFlowBalance: '6.5rem',
       discount: '4rem',
       dueAmount: '6rem',

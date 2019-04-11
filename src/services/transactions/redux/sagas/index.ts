@@ -19,6 +19,7 @@ const notsByType: Record<SetTransactionType, NotificationType[]> = {
   executeOrder: ['userPayInstallment', 'userPayInstallmentSuccess', 'userPayInstallmentFail'],
   executePayment: ['userPayInstallment', 'userPayInstallmentSuccess', 'userPayInstallmentFail'],
   withdrawPayments: ['withdrawCashFlow', 'withdrawCashFlowSuccess', 'withdrawCashFlowFail'],
+  withdrawStake: ['withdrawStake', 'withdrawStakeSuccess', 'withdrawStakeFail'],
 };
 
 function getSaga(deps: IDependencies) {
@@ -57,6 +58,7 @@ const methodByType: Record<SetTransactionType, string> = {
   executeOrder: 'executeOrder',
   executePayment: 'executePayment',
   withdrawPayments: 'withdrawPayments',
+  withdrawStake: 'withdrawStacking',
 };
 
 type ParamsConverter<T extends SetTransactionType = SetTransactionType> =
@@ -70,22 +72,26 @@ const getParamsByRequest: { [key in SetTransactionType]: ParamsConverter<key> } 
     data.commit.toFixed(0),
     data.interestRate.toFixed(0),
     data.duration.toFixed(0),
+    data.stake.toFixed(0),
   ],
   createOrder: (data) => [
-    data.tokenId.toFixed(0),
+    data.tokenId,
     data.amount.toFixed(0),
   ],
   executeOrder: (data) => [
-    data.tokenId.toFixed(0),
+    data.tokenId,
     data.orderId.toFixed(0),
   ],
   executePayment: (data) => [
-    data.tokenId.toFixed(0),
+    data.tokenId,
     data.amount.toFixed(0),
   ],
   withdrawPayments: (data) => [
-    data.tokenId.toFixed(0),
+    data.tokenId,
     data.amount.toFixed(0),
+  ],
+  withdrawStake: (data) => [
+    data.tokenId,
   ],
 };
 

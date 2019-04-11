@@ -4,7 +4,7 @@ import { Drizzle, generateStore, IDrizzleOptions, IContract } from 'drizzle';
 import Api from 'services/api/Api';
 import { IDependencies, IAppReduxState } from 'shared/types/app';
 
-import daiABI from 'blockchain/abi/dai.json';
+import erc20ABI from 'blockchain/abi/erc20.json';
 import C2FCFull from 'contracts/C2FCFull.json';
 import { LocalStorage } from 'services/storage';
 
@@ -14,27 +14,27 @@ import { Web3Wrapper } from '@0x/web3-wrapper';
 import { MetamaskSubprovider } from '@0x/subproviders';
 import { NETWORK_CONFIG, RELAYER_URL } from './constants';
 
+function getNetworks(contractAddress: string) {
+  const defaultNetwork = { address: contractAddress };
+  return new Proxy({}, {
+    get: () => defaultNetwork,
+  });
+}
+
 const contracts: IContract[] = [
   {
     contractName: 'DAI',
-    abi: daiABI as IContract['abi'],
-    networks: {
-      '1': {
-        address: '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359',
-      },
-      '42': {
-        address: '0xC4375B7De8af5a38a93548eb8453a498222C4fF2',
-      },
-    },
+    abi: erc20ABI as IContract['abi'],
+    networks: getNetworks(NETWORK_CONFIG.daiContract),
+  },
+  {
+    contractName: 'AKT',
+    abi: erc20ABI as IContract['abi'],
+    networks: getNetworks(NETWORK_CONFIG.aktContract),
   },
   {
     ...C2FCFull,
-    networks: {
-      ...C2FCFull.networks,
-      '42': {
-        address: NETWORK_CONFIG.c2fcContract,
-      },
-    },
+    networks: getNetworks(NETWORK_CONFIG.c2fcContract),
   } as IContract,
 ];
 

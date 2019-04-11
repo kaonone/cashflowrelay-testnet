@@ -7,4 +7,5 @@ export interface IFormData {
   installmentSize: number;
   installmentCount: number;
   periodicity: TimePeriod;
+  stakeSize: number;
 }

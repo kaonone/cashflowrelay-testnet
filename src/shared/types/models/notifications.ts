@@ -24,6 +24,9 @@ export type NotificationPayloadByType = SubSet<Record<NotificationType, any>, {
   withdrawCashFlow: { txHash: string },
   withdrawCashFlowSuccess: { txHash: string },
   withdrawCashFlowFail: { txHash: string },
+  withdrawStake: { txHash: string },
+  withdrawStakeSuccess: { txHash: string },
+  withdrawStakeFail: { txHash: string },
 }>;
 
 export const variantByType: Record<NotificationType, NotificationVariant> = {
@@ -45,6 +48,9 @@ export const variantByType: Record<NotificationType, NotificationVariant> = {
   withdrawCashFlow: 'info',
   withdrawCashFlowSuccess: 'positive',
   withdrawCashFlowFail: 'negative',
+  withdrawStake: 'info',
+  withdrawStakeSuccess: 'positive',
+  withdrawStakeFail: 'negative',
 };
 export type INotification = {
   [key in NotificationType]: {

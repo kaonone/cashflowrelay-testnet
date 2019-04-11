@@ -10,6 +10,7 @@ const tKeys = tkeysAll.features.manageCashFlows;
 
 interface IOwnProps {
   sellPrice?: number;
+  disabled: boolean;
   onChangeSellPrice?(price: number): void;
 }
 
@@ -17,9 +18,7 @@ type IProps = IOwnProps & StylesProps & ITranslateProps;
 
 class SellingPriceField extends React.Component<IProps> {
   public render() {
-    const {
-      classes, t, sellPrice,
-    } = this.props;
+    const { classes, t, sellPrice, disabled } = this.props;
 
     return (
       <div>
@@ -31,6 +30,7 @@ class SellingPriceField extends React.Component<IProps> {
               margin="none"
               variant="outlined"
               value={sellPrice || 1000}
+              disabled={disabled}
               InputProps={{
                 inputProps: {
                   className: classes.input,

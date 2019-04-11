@@ -7,8 +7,8 @@ export interface IReduxState {
     settingMinter: ICommunication,
     settingApproved: ICommunication,
     settingPayingAllowance: ICommunication,
+    settingStakingAllowance: ICommunication,
     settingBuyingAllowance: ICommunication,
-
   };
   data: {
     confirmedAddress: string | null;
@@ -18,7 +18,8 @@ export interface IReduxState {
     isMinter: boolean;
     isApproved: boolean;
     isPayingAllowance: boolean;
-    isBuyingAllowance: boolean,
+    isStakingAllowance: boolean;
+    isBuyingAllowance: boolean;
   };
 }
 
@@ -26,6 +27,7 @@ interface IPermissions {
   isMinter: boolean;
   isApproved: boolean;
   isPayingAllowance: boolean;
+  isStakingAllowance: boolean;
   isBuyingAllowance: boolean;
 }
 
@@ -57,6 +59,13 @@ export type ISetBuyingAllowance = IAction<'USER:SET_BUYING_ALLOWANCE', { isBuyin
 export type ISetBuyingAllowanceSuccess = IAction<'USER:SET_BUYING_ALLOWANCE_SUCCESS', { isBuyingAllowance: boolean }>;
 export type ISetBuyingAllowanceFail = IPlainFailAction<'USER:SET_BUYING_ALLOWANCE_FAIL'>;
 
+export type ISetStakingAllowance = IAction<'USER:SET_STAKING_ALLOWANCE', { isStakingAllowance: boolean }>;
+export type ISetStakingAllowanceSuccess = IAction<
+  'USER:SET_STAKING_ALLOWANCE_SUCCESS',
+  { isStakingAllowance: boolean }
+>;
+export type ISetStakingAllowanceFail = IPlainFailAction<'USER:SET_STAKING_ALLOWANCE_FAIL'>;
+
 export type Action =
   ICompleteAuthentication |
   ICheckIsUserSigned | ICheckIsUserSignedSuccess | ICheckIsUserSignedFail | ILogout
@@ -64,4 +73,5 @@ export type Action =
   | ISetMinter | ISetMinterSuccess | ISetMinterFail
   | ISetApproved | ISetApprovedSuccess | ISetApprovedFail
   | ISetPayingAllowance | ISetPayingAllowanceSuccess | ISetPayingAllowanceFail
-  | ISetBuyingAllowance | ISetBuyingAllowanceSuccess | ISetBuyingAllowanceFail;
+  | ISetBuyingAllowance | ISetBuyingAllowanceSuccess | ISetBuyingAllowanceFail
+  | ISetStakingAllowance | ISetStakingAllowanceSuccess | ISetStakingAllowanceFail;

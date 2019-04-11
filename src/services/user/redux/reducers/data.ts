@@ -29,6 +29,7 @@ export function dataReducer(state: NS.IReduxState['data'] = initial.data, action
         isMinter: action.payload.isMinter,
         isApproved: action.payload.isApproved,
         isPayingAllowance: action.payload.isPayingAllowance,
+        isStakingAllowance: action.payload.isStakingAllowance,
         isBuyingAllowance: action.payload.isBuyingAllowance,
         isCheckedPermissions: true,
       };
@@ -55,6 +56,12 @@ export function dataReducer(state: NS.IReduxState['data'] = initial.data, action
       return {
         ...state,
         isPayingAllowance: action.payload.isPayingAllowance,
+      };
+    }
+    case 'USER:SET_STAKING_ALLOWANCE_SUCCESS': {
+      return {
+        ...state,
+        isStakingAllowance: action.payload.isStakingAllowance,
       };
     }
     case 'USER:SET_BUYING_ALLOWANCE_SUCCESS': {

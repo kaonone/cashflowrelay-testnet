@@ -1,8 +1,8 @@
 import { bind } from 'decko';
-import { delay } from 'redux-saga';
 import * as R from 'ramda';
 
 import { Resource, DataByResource, IListResponse, ListRequestUnion, ID } from 'shared/types/models';
+import { delay } from 'shared/helpers';
 import BaseApi from './BaseApi';
 
 function makeMocks<T extends { id: ID }>(values: T[]): T[] {

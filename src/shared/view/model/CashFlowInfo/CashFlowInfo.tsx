@@ -11,12 +11,13 @@ const tKeys = tkeysAll.features.manageCashFlows;
 
 type PartialToken = Pick<
   IToken,
-  'periodDuration' | 'amount' | 'instalmentSize' | 'duration' | 'firstInstalmentDate' | 'lastInstalmentDate'
+  | 'periodDuration' | 'amount' | 'instalmentSize' | 'duration'
+  | 'firstInstalmentDate' | 'lastInstalmentDate' | 'stakeSize'
 >;
 
 type TokenField = SubSet<
   keyof PartialToken,
-  'amount' | 'instalmentSize' | 'duration' | 'firstInstalmentDate' | 'lastInstalmentDate'
+  'amount' | 'instalmentSize' | 'duration' | 'firstInstalmentDate' | 'lastInstalmentDate' | 'stakeSize'
 >;
 
 interface IOwnProps {
@@ -38,6 +39,7 @@ class CashFlowInfo extends React.Component<IProps> {
       periodicity: moment.duration(this.props.token.periodDuration).humanize(),
     }),
     amount: () => `${formatNumber(this.props.token.amount.toNumber(), 2)} DAI`,
+    stakeSize: () => `${formatNumber(this.props.token.stakeSize.toNumber(), 2)} AKT`,
   };
 
   public render() {

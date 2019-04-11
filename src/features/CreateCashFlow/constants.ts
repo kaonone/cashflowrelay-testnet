@@ -5,6 +5,7 @@ const availablePeriodicity: TimePeriod[] = ['day', 'week', 'month', 'quarter', '
 
 export const createCashFlowConfig = {
   defaultName: 'Money for ...',
+  maxNameLength: 50,
   minAmount: 0,
   defaultAmount: 100,
   minInterest: 1,
@@ -14,6 +15,8 @@ export const createCashFlowConfig = {
   defaultInstallmentCount: 6,
   defaultPeriodicity: 'month' as TimePeriod,
   availablePeriodicity,
+  defaultStakeSize: 100,
+  minStakeSize: 0,
 };
 
 export const fieldNames: { [key in keyof IFormData]: key } = {
@@ -23,4 +26,5 @@ export const fieldNames: { [key in keyof IFormData]: key } = {
   installmentSize: 'installmentSize',
   installmentCount: 'installmentCount',
   periodicity: 'periodicity',
+  stakeSize: 'stakeSize',
 };

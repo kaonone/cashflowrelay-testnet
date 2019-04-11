@@ -1,4 +1,4 @@
-import { SagaIterator, Channel, eventChannel } from 'redux-saga';
+import { SagaIterator, eventChannel, EventChannel } from 'redux-saga';
 import { put, takeLatest, take, select, call } from 'redux-saga/effects';
 import { DrizzleState } from 'drizzle';
 import { awaitStateChanging } from 'shared/helpers/redux';
@@ -26,6 +26,7 @@ const setMinterType: NS.ISetMinter['type'] = 'USER:SET_MINTER';
 const setApprovedType: NS.ISetApproved['type'] = 'USER:SET_APPROVED';
 const setPayingAllowanceType: NS.ISetPayingAllowance['type'] = 'USER:SET_PAYING_ALLOWANCE';
 const setBuyingAllowanceType: NS.ISetBuyingAllowance['type'] = 'USER:SET_BUYING_ALLOWANCE';
+const setStakingAllowanceType: NS.ISetStakingAllowance['type'] = 'USER:SET_STAKING_ALLOWANCE';
 
 export function getSaga(deps: IDependencies) {
   return function* saga(): SagaIterator {
@@ -36,11 +37,12 @@ export function getSaga(deps: IDependencies) {
     yield takeLatest(setMinterType, setMinterSaga, deps);
     yield takeLatest(setApprovedType, setApproved, deps);
     yield takeLatest(setPayingAllowanceType, setPayingAllowance, deps);
+    yield takeLatest(setStakingAllowanceType, setStakingAllowanceSaga, deps);
     yield takeLatest(setBuyingAllowanceType, setBuyingAllowance, deps);
   };
 }
 
-export function* checkIsUserSigned({ drizzle, storage }: IDependencies) {
+export function* checkIsUserSigned({ drizzle, storage }: IDependencies, _a: NS.ICheckIsUserSigned) {
   try {
     const result = storage.get<string>(storageKeys.signedMessage);
 
@@ -66,17 +68,17 @@ export function* checkIsUserSigned({ drizzle, storage }: IDependencies) {
   }
 }
 
-export function logoutSaga({ storage }: IDependencies) {
+export function logoutSaga({ storage }: IDependencies, _a: NS.ILogout) {
   try {
     storage.reset();
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 
 // don't work because drizzle is not listen account changing
-export function* listenAccountChange({ drizzle }: IDependencies) {
-  const drizzleStateChannel: Channel<DrizzleState> = eventChannel((emitter) => {
+export function* listenAccountChange({ drizzle }: IDependencies, _a: NS.ICompleteAuthentication) {
+  const drizzleStateChannel: EventChannel<DrizzleState> = eventChannel((emitter) => {
     return drizzle.store.subscribe(() => {
       emitter(drizzle.store.getState());
     });
@@ -100,14 +102,16 @@ export function* listenAccountChange({ drizzle }: IDependencies) {
   }
 }
 
-export function* checkPermissionsSaga(deps: IDependencies) {
+export function* checkPermissionsSaga(deps: IDependencies, _a: NS.ICheckPermissions) {
   try {
-    const [isMinter, isApproved, payingAllowance, buyingAllowance]: PromisedReturnType<typeof getAllPermissions> =
-      yield call(getAllPermissions, deps);
+    const [
+      isMinter, isApproved, payingAllowance, stakingAllowance, buyingAllowance,
+    ]: PromisedReturnType<typeof getAllPermissions> = yield call(getAllPermissions, deps);
     yield put(actions.checkPermissionsSuccess({
       isMinter,
       isApproved,
       isPayingAllowance: payingAllowance.toNumber() > 0,
+      isStakingAllowance: stakingAllowance.toNumber() > 0,
       isBuyingAllowance: buyingAllowance.toNumber() > 0,
     }));
   } catch (error) {
@@ -118,7 +122,7 @@ export function* checkPermissionsSaga(deps: IDependencies) {
 
 async function getAllPermissions(
   { Ox: { contractWrappers }, drizzle }: IDependencies,
-): Promise<[boolean, boolean, BigNumber, BigNumber]> {
+): Promise<[boolean, boolean, BigNumber, BigNumber, BigNumber]> {
 
   const account = drizzle.store.getState().accounts[0];
   const contract = drizzle.contracts[mainContractName];
@@ -126,16 +130,18 @@ async function getAllPermissions(
   // minter
   // approved
   // payingAllowance
+  // stakingAllowance
   // buyingAllowance
   return Promise.all([
     (contract.methods as any).isMinter(account).call(),
     contractWrappers.erc721Token.isProxyApprovedForAllAsync(NETWORK_CONFIG.c2fcContract, account),
     contractWrappers.erc20Token.getAllowanceAsync(NETWORK_CONFIG.daiContract, account, NETWORK_CONFIG.c2fcContract),
+    contractWrappers.erc20Token.getAllowanceAsync(NETWORK_CONFIG.aktContract, account, NETWORK_CONFIG.c2fcContract),
     contractWrappers.erc20Token.getProxyAllowanceAsync(NETWORK_CONFIG.daiContract, account),
   ]);
 }
 
-export function* setMinterSaga(deps: IDependencies) {
+export function* setMinterSaga(deps: IDependencies, _a: NS.ISetMinter) {
   try {
     const { web3Wrapper } = deps.Ox;
     const { drizzle } = deps;
@@ -197,6 +203,32 @@ export function* setPayingAllowance(deps: IDependencies, action: NS.ISetPayingAl
   } catch (error) {
     const message = getErrorMsg(error);
     yield put(actions.setPayingAllowanceFail(message));
+  }
+}
+
+export function* setStakingAllowanceSaga(deps: IDependencies, action: NS.ISetStakingAllowance) {
+  try {
+    const { contractWrappers, web3Wrapper } = deps.Ox;
+    const { drizzle } = deps;
+    const drizzleState = drizzle.store.getState();
+    const account = drizzleState.accounts[0];
+    const method = action.payload.isStakingAllowance ? 'setUnlimitedAllowanceAsync' : 'setAllowanceAsync';
+    const params: Record<'setUnlimitedAllowanceAsync' | 'setAllowanceAsync', any> = {
+      setUnlimitedAllowanceAsync: undefined,
+      setAllowanceAsync: new BigNumber(0),
+    };
+
+    const txHash = yield call([contractWrappers.erc20Token, method],
+      NETWORK_CONFIG.aktContract,
+      account,
+      NETWORK_CONFIG.c2fcContract,
+      params[method],
+    );
+    yield call([web3Wrapper, 'awaitTransactionSuccessAsync'], txHash);
+    yield put(actions.setStakingAllowanceSuccess({ isStakingAllowance: action.payload.isStakingAllowance }));
+  } catch (error) {
+    const message = getErrorMsg(error);
+    yield put(actions.setStakingAllowanceFail(message));
   }
 }
 

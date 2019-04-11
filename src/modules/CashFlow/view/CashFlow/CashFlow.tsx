@@ -3,7 +3,7 @@ import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 
 import { BaseLayout } from 'modules/shared';
 import routes from 'modules/routes';
-import { ShowMainContractData } from 'services/transactions';
+import { useMainContractData } from 'services/transactions';
 import { i18nConnect, ITranslateProps, tKeys as tKeysAll } from 'services/i18n';
 import { TokensList } from 'features/manageCashFlow';
 
@@ -32,42 +32,34 @@ const transactionByType: Record<TokenType, 'idsOfCashflowsFor' | 'idsOfSubscribe
   selling: 'idsOfSubscribedCashflowsFor',
 };
 
-class Marketplace extends React.PureComponent<IProps> {
-  public render() {
-
-    const { classes, t, match: { params: { type: selectedType } } } = this.props;
-    return (
-      <BaseLayout>
-        <div className={classes.root}>
-          <div className={classes.head}>
-            <ToggleButtonGroup className={classes.links} value={selectedType} exclusive nullable={false} >
-              {links.map(({ type, title }, index: number) => (
-                <NavToggleButton
-                  className={classes.link}
-                  key={index}
-                  to={routes.cashFlows.type.getRedirectPath({ type })}
-                  variant="outlined"
-                  value={type}
-                >
-                  <span>{t(title)}</span>
-                </NavToggleButton>
-              ))}
-            </ToggleButtonGroup>
-            <NavButton to={routes.create.getRedirectPath()} color="primary" variant="outlined">
-              {t(tKeys.borrowLink.getKey())}
-            </NavButton>
-          </div>
-          <ShowMainContractData<'idsOfCashflowsFor' | 'idsOfSubscribedCashflowsFor'>
-            type={transactionByType[selectedType]}
-            request={{}}
-          >
-            {({ data }) => !data ? 'Loading...' : <TokensList type={selectedType} tokenIds={data} />}
-          </ShowMainContractData>
+function Marketplace(props: IProps) {
+  const { classes, t, match: { params: { type: selectedType } } } = props;
+  const { data } = useMainContractData(transactionByType[selectedType], {});
+  return (
+    <BaseLayout>
+      <div className={classes.root}>
+        <div className={classes.head}>
+          <ToggleButtonGroup className={classes.links} value={selectedType} exclusive nullable={false} >
+            {links.map(({ type, title }, index: number) => (
+              <NavToggleButton
+                className={classes.link}
+                key={index}
+                to={routes.cashFlows.type.getRedirectPath({ type })}
+                variant="outlined"
+                value={type}
+              >
+                <span>{t(title)}</span>
+              </NavToggleButton>
+            ))}
+          </ToggleButtonGroup>
+          <NavButton to={routes.create.getRedirectPath()} color="primary" variant="outlined">
+            {t(tKeys.borrowLink.getKey())}
+          </NavButton>
         </div>
-      </BaseLayout >
-    );
-  }
-
+        {!data ? 'Loading...' : <TokensList type={selectedType} tokenIds={data} />}
+      </div>
+    </BaseLayout>
+  );
 }
 
 export default withRouter(i18nConnect(provideStyles(Marketplace)));

@@ -28,3 +28,4 @@ export { default as DonutChart } from './DonutChart/DonutChart';
 export { default as Drawer } from './Drawer/Drawer';
 export { default as Switch } from './Switch/Switch';
 export { default as GlobalLoader } from './GlobalLoader/GlobalLoader';
+export { default as StarsRating } from './StarsRating/StarsRating';

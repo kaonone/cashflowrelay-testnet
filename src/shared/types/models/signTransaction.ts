@@ -7,7 +7,8 @@ export interface ITransaction {
 }
 
 export type SetTransactionType =
-  'addMinter' | 'createCashFlow' | 'executeOrder' | 'executePayment' | 'createOrder' | 'withdrawPayments';
+  | 'addMinter' | 'createCashFlow' | 'executeOrder' | 'executePayment' | 'createOrder'
+  | 'withdrawPayments' | 'withdrawStake';
 export type GetContractTransactionType =
   'isMinter' | 'ownerOf' | 'idsOfCashflowsFor' | 'cashflowFor' | 'idsOfSubscribedCashflowsFor';
 export type GetPaymentOrderTransactionType = 'getOrdersList' | 'getByOrderId';
@@ -19,23 +20,25 @@ export type TransactionRequestDataByType = SubsetMapStrict<Record<TransactionTyp
   createCashFlow: {
     name: string;
     value: BigNumber; // full repayment amount
+    stake: BigNumber; // stake size
     commit: BigNumber; // installment size
     interestRate: number;
     duration: number; // in seconds
   };
-  executeOrder: { tokenId: number, orderId: number };
-  executePayment: { tokenId: number, amount: BigNumber };
-  createOrder: { tokenId: number, amount: BigNumber };
-  withdrawPayments: { tokenId: number, amount: BigNumber };
+  executeOrder: { tokenId: string, orderId: number };
+  executePayment: { tokenId: string, amount: BigNumber };
+  createOrder: { tokenId: string, amount: BigNumber };
+  withdrawPayments: { tokenId: string, amount: BigNumber };
+  withdrawStake: { tokenId: string };
   // get
   isMinter: { address?: string };
-  ownerOf: { tokenId: number };
+  ownerOf: { tokenId: string };
   idsOfCashflowsFor: { address?: string };
   idsOfSubscribedCashflowsFor: { address?: string };
-  cashflowFor: { tokenId: number };
+  cashflowFor: { tokenId: string };
   // get payment order
   getOrdersList: { tokenIds: number };
-  getByOrderId: { tokenId: number, orderId: number };
+  getByOrderId: { tokenId: string, orderId: number };
 }>;
 
 export type ContractTransactionResponseDataByType = SubsetMapStrict<Record<GetContractTransactionType, any>, {
@@ -49,8 +52,8 @@ export type ContractTransactionResponseDataByType = SubsetMapStrict<Record<GetCo
 export type ContractTransactionDataByType = SubsetMapStrict<Record<GetContractTransactionType, any>, {
   isMinter: boolean;
   ownerOf: string; // address
-  idsOfCashflowsFor: number[];
-  idsOfSubscribedCashflowsFor: number[];
+  idsOfCashflowsFor: string[];
+  idsOfSubscribedCashflowsFor: string[];
   cashflowFor: IToken;
 }>;
 

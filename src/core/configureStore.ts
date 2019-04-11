@@ -1,8 +1,6 @@
 import { composeWithDevTools } from 'redux-devtools-extension';
 import createSagaMiddleware, { SagaMiddleware } from 'redux-saga';
 import { compose, applyMiddleware, combineReducers, createStore, Reducer, Middleware, Store } from 'redux';
-import { reducer as multiConnectReducer } from 'shared/helpers/redux/multiConnect';
-import { composeReducers } from 'shared/helpers/redux';
 
 import { IAppReduxState } from 'shared/types/app';
 import { ReducersMap } from 'shared/types/redux';
@@ -45,10 +43,7 @@ function configureStore(): IStoreData {
 }
 
 function createReducer(reducers: ReducersMap<IAppReduxState>): Reducer<IAppReduxState> {
-  return composeReducers<IAppReduxState>([
-    multiConnectReducer as Reducer<IAppReduxState>,
-    combineReducers<IAppReduxState>(reducers),
-  ]);
+  return combineReducers<IAppReduxState>(reducers);
 }
 
 export { createReducer, IStoreData };

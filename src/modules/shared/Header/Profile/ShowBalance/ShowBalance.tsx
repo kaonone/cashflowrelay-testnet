@@ -9,14 +9,18 @@ interface IState {
   decimalsKey: string;
 }
 
-type IProps = InjectDrizzleProps & StylesProps;
+interface IOwnProps {
+  token: 'DAI' | 'AKT';
+}
+
+type IProps = IOwnProps & InjectDrizzleProps & StylesProps;
 
 class ShowBalance extends React.Component<IProps, IState> {
   public state: IState = { balanceKey: '', decimalsKey: '' };
 
   public componentDidMount() {
-    const { drizzle, drizzleState } = this.props;
-    const contract = drizzle.contracts.DAI;
+    const { drizzle, drizzleState, token } = this.props;
+    const contract = drizzle.contracts[token];
 
     const address = drizzleState.accounts[0];
 
@@ -27,16 +31,17 @@ class ShowBalance extends React.Component<IProps, IState> {
   }
 
   public render() {
-    const { classes } = this.props;
+    const { classes, token } = this.props;
     const balance = this.getBalance();
-    return balance !== null && <Button className={classes.root} disabled variant="outlined">DAI: {balance}</Button>;
+    return balance !== null && <Button className={classes.root} disabled variant="outlined">{token}: {balance}</Button>;
   }
 
   private getBalance(): number | null {
-    const { DAI } = this.props.drizzleState.contracts;
+    const { token } = this.props;
+    const contract = this.props.drizzleState.contracts[token];
 
-    const balance = DAI.balanceOf[this.state.balanceKey];
-    const decimals = DAI.decimals[this.state.decimalsKey];
+    const balance = contract.balanceOf[this.state.balanceKey];
+    const decimals = contract.decimals[this.state.decimalsKey];
 
     if (balance && decimals) {
       return Number(balance.value) / 10 ** Number(decimals.value);

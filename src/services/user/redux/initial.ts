@@ -9,6 +9,7 @@ export const initial: NS.IReduxState = {
     settingMinter: initialCommunicationField,
     settingApproved: initialCommunicationField,
     settingPayingAllowance: initialCommunicationField,
+    settingStakingAllowance: initialCommunicationField,
     settingBuyingAllowance: initialCommunicationField,
   },
   data: {
@@ -19,6 +20,7 @@ export const initial: NS.IReduxState = {
     isMinter: false,
     isApproved: false,
     isPayingAllowance: false,
+    isStakingAllowance: false,
     isBuyingAllowance: false,
   },
 };

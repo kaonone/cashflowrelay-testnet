@@ -1,6 +1,8 @@
-# cashflowrelay
+# Cashflow Relay Testnet
 
-[Demo Page](https://testnet.cashflowrelay.com/)
+- [CashflowRelay Portal](https://www.cashflowrelay.com/)
+- [Testnet app](https://testnet.cashflowrelay.com/)
+- [C2FC](https://github.com/akropolisio/c2fc-specs)
 
 ## For frontend (in root folder)
 ### Install all dependencies

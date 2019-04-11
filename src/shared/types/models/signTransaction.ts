@@ -29,7 +29,7 @@ export type TransactionRequestDataByType = SubsetMapStrict<Record<TransactionTyp
   executePayment: { tokenId: string, amount: BigNumber };
   createOrder: { tokenId: string, amount: BigNumber };
   withdrawPayments: { tokenId: string, amount: BigNumber };
-  withdrawStake: { tokenId: string, amount: BigNumber };
+  withdrawStake: { tokenId: string };
   // get
   isMinter: { address?: string };
   ownerOf: { tokenId: string };

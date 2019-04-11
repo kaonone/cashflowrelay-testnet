@@ -1,10 +1,8 @@
 import * as React from 'react';
-import { Web3Wrapper } from '@0x/web3-wrapper';
 
 import { ITranslateProps, i18nConnect } from 'services/i18n';
 import { SendTransactionButton } from 'services/transactions';
 import { IToken } from 'shared/types/models';
-import { DECIMAL } from 'shared/constants';
 
 import { StylesProps, provideStyles } from './WithdrawStakeButton.style';
 
@@ -25,7 +23,7 @@ class WithdrawStakeButton extends React.PureComponent<IProps> {
     return (
       <SendTransactionButton<'withdrawStake'>
         type="withdrawStake"
-        data={{ tokenId: token.id, amount: Web3Wrapper.toBaseUnitAmount(token.stakeSize, DECIMAL) }}
+        data={{ tokenId: token.id }}
         disabled={disabled}
         variant="contained"
         color="primary"

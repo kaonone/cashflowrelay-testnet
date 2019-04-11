@@ -16,7 +16,7 @@ const networkConfigs: Record<string, INetworkConfig> = {
     rpcUrl: 'https://kovan.infura.io/',
     daiContract: '0xC4375B7De8af5a38a93548eb8453a498222C4fF2',
     aktContract: '0xcfd6e4044dd6e6ce64aed0711f849c7b9134d7db',
-    c2fcContract: '0xb272fA8bD66fbD310165d322Febd5e275081f886',
+    c2fcContract: '0x174B2918417f150Ca19eC5915fe090E543df2eeb',
     OxContracts: getContractAddressesForNetworkOrThrow(42),
   },
   '1': {

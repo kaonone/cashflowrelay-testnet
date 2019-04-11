@@ -58,7 +58,7 @@ const methodByType: Record<SetTransactionType, string> = {
   executeOrder: 'executeOrder',
   executePayment: 'executePayment',
   withdrawPayments: 'withdrawPayments',
-  withdrawStake: 'withdrawStake', // TODO akt: check method name
+  withdrawStake: 'withdrawStacking',
 };
 
 type ParamsConverter<T extends SetTransactionType = SetTransactionType> =
@@ -72,7 +72,7 @@ const getParamsByRequest: { [key in SetTransactionType]: ParamsConverter<key> } 
     data.commit.toFixed(0),
     data.interestRate.toFixed(0),
     data.duration.toFixed(0),
-    // data.stake.toFixed(0), // TODO akt: uncomment and check this param
+    data.stake.toFixed(0),
   ],
   createOrder: (data) => [
     data.tokenId,
@@ -92,8 +92,7 @@ const getParamsByRequest: { [key in SetTransactionType]: ParamsConverter<key> } 
   ],
   withdrawStake: (data) => [
     data.tokenId,
-    data.amount.toFixed(0),
-  ], // TODO akt: check params
+  ],
 };
 
 export { getSaga };

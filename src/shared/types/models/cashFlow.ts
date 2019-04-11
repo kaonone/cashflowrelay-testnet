@@ -35,6 +35,7 @@ export interface IBlockChainToken {
   name: string; // token name
   publisher: string; // payer address
   value: string; // full repayment amount
+  stackingTokens: string; // stake size
 }
 
 export type TokenType = 'incoming' | 'obligations' | 'selling';

@@ -61,7 +61,7 @@ const convertResponseByType: { [key in GetContractTransactionType]: ResponseConv
     const amount = new BigNumber(response.value).div(OneDAI);
     const balance = new BigNumber(response.balance).div(OneDAI);
     const instalmentSize = new BigNumber(response.commit).div(OneDAI);
-    const stakeSize = new BigNumber('203000000000000000000').div(OneDAI); // TODO akt: take data from contract
+    const stakeSize = new BigNumber(response.stackingTokens).div(OneDAI);
     const instalmentCount = amount.div(instalmentSize).toNumber();
     const duration = Number(response.duration) * 1000;
     const periodDuration = duration / instalmentCount;

@@ -57,11 +57,10 @@ contract IC2FCPayments is IC2FC {
         uint256 datePayment
     );
 
-
     // event for Withdraw Stacking
-    event WithDrawPayment(
+    event WithDrawStacking(
         uint256 tokenId,
-        address indexed publisher,
+        address indexed subscriber,
         uint256 datePayment
     );
 

@@ -80,6 +80,16 @@ contract IC2FC is IERC165 {
         uint256 balance
         );
 
+      /**
+     * @dev Function for get payedValue of Cashflow
+     * @param tokenId uint256 ID of the token (base token, for example, ERC721)
+     * @return uint256 value
+     */
+    function payedValueOfCashflowFor(uint256 tokenId) public view returns
+    (
+        uint256 payedValue
+        );
+
      /**
      * @dev Function get list of token for user address
      * @param _owner address of user

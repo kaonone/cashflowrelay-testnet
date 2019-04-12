@@ -74,31 +74,41 @@ function validateForm(values: IFormData): Partial<MarkAs<ITranslateKey, IFormDat
       allowedCharactersForCashFlowName(values.name)
     ),
     interest: (
-      moreThenOrEqual(createCashFlowConfig.minInterest, values.interest) ||
-      lessThenOrEqual(createCashFlowConfig.maxInterest, values.interest)
+      isRequired(values.interest) ||
+      moreThenOrEqual(createCashFlowConfig.minInterest, values.interest || 0) ||
+      lessThenOrEqual(createCashFlowConfig.maxInterest, values.interest || 0)
     ),
-    amount: moreThen(createCashFlowConfig.minAmount, values.amount),
-    installmentCount: moreThen(createCashFlowConfig.minInstallmentCount, values.installmentCount),
-    stakeSize: moreThen(createCashFlowConfig.minStakeSize, values.stakeSize),
+    amount: (
+      isRequired(values.amount) ||
+      moreThen(createCashFlowConfig.minAmount, values.amount || 0)
+    ),
+    installmentCount: (
+      isRequired(values.installmentCount) ||
+      moreThen(createCashFlowConfig.minInstallmentCount, values.installmentCount || 0)
+    ),
+    stakeSize: (
+      isRequired(values.stakeSize) ||
+      moreThen(createCashFlowConfig.minStakeSize, values.stakeSize || 0)
+    ),
   };
 }
 
 const calculateDecorator = createDecorator({
   field: fieldNames.amount,
   updates: {
-    [fieldNames.installmentSize]: (amount: number, all: IFormData): number =>
+    [fieldNames.installmentSize]: (amount: IFormData['amount'], all: IFormData): number =>
       calcInstallmentSize(amount, all.interest, all.installmentCount).toNumber(),
   },
 }, {
     field: fieldNames.interest,
     updates: {
-      [fieldNames.installmentSize]: (interest: number, all: IFormData): number =>
+      [fieldNames.installmentSize]: (interest: IFormData['interest'], all: IFormData): number =>
         calcInstallmentSize(all.amount, interest, all.installmentCount).toNumber(),
     },
   }, {
     field: fieldNames.installmentCount,
     updates: {
-      [fieldNames.installmentSize]: (installmentCount: number, all: IFormData): number =>
+      [fieldNames.installmentSize]: (installmentCount: IFormData['installmentSize'], all: IFormData): number =>
         calcInstallmentSize(all.amount, all.interest, installmentCount).toNumber(),
     },
   });
@@ -237,13 +247,13 @@ class CreateCashFlowForm extends React.PureComponent<IProps> {
     const lastInstallmentDate = moment().add(installmentCount, periodicity);
     const diff = lastInstallmentDate.diff(today);
     const duration = moment.duration(diff);
-    const periodDuration = (lastInstallmentDate.valueOf() - today.valueOf()) / installmentCount;
-    const repayingAmount = amount + amount * (interest / 100);
+    const periodDuration = (lastInstallmentDate.valueOf() - today.valueOf()) / (installmentCount || 1);
+    const repayingAmount = calcRepaymentAmount(amount, interest).toNumber();
 
     return {
-      interest,
-      amount,
-      stakeSize,
+      interest: interest || 0,
+      amount: amount || 0,
+      stakeSize: stakeSize || 0,
       installmentSize,
       firstInstallmentDate: today.valueOf(),
       lastInstallmentDate: lastInstallmentDate.valueOf(),
@@ -252,8 +262,9 @@ class CreateCashFlowForm extends React.PureComponent<IProps> {
       repayingAmount,
     };
   }
+
   @bind
-  private onSubmit(data: IFormData) {
+  private onSubmit(data: Required<IFormData>) {
     const { sendTransaction, onCreate } = this.props;
     const value = OneDAI.times(calcRepaymentAmount(data.amount, data.interest));
     const commit = value.div(data.installmentCount).ceil();

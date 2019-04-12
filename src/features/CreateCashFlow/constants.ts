@@ -19,7 +19,7 @@ export const createCashFlowConfig = {
   minStakeSize: 0,
 };
 
-export const fieldNames: { [key in keyof IFormData]: key } = {
+export const fieldNames: Required<{ [key in keyof IFormData]: key }> = {
   name: 'name',
   amount: 'amount',
   interest: 'interest',

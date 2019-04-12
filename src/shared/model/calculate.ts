@@ -2,13 +2,13 @@ import { BigNumber } from '0x.js';
 import * as moment from 'moment';
 import { IPaymentOrder, IInstallments, IToken } from 'shared/types/models';
 
-export function calcRepaymentAmount(amount: number, interestByPercent: number) {
+export function calcRepaymentAmount(amount: number = 0, interestByPercent: number = 0) {
   // return amount * (1 + interestByPercent / 100);
   return new BigNumber(amount).times(new BigNumber(interestByPercent).div(100).plus(1));
 }
 
-export function calcInstallmentSize(amount: number, interestByPercent: number, installmentCount: number) {
-  return calcRepaymentAmount(amount || 1, interestByPercent || 1).div(installmentCount || 1);
+export function calcInstallmentSize(amount?: number, interestByPercent?: number, installmentCount: number = 1) {
+  return calcRepaymentAmount(amount, interestByPercent).div(installmentCount);
 }
 
 export function calcInstallmentsCount({ paid, due, missed }: IInstallments) {

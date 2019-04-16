@@ -27,7 +27,7 @@ export default function useRecommendedPrice(tokenId: string): InjectProps {
 
     const repaidAmount = calcRepaidAmount(paymentOrders);
     const debt = amount.minus(repaidAmount);
-    const borrowAmount = debt.div(new BigNumber(1).minus(percent));
+    const borrowAmount = debt.div(new BigNumber(1).plus(percent));
 
     const avg = borrowAmount.plus(balance).round(2, BigNumber.ROUND_CEIL);
     const min = borrowAmount.times(new BigNumber(1).minus(delta)).plus(balance).round(2, BigNumber.ROUND_CEIL);
